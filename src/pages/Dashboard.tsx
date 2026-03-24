@@ -132,46 +132,6 @@ const Dashboard = () => {
         ))}
       </div>
 
-      {/* Progress & Suggestions row */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        {/* Progress */}
-        <div className="lg:col-span-2 bg-card rounded-lg border border-border p-5 card-shadow">
-          <h3 className="text-sm font-semibold text-foreground mb-4">Course Progress</h3>
-          <div className="space-y-4">
-            {[
-              { name: "Mathematics — Grade 5", progress: 72 },
-              { name: "Science — Grade 8", progress: 45 },
-              { name: "English — Grade 6", progress: 88 },
-            ].map((course) => (
-              <div key={course.name}>
-                <div className="flex justify-between text-sm mb-1.5">
-                  <span className="text-foreground font-medium">{course.name}</span>
-                  <span className="text-muted-foreground">{course.progress}%</span>
-                </div>
-                <Progress value={course.progress} className="h-2" />
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Smart Suggestions */}
-        <div className="bg-card rounded-lg border border-border p-5 card-shadow">
-          <div className="flex items-center gap-2 mb-4">
-            <Sparkles className="w-4 h-4 text-primary" />
-            <h3 className="text-sm font-semibold text-foreground">Suggestions</h3>
-          </div>
-          <div className="space-y-2.5">
-            {suggestions.map((s, i) => (
-              <button
-                key={i}
-                className="w-full text-left p-3 rounded-md bg-accent/50 hover:bg-accent text-sm text-foreground transition-colors"
-              >
-                {s}
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
 
       {/* Module cards */}
       <div>
