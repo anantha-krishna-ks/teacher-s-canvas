@@ -39,7 +39,7 @@ const DashboardLayout = () => {
       {/* Main content */}
       <div
         className={cn(
-          "transition-all duration-300 min-h-screen",
+          "transition-all duration-300",
           sidebarCollapsed ? "lg:ml-[68px]" : "lg:ml-[260px]"
         )}
       >

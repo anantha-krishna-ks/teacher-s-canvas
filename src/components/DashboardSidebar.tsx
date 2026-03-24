@@ -13,12 +13,13 @@ import {
   GraduationCap,
   BarChart3,
   ChevronDown,
-  ChevronLeft,
+  ChevronRight,
+  PanelLeftClose,
+  PanelLeft,
   ClipboardList,
   Send,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import logo from "@/assets/logo.png";
 
 interface NavItem {
   label: string;
@@ -89,38 +90,18 @@ const DashboardSidebar = ({ collapsed, onToggle }: DashboardSidebarProps) => {
   return (
     <aside
       className={cn(
-        "fixed left-0 top-0 h-screen bg-card border-r border-border z-30 flex flex-col transition-all duration-300 relative",
+        "fixed left-0 top-0 h-screen bg-card border-r border-border z-30 flex flex-col transition-all duration-300 card-shadow",
         collapsed ? "w-[68px]" : "w-[260px]"
       )}
     >
-      {/* Collapse toggle - floating on the edge */}
-      <button
-        onClick={onToggle}
-        className={cn(
-          "absolute -right-3.5 top-20 z-40 w-7 h-7 rounded-full bg-card border border-border shadow-sm flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-accent transition-all duration-200"
-        )}
-      >
-        <ChevronLeft
-          className={cn(
-            "w-4 h-4 transition-transform duration-300",
-            collapsed && "rotate-180"
-          )}
-        />
-      </button>
-
       {/* Logo */}
-      <div className={cn(
-        "h-16 flex items-center border-b border-border shrink-0",
-        collapsed ? "px-3 justify-center" : "px-5"
-      )}>
+      <div className="h-16 flex items-center px-4 border-b border-border shrink-0">
         <Link to="/dashboard" className="flex items-center gap-2.5 overflow-hidden">
-          <img
-            src={logo}
-            alt="Logo"
-            className="w-8 h-8 shrink-0"
-          />
+          <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center shrink-0">
+            <BookOpen className="w-5 h-5 text-primary-foreground" />
+          </div>
           {!collapsed && (
-            <span className="text-sm font-semibold text-foreground whitespace-nowrap tracking-tight">
+            <span className="text-sm font-semibold text-foreground whitespace-nowrap">
               Personalised Learning
             </span>
           )}
@@ -128,23 +109,18 @@ const DashboardSidebar = ({ collapsed, onToggle }: DashboardSidebarProps) => {
       </div>
 
       {/* Navigation */}
-      <nav className={cn(
-        "flex-1 overflow-y-auto py-4 space-y-1",
-        collapsed ? "px-2" : "px-3"
-      )}>
+      <nav className="flex-1 overflow-y-auto py-3 px-2.5 space-y-0.5">
         {navItems.map((item) => {
           if (item.path) {
             return (
               <Link
                 key={item.label}
                 to={item.path}
-                title={collapsed ? item.label : undefined}
                 className={cn(
-                  "flex items-center gap-3 rounded-lg text-sm font-medium transition-all duration-150",
-                  collapsed ? "px-2.5 py-2.5 justify-center" : "px-3 py-2.5",
+                  "flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors",
                   isActive(item.path)
-                    ? "bg-primary/8 text-primary border-l-[3px] border-primary"
-                    : "text-muted-foreground hover:bg-accent hover:text-foreground"
+                    ? "bg-primary/10 text-primary"
+                    : "text-sidebar-foreground hover:bg-accent"
                 )}
               >
                 <item.icon className="w-[18px] h-[18px] shrink-0" />
@@ -157,41 +133,38 @@ const DashboardSidebar = ({ collapsed, onToggle }: DashboardSidebarProps) => {
           const isExpanded = expandedGroups.includes(item.label);
 
           return (
-            <div key={item.label} className="space-y-0.5">
+            <div key={item.label}>
               <button
                 onClick={() => !collapsed && toggleGroup(item.label)}
-                title={collapsed ? item.label : undefined}
                 className={cn(
-                  "w-full flex items-center gap-3 rounded-lg text-sm font-medium transition-all duration-150",
-                  collapsed ? "px-2.5 py-2.5 justify-center" : "px-3 py-2.5",
+                  "w-full flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors",
                   groupActive
                     ? "text-primary"
-                    : "text-muted-foreground hover:bg-accent hover:text-foreground"
+                    : "text-sidebar-foreground hover:bg-accent"
                 )}
               >
                 <item.icon className="w-[18px] h-[18px] shrink-0" />
                 {!collapsed && (
                   <>
                     <span className="flex-1 text-left">{item.label}</span>
-                    <ChevronDown
-                      className={cn(
-                        "w-3.5 h-3.5 text-muted-foreground transition-transform duration-200",
-                        !isExpanded && "-rotate-90"
-                      )}
-                    />
+                    {isExpanded ? (
+                      <ChevronDown className="w-3.5 h-3.5 text-muted-foreground" />
+                    ) : (
+                      <ChevronRight className="w-3.5 h-3.5 text-muted-foreground" />
+                    )}
                   </>
                 )}
               </button>
               {!collapsed && isExpanded && item.children && (
-                <div className="ml-[18px] pl-3 border-l border-border/60 space-y-0.5 py-0.5">
+                <div className="ml-4 pl-4 border-l border-border space-y-0.5 mt-0.5 mb-1">
                   {item.children.map((child) => (
                     <Link
                       key={child.path}
                       to={child.path}
                       className={cn(
-                        "flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] transition-all duration-150",
+                        "flex items-center gap-2.5 px-3 py-2 rounded-md text-[13px] transition-colors",
                         isActive(child.path)
-                          ? "bg-primary/8 text-primary font-medium"
+                          ? "bg-primary/10 text-primary font-medium"
                           : "text-muted-foreground hover:text-foreground hover:bg-accent"
                       )}
                     >
@@ -205,6 +178,17 @@ const DashboardSidebar = ({ collapsed, onToggle }: DashboardSidebarProps) => {
           );
         })}
       </nav>
+
+      {/* Collapse toggle */}
+      <div className="border-t border-border p-2.5 shrink-0">
+        <button
+          onClick={onToggle}
+          className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-md text-sm text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
+        >
+          {collapsed ? <PanelLeft className="w-[18px] h-[18px]" /> : <PanelLeftClose className="w-[18px] h-[18px]" />}
+          {!collapsed && <span>Collapse</span>}
+        </button>
+      </div>
     </aside>
   );
 };
