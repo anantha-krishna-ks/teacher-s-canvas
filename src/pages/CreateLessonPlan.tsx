@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronLeft, Plus, X, Sparkles, Clock, BookOpen, Layers, FileText, GraduationCap } from "lucide-react";
+import { ChevronLeft, Plus, X, Sparkles, Clock, BookOpen, Layers, FileText, GraduationCap, Check } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -371,7 +371,11 @@ const CreateLessonPlan = () => {
                                 : "bg-background text-muted-foreground border border-border hover:border-primary/30 hover:text-primary"
                             }`}
                           >
-                            <Sparkles className="w-3.5 h-3.5" />
+                            <span className={`w-4 h-4 rounded border flex items-center justify-center shrink-0 ${
+                              isSelected ? "bg-primary border-primary" : "border-muted-foreground/40"
+                            }`}>
+                              {isSelected && <Check className="w-3 h-3 text-primary-foreground" />}
+                            </span>
                             {concept}
                             {isSelected && (
                               <X className="w-3.5 h-3.5 ml-0.5 hover:text-destructive" />
@@ -391,7 +395,9 @@ const CreateLessonPlan = () => {
                               onClick={() => removeConcept(concept)}
                               className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium bg-primary/15 text-primary border border-primary/30 transition-colors"
                             >
-                              <Sparkles className="w-3.5 h-3.5" />
+                              <span className="w-4 h-4 rounded border bg-primary border-primary flex items-center justify-center shrink-0">
+                                <Check className="w-3 h-3 text-primary-foreground" />
+                              </span>
                               {concept}
                               <X className="w-3.5 h-3.5 ml-0.5 hover:text-destructive" />
                             </motion.button>
