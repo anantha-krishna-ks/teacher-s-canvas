@@ -136,12 +136,13 @@ const Dashboard = () => {
               initial="initial"
               animate="animate"
               transition={{ delay: 0.05 * i }}
-              className="bg-card rounded-lg border border-border overflow-hidden card-shadow hover:card-shadow-hover transition-shadow group"
+              className="bg-card rounded-lg border border-border overflow-hidden card-shadow hover:card-shadow-hover transition-shadow group flex flex-col"
             >
               <ModuleCardPreview type={mod.previewType} />
-              <div className="p-4">
+              <div className="p-4 flex flex-col flex-1">
               <h4 className="text-base font-semibold text-foreground mb-3">{mod.title}</h4>
 
+              <div className="flex-1">
               {mod.recentItems.length > 0 && (
                 <div className="space-y-1 mb-4">
                   {mod.recentItems.map((item) => (
@@ -157,8 +158,9 @@ const Dashboard = () => {
                   ))}
                 </div>
               )}
+              </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 mt-auto">
                 <Button size="sm" className="h-8 text-xs flex-1">
                   Generate
                 </Button>
