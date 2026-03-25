@@ -47,7 +47,7 @@ const DashboardLayout = () => {
         <div
           className={cn(
             "flex-1 transition-all duration-300 overflow-y-auto",
-            sidebarCollapsed ? "lg:ml-[56px]" : "lg:ml-[220px]"
+            sidebarCollapsed ? "lg:ml-16" : "lg:ml-60"
           )}
         >
           <main className="p-4 md:p-6 lg:p-8">
