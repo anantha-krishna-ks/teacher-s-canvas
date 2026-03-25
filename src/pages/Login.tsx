@@ -90,7 +90,11 @@ const Login = () => {
               </button>
             </div>
 
-            <Button type="submit" className="w-full h-12 rounded-lg text-sm font-semibold">
+            <Button
+              type="submit"
+              className="w-full h-12 rounded-lg text-sm font-semibold gap-2 transition-all duration-200 hover:scale-[1.02] hover:shadow-lg hover:shadow-primary/25 active:scale-[0.98]"
+            >
+              <LogIn className="w-4 h-4" />
               Sign In
             </Button>
           </form>
