@@ -136,7 +136,7 @@ const Dashboard = () => {
               initial="initial"
               animate="animate"
               transition={{ delay: 0.05 * i }}
-              className="bg-card rounded-lg border border-border overflow-hidden card-shadow hover:card-shadow-hover transition-shadow group"
+              className="bg-card rounded-lg border border-border overflow-hidden card-shadow hover:card-shadow-hover transition-shadow group flex flex-col"
             >
               <ModuleCardPreview type={mod.previewType} />
               <div className="p-4 flex flex-col flex-1">
