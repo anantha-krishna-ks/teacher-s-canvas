@@ -1,9 +1,25 @@
-import { Plus, ChevronLeft, ChevronRight, Clock, BookOpen, Save, Star } from "lucide-react";
+import { Plus, ChevronLeft, ChevronRight, Clock, BookOpen, Save, Star, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
 import { useRef } from "react";
 import { motion } from "framer-motion";
+
+import hindiImg from "@/assets/subject-hindi.png";
+import scienceImg from "@/assets/subject-science.png";
+import mathImg from "@/assets/subject-math.png";
+import englishImg from "@/assets/subject-english.png";
+import socialImg from "@/assets/subject-social.png";
+import geographyImg from "@/assets/subject-geography.png";
+
+const subjectImages: Record<string, string> = {
+  Hindi: hindiImg,
+  Science: scienceImg,
+  Mathematics: mathImg,
+  English: englishImg,
+  "Social Science": socialImg,
+  Geography: geographyImg,
+};
 
 interface LessonPlanCard {
   id: string;
@@ -37,25 +53,35 @@ const savedPlans: LessonPlanCard[] = [
   { id: "s5", code: "PA1", subject: "Geography", grade: "9", questionsCount: 9, status: "saved" },
 ];
 
-const statusConfig = {
-  recommended: { icon: Star, label: "Recommended", className: "bg-primary/10 text-primary border-primary/20" },
-  "in-progress": { icon: Clock, label: "In progress", className: "bg-amber-500/10 text-amber-600 border-amber-500/20" },
-  saved: { icon: Save, label: "Saved", className: "bg-emerald-500/10 text-emerald-600 border-emerald-500/20" },
-};
-
 const PlanCard = ({ plan }: { plan: LessonPlanCard }) => {
-  const config = statusConfig[plan.status || "recommended"];
-  const StatusIcon = config.icon;
+  const img = subjectImages[plan.subject];
 
   return (
     <motion.div
-      whileHover={{ y: -2 }}
-      className="min-w-[200px] max-w-[220px] bg-card border border-border rounded-xl p-4 flex flex-col items-center gap-2 cursor-pointer hover:border-primary/40 hover:shadow-md transition-all shrink-0"
+      whileHover={{ y: -3, scale: 1.02 }}
+      transition={{ type: "spring", stiffness: 300, damping: 20 }}
+      className="min-w-[200px] w-[210px] bg-card border border-border rounded-xl overflow-hidden cursor-pointer hover:border-primary/40 hover:shadow-lg transition-all shrink-0"
     >
-      <span className="text-sm font-bold text-primary">{plan.code}</span>
-      <span className="text-base font-semibold text-foreground">{plan.subject}</span>
-      <span className="text-sm text-muted-foreground">Grade - {plan.grade}</span>
-      <span className="text-xs text-muted-foreground">No. of Questions: {plan.questionsCount}</span>
+      {/* Image area */}
+      <div className="h-28 bg-accent/40 flex items-center justify-center p-4">
+        {img ? (
+          <img src={img} alt={plan.subject} loading="lazy" className="h-16 w-16 object-contain" />
+        ) : (
+          <FileText className="h-10 w-10 text-muted-foreground" />
+        )}
+      </div>
+
+      {/* Content */}
+      <div className="p-3.5 space-y-2">
+        <div className="flex items-center justify-between">
+          <h4 className="text-sm font-semibold text-foreground truncate">{plan.subject}</h4>
+          <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-5 shrink-0">{plan.code}</Badge>
+        </div>
+        <div className="flex items-center justify-between text-xs text-muted-foreground">
+          <span>Grade {plan.grade}</span>
+          <span>{plan.questionsCount} Questions</span>
+        </div>
+      </div>
     </motion.div>
   );
 };
@@ -98,7 +124,7 @@ const ScrollableSection = ({
       </div>
       <div
         ref={scrollRef}
-        className="flex gap-4 overflow-x-auto pb-2 scrollbar-thin"
+        className="flex gap-4 overflow-x-auto pb-2"
         style={{ scrollbarWidth: "thin" }}
       >
         {plans.map((plan) => (
