@@ -124,7 +124,7 @@ const ScrollableSection = ({
       </div>
       <div
         ref={scrollRef}
-        className="flex gap-4 overflow-x-auto pb-2"
+        className="flex gap-4 overflow-x-auto overflow-y-visible pb-4 pt-2 -mt-2"
         style={{ scrollbarWidth: "thin" }}
       >
         {plans.map((plan) => (
