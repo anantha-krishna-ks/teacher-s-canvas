@@ -63,11 +63,13 @@ const PlanCard = ({ plan }: { plan: LessonPlanCard }) => {
       className="min-w-[200px] w-[210px] bg-card border border-border rounded-xl overflow-hidden cursor-pointer hover:border-primary/40 hover:shadow-lg transition-all shrink-0"
     >
       {/* Image area */}
-      <div className="h-28 bg-accent/40 flex items-center justify-center p-4">
+      <div className="h-28 bg-accent/40 overflow-hidden">
         {img ? (
-          <img src={img} alt={plan.subject} loading="lazy" className="h-16 w-16 object-contain" />
+          <img src={img} alt={plan.subject} loading="lazy" className="w-full h-full object-cover" />
         ) : (
-          <FileText className="h-10 w-10 text-muted-foreground" />
+          <div className="w-full h-full flex items-center justify-center">
+            <FileText className="h-10 w-10 text-muted-foreground" />
+          </div>
         )}
       </div>
 
