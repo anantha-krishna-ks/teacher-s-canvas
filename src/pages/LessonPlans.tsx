@@ -1,4 +1,4 @@
-import { Plus, ChevronLeft, ChevronRight, Clock, BookOpen, Save, Star, FileText } from "lucide-react";
+import { Plus, ChevronLeft, ChevronRight, Clock, BookOpen, Save, Star, FileText, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
@@ -114,6 +114,10 @@ const ScrollableSection = ({
           <Badge variant="secondary" className="text-xs">{count}</Badge>
         </div>
         <div className="flex items-center gap-1">
+          <Button variant="ghost" size="sm" className="text-xs text-muted-foreground hover:text-foreground">
+            View All
+            <ArrowRight className="w-3 h-3 ml-1" />
+          </Button>
           <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => scroll("left")}>
             <ChevronLeft className="w-4 h-4" />
           </Button>
