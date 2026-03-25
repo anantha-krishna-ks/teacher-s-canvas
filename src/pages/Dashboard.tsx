@@ -1,9 +1,5 @@
 import {
   ArrowRight,
-  Clock,
-  Users,
-  TrendingUp,
-  Zap,
   ChevronRight,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -88,24 +84,6 @@ const modules: ModuleCard[] = [
   },
 ];
 
-const stats = [
-  { label: "Content Created", value: "142", icon: Zap, change: "+12 this week" },
-  { label: "Active Students", value: "284", icon: Users, change: "+8 new" },
-  { label: "Completion Rate", value: "87%", icon: TrendingUp, change: "+3% vs last month" },
-];
-
-const recentActivity = [
-  { action: "Generated", item: "Grade 5 Math Worksheet", time: "2 hours ago" },
-  { action: "Created", item: "Science Quiz — Chapter 7", time: "5 hours ago" },
-  { action: "Updated", item: "Weekly Lesson Plan", time: "Yesterday" },
-  { action: "Shared", item: "History Presentation", time: "2 days ago" },
-];
-
-const suggestions = [
-  "Create a quiz on fractions for Grade 5",
-  "Generate a worksheet on photosynthesis",
-  "Build a presentation on climate change",
-];
 
 const fadeInUp = {
   initial: { opacity: 0, y: 12 },
@@ -176,25 +154,6 @@ const Dashboard = () => {
               </div>
               </div>
             </motion.div>
-          ))}
-        </div>
-      </div>
-
-      {/* Recent Activity */}
-      <div className="bg-card rounded-lg border border-border p-5 card-shadow">
-        <div className="flex items-center gap-2 mb-4">
-          <Clock className="w-4 h-4 text-muted-foreground" />
-          <h3 className="text-sm font-semibold text-foreground">Recent Activity</h3>
-        </div>
-        <div className="divide-y divide-border">
-          {recentActivity.map((item, i) => (
-            <div key={i} className="flex items-center justify-between py-3 first:pt-0 last:pb-0">
-              <div>
-                <span className="text-sm text-foreground font-medium">{item.action}</span>{" "}
-                <span className="text-sm text-muted-foreground">{item.item}</span>
-              </div>
-              <span className="text-xs text-muted-foreground whitespace-nowrap ml-4">{item.time}</span>
-            </div>
           ))}
         </div>
       </div>
