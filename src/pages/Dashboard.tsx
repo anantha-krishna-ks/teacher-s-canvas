@@ -4,60 +4,87 @@ import {
   Users,
   TrendingUp,
   Zap,
+  ChevronRight,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import ModuleCardPreview, { type PreviewType } from "@/components/ModuleCardPreview";
+
+interface RecentItem {
+  name: string;
+  id: string;
+}
 
 interface ModuleCard {
   title: string;
-  description: string;
+  slug: string;
   previewType: PreviewType;
-  recentItems: string[];
+  recentItems: RecentItem[];
 }
 
 const modules: ModuleCard[] = [
   {
     title: "Lesson Plan",
-    description: "Create structured lesson plans for any subject",
+    slug: "lesson-plans",
     previewType: "lesson",
-    recentItems: ["Grade 5 — Fractions Introduction", "Grade 8 — Photosynthesis"],
+    recentItems: [
+      { name: "Grade 5 — Fractions Introduction", id: "lp-001" },
+      { name: "Grade 8 — Photosynthesis", id: "lp-002" },
+    ],
   },
   {
     title: "Class Plan",
-    description: "Organize and schedule your class activities",
+    slug: "class-plans",
     previewType: "class",
-    recentItems: ["Weekly Plan — Science", "Monthly Plan — English"],
+    recentItems: [
+      { name: "Weekly Plan — Science", id: "cp-001" },
+      { name: "Monthly Plan — English", id: "cp-002" },
+    ],
   },
   {
     title: "Presentations",
-    description: "Generate engaging classroom presentations",
+    slug: "presentations",
     previewType: "presentation",
-    recentItems: ["Solar System Overview", "World War II Timeline"],
+    recentItems: [
+      { name: "Solar System Overview", id: "pr-001" },
+      { name: "World War II Timeline", id: "pr-002" },
+    ],
   },
   {
     title: "Worksheets",
-    description: "Build printable worksheets and exercises",
+    slug: "worksheets",
     previewType: "worksheet",
-    recentItems: ["Math — Algebra Practice", "English — Reading Comprehension"],
+    recentItems: [
+      { name: "Math — Algebra Practice", id: "ws-001" },
+      { name: "English — Reading Comprehension", id: "ws-002" },
+    ],
   },
   {
     title: "Quizzes",
-    description: "Create interactive quizzes for assessment",
+    slug: "quizzes",
     previewType: "quiz",
-    recentItems: ["Science — Chapter 4 Quiz", "History — Midterm Review"],
+    recentItems: [
+      { name: "Science — Chapter 4 Quiz", id: "qz-001" },
+      { name: "History — Midterm Review", id: "qz-002" },
+    ],
   },
   {
     title: "Assessment",
-    description: "Design comprehensive assessments",
+    slug: "assessments",
     previewType: "assessment",
-    recentItems: ["Grade 6 — Term 1 Assessment"],
+    recentItems: [
+      { name: "Grade 6 — Term 1 Assessment", id: "as-001" },
+    ],
   },
   {
     title: "Classroom Display",
-    description: "Create visual aids and display materials",
+    slug: "displays",
     previewType: "display",
-    recentItems: ["Periodic Table Poster", "Class Rules Display"],
+    recentItems: [
+      { name: "Periodic Table Poster", id: "cd-001" },
+      { name: "Class Rules Display", id: "cd-002" },
+    ],
   },
 ];
 
