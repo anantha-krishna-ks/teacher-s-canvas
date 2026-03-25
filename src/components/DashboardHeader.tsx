@@ -22,7 +22,7 @@ const DashboardHeader = ({ title, onMobileMenuToggle }: DashboardHeaderProps) =>
   };
 
   return (
-    <header className="h-16 bg-card border-b border-border flex items-center justify-between px-4 md:px-6 shrink-0 card-shadow">
+    <header className="h-16 bg-card border-b border-border flex items-center justify-between px-4 md:px-6 shrink-0 card-shadow sticky top-0 z-20">
       <div className="flex items-center gap-3">
         <button
           onClick={onMobileMenuToggle}
