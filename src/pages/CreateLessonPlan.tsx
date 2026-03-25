@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronLeft, Plus, X, Sparkles, Clock, BookOpen, Layers, FileText, GraduationCap, Check } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import GeneratedLessonPlan from "@/components/GeneratedLessonPlan";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -480,7 +481,7 @@ const CreateLessonPlan = () => {
             <Button variant="outline" onClick={() => navigate("/dashboard/lesson-plans")}>
               Cancel
             </Button>
-            <Button disabled={!isFormValid} className="gap-2">
+            <Button disabled={!isFormValid} className="gap-2" onClick={() => setCurrentStep(1)}>
               <Sparkles className="w-4 h-4" />
               Generate Lesson Plan
             </Button>
@@ -489,16 +490,17 @@ const CreateLessonPlan = () => {
       )}
 
       {currentStep === 1 && (
-        <div className="space-y-6">
-          <div className="bg-card border border-border rounded-xl p-12 text-center text-muted-foreground">
-            <Sparkles className="w-10 h-10 mx-auto mb-3 opacity-40" />
-            <p>Your generated lesson plan will appear here.</p>
-          </div>
-          <Button variant="outline" onClick={() => setCurrentStep(0)}>
-            <ChevronLeft className="w-4 h-4 mr-1" />
-            Back to Setup
-          </Button>
-        </div>
+        <GeneratedLessonPlan
+          data={{
+            grade,
+            subject,
+            chapter,
+            concepts: selectedConcepts,
+            duration: [durationHr && `${durationHr}hr`, durationMin && `${durationMin}min`].filter(Boolean).join(" "),
+            periods,
+          }}
+          onBack={() => setCurrentStep(0)}
+        />
       )}
     </div>
   );
