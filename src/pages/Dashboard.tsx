@@ -179,25 +179,6 @@ const Dashboard = () => {
           ))}
         </div>
       </div>
-
-      {/* Recent Activity */}
-      <div className="bg-card rounded-lg border border-border p-5 card-shadow">
-        <div className="flex items-center gap-2 mb-4">
-          <Clock className="w-4 h-4 text-muted-foreground" />
-          <h3 className="text-sm font-semibold text-foreground">Recent Activity</h3>
-        </div>
-        <div className="divide-y divide-border">
-          {recentActivity.map((item, i) => (
-            <div key={i} className="flex items-center justify-between py-3 first:pt-0 last:pb-0">
-              <div>
-                <span className="text-sm text-foreground font-medium">{item.action}</span>{" "}
-                <span className="text-sm text-muted-foreground">{item.item}</span>
-              </div>
-              <span className="text-xs text-muted-foreground whitespace-nowrap ml-4">{item.time}</span>
-            </div>
-          ))}
-        </div>
-      </div>
     </div>
   );
 };
