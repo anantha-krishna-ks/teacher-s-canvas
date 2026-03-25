@@ -95,7 +95,7 @@ const DashboardSidebar = ({ collapsed, onToggle }: DashboardSidebarProps) => {
       )}
     >
       {/* Logo */}
-      <div className="h-16 flex items-center px-4 border-b border-border shrink-0">
+      <div className="h-16 flex items-center px-4 shrink-0">
         <Link to="/dashboard" className="flex items-center gap-2.5 overflow-hidden">
           <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center shrink-0">
             <BookOpen className="w-5 h-5 text-primary-foreground" />
