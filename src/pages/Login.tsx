@@ -31,7 +31,7 @@ const Login = () => {
         transition={{ duration: 0.4 }}
         className="w-full max-w-md mx-4"
       >
-        <div className="bg-card rounded-2xl shadow-lg border border-border/60 px-8 py-10 sm:px-10 sm:py-12">
+        <div className="bg-card rounded-2xl shadow-lg border border-border/60 px-8 pt-6 pb-10 sm:px-10 sm:pt-8 sm:pb-12">
           {/* Logo & Brand */}
           <div className="flex flex-col items-center mb-8">
             <img
