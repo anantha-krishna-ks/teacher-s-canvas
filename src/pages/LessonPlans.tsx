@@ -155,7 +155,7 @@ const LessonPlans = () => {
             <p className="text-sm text-muted-foreground">Create, manage, and track your lesson plans</p>
           </div>
         </div>
-        <Button className="gap-2">
+        <Button className="gap-2" onClick={() => navigate("/dashboard/lesson-plans/create")}>
           <Plus className="w-4 h-4" />
           Create LP
         </Button>
