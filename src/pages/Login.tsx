@@ -37,8 +37,9 @@ const Login = () => {
             <img
               src={logo}
               alt="Saras SchoolAi"
-              className="mb-4 h-20 w-auto"
+              className="mb-4 h-14 w-auto"
             />
+            <div className="w-full border-t border-border/60 mt-2 mb-2" />
             <h1 className="text-2xl font-bold text-foreground tracking-tight">Sign In</h1>
             <p className="text-muted-foreground text-sm mt-1.5">
               Enter your credentials to access your account
