@@ -36,10 +36,8 @@ const Login = () => {
           <div className="flex flex-col items-center mb-8">
             <img
               src={logo}
-              alt="Personalised Learning"
-              width={56}
-              height={56}
-              className="mb-4"
+              alt="Saras SchoolAi"
+              className="mb-4 h-20 w-auto"
             />
             <h1 className="text-2xl font-bold text-foreground tracking-tight">Sign In</h1>
             <p className="text-muted-foreground text-sm mt-1.5">
