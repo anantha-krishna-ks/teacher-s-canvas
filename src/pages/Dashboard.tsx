@@ -1,28 +1,18 @@
 import {
-  FileText,
-  ClipboardList,
-  Presentation,
-  FileSpreadsheet,
-  HelpCircle,
-  Monitor,
-  Users,
-  GraduationCap,
-  BarChart3,
   ArrowRight,
-  Sparkles,
   Clock,
+  Users,
   TrendingUp,
   Zap,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
 import { motion } from "framer-motion";
+import ModuleCardPreview, { type PreviewType } from "@/components/ModuleCardPreview";
 
 interface ModuleCard {
   title: string;
   description: string;
-  icon: React.ElementType;
-  color: string;
+  previewType: PreviewType;
   recentItems: string[];
 }
 
@@ -30,50 +20,43 @@ const modules: ModuleCard[] = [
   {
     title: "Lesson Plan",
     description: "Create structured lesson plans for any subject",
-    icon: FileText,
-    color: "bg-primary/10 text-primary",
+    previewType: "lesson",
     recentItems: ["Grade 5 — Fractions Introduction", "Grade 8 — Photosynthesis"],
   },
   {
     title: "Class Plan",
     description: "Organize and schedule your class activities",
-    icon: ClipboardList,
-    color: "bg-success/10 text-success",
+    previewType: "class",
     recentItems: ["Weekly Plan — Science", "Monthly Plan — English"],
   },
   {
     title: "Presentations",
     description: "Generate engaging classroom presentations",
-    icon: Presentation,
-    color: "bg-warning/10 text-warning",
+    previewType: "presentation",
     recentItems: ["Solar System Overview", "World War II Timeline"],
   },
   {
     title: "Worksheets",
     description: "Build printable worksheets and exercises",
-    icon: FileSpreadsheet,
-    color: "bg-info/10 text-info",
+    previewType: "worksheet",
     recentItems: ["Math — Algebra Practice", "English — Reading Comprehension"],
   },
   {
     title: "Quizzes",
     description: "Create interactive quizzes for assessment",
-    icon: HelpCircle,
-    color: "bg-destructive/10 text-destructive",
+    previewType: "quiz",
     recentItems: ["Science — Chapter 4 Quiz", "History — Midterm Review"],
   },
   {
     title: "Assessment",
     description: "Design comprehensive assessments",
-    icon: ClipboardList,
-    color: "bg-primary/10 text-primary",
+    previewType: "assessment",
     recentItems: ["Grade 6 — Term 1 Assessment"],
   },
   {
     title: "Classroom Display",
     description: "Create visual aids and display materials",
-    icon: Monitor,
-    color: "bg-success/10 text-success",
+    previewType: "display",
     recentItems: ["Periodic Table Poster", "Class Rules Display"],
   },
 ];
