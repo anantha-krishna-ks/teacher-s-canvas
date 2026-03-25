@@ -24,7 +24,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { NavLink } from "@/components/NavLink";
-import { Checkbox } from "@/components/ui/checkbox";
+
 
 // --- Mock Data ---
 const grades = ["6", "7", "8", "9", "10", "11", "12"];
