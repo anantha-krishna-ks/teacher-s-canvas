@@ -154,7 +154,7 @@ const Dashboard = () => {
                   View All
                   <ArrowRight className="w-3 h-3 ml-1" />
                 </Button>
-                <Button size="sm" className="h-9 text-xs w-full">
+                <Button size="sm" className="h-9 text-xs w-full" onClick={() => navigate(`/dashboard/${mod.slug}`)}>
                   Generate
                 </Button>
               </div>
