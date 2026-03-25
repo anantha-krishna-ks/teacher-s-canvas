@@ -28,9 +28,6 @@ const DashboardHeader = ({ title, onMobileMenuToggle }: DashboardHeaderProps) =>
       <div className="flex items-center gap-4">
         <Link to="/dashboard" className="flex items-center gap-2.5">
           <img src={logo} alt="ClassSphere" className="h-8" />
-          <span className="text-sm font-semibold text-foreground whitespace-nowrap hidden sm:block">
-            ClassSphere
-          </span>
         </Link>
         <button
           onClick={onMobileMenuToggle}
