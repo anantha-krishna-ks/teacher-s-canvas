@@ -1,4 +1,5 @@
-import { Menu, LogOut, User, Settings, ChevronDown, BookOpen } from "lucide-react";
+import { Menu, LogOut, User, Settings, ChevronDown } from "lucide-react";
+import logo from "@/assets/logo.png";
 import { Link } from "react-router-dom";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
