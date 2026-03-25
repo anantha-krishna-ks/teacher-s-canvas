@@ -1,28 +1,18 @@
 import {
-  FileText,
-  ClipboardList,
-  Presentation,
-  FileSpreadsheet,
-  HelpCircle,
-  Monitor,
-  Users,
-  GraduationCap,
-  BarChart3,
   ArrowRight,
-  Sparkles,
   Clock,
+  Users,
   TrendingUp,
   Zap,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
 import { motion } from "framer-motion";
+import ModuleCardPreview, { type PreviewType } from "@/components/ModuleCardPreview";
 
 interface ModuleCard {
   title: string;
   description: string;
-  icon: React.ElementType;
-  color: string;
+  previewType: PreviewType;
   recentItems: string[];
 }
 
@@ -30,50 +20,43 @@ const modules: ModuleCard[] = [
   {
     title: "Lesson Plan",
     description: "Create structured lesson plans for any subject",
-    icon: FileText,
-    color: "bg-primary/10 text-primary",
+    previewType: "lesson",
     recentItems: ["Grade 5 — Fractions Introduction", "Grade 8 — Photosynthesis"],
   },
   {
     title: "Class Plan",
     description: "Organize and schedule your class activities",
-    icon: ClipboardList,
-    color: "bg-success/10 text-success",
+    previewType: "class",
     recentItems: ["Weekly Plan — Science", "Monthly Plan — English"],
   },
   {
     title: "Presentations",
     description: "Generate engaging classroom presentations",
-    icon: Presentation,
-    color: "bg-warning/10 text-warning",
+    previewType: "presentation",
     recentItems: ["Solar System Overview", "World War II Timeline"],
   },
   {
     title: "Worksheets",
     description: "Build printable worksheets and exercises",
-    icon: FileSpreadsheet,
-    color: "bg-info/10 text-info",
+    previewType: "worksheet",
     recentItems: ["Math — Algebra Practice", "English — Reading Comprehension"],
   },
   {
     title: "Quizzes",
     description: "Create interactive quizzes for assessment",
-    icon: HelpCircle,
-    color: "bg-destructive/10 text-destructive",
+    previewType: "quiz",
     recentItems: ["Science — Chapter 4 Quiz", "History — Midterm Review"],
   },
   {
     title: "Assessment",
     description: "Design comprehensive assessments",
-    icon: ClipboardList,
-    color: "bg-primary/10 text-primary",
+    previewType: "assessment",
     recentItems: ["Grade 6 — Term 1 Assessment"],
   },
   {
     title: "Classroom Display",
     description: "Create visual aids and display materials",
-    icon: Monitor,
-    color: "bg-success/10 text-success",
+    previewType: "display",
     recentItems: ["Periodic Table Poster", "Class Rules Display"],
   },
 ];
@@ -124,13 +107,10 @@ const Dashboard = () => {
               initial="initial"
               animate="animate"
               transition={{ delay: 0.05 * i }}
-              className="bg-card rounded-lg border border-border p-5 card-shadow hover:card-shadow-hover transition-shadow group"
+              className="bg-card rounded-lg border border-border overflow-hidden card-shadow hover:card-shadow-hover transition-shadow group"
             >
-              <div className="flex items-start justify-between mb-3">
-                <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${mod.color}`}>
-                  <mod.icon className="w-5 h-5" />
-                </div>
-              </div>
+              <ModuleCardPreview type={mod.previewType} />
+              <div className="p-4 pt-3">
               <h4 className="text-sm font-semibold text-foreground mb-1">{mod.title}</h4>
               <p className="text-xs text-muted-foreground mb-4 leading-relaxed">{mod.description}</p>
 
@@ -156,6 +136,7 @@ const Dashboard = () => {
                   View All
                   <ArrowRight className="w-3 h-3 ml-1" />
                 </Button>
+              </div>
               </div>
             </motion.div>
           ))}
