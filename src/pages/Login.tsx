@@ -38,7 +38,7 @@ const Login = () => {
           className="mb-6 h-14 w-auto"
         />
 
-        <div className="w-full bg-card rounded-2xl shadow-lg border border-border/60 px-8 pt-6 pb-10 sm:px-10 sm:pt-8 sm:pb-12">
+        <div className="w-full bg-card rounded-2xl shadow-lg border border-border/60 px-8 pt-6 pb-8 sm:px-10 sm:pt-8 sm:pb-10">
           {/* Title */}
           <div className="flex flex-col items-center mb-8">
             <h1 className="text-2xl font-bold text-foreground tracking-tight">ClassSphere</h1>
