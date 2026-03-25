@@ -377,9 +377,7 @@ const CreateLessonPlan = () => {
                               {isSelected && <Check className="w-3 h-3 text-primary-foreground" />}
                             </span>
                             {concept}
-                            {isSelected && (
-                              <X className="w-3.5 h-3.5 ml-0.5 hover:text-destructive" />
-                            )}
+                            
                           </motion.button>
                         );
                       })}
