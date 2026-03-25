@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
 import {
   Select,
   SelectContent,
@@ -140,6 +140,7 @@ const CreateLessonPlan = () => {
   const [durationMin, setDurationMin] = useState("");
   const [periods, setPeriods] = useState("");
   const [instructions, setInstructions] = useState("");
+  const [currentStep, setCurrentStep] = useState(0);
 
   const subjects = useMemo(() => (grade ? subjectsByGrade[grade] || [] : []), [grade]);
   const chapters = useMemo(() => (subject ? chaptersBySubject[subject] || [] : []), [subject]);
@@ -217,20 +218,56 @@ const CreateLessonPlan = () => {
         </div>
       </div>
 
-      {/* Tabs */}
-      <Tabs defaultValue="setup" className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="setup" className="gap-2">
-            <FileText className="w-4 h-4" />
-            Lesson Setup
-          </TabsTrigger>
-          <TabsTrigger value="generated" className="gap-2" disabled>
-            <Sparkles className="w-4 h-4" />
-            Generated Plan
-          </TabsTrigger>
-        </TabsList>
+      {/* Stepper */}
+      <div className="flex items-center gap-0 w-full">
+        {[
+          { label: "Lesson Setup", icon: FileText },
+          { label: "Generated Plan", icon: Sparkles },
+        ].map((step, index) => (
+          <div key={step.label} className="flex items-center flex-1 last:flex-none">
+            <button
+              onClick={() => index === 0 && setCurrentStep(0)}
+              className={`flex items-center gap-2 cursor-default ${
+                index === 0 ? "cursor-pointer" : ""
+              }`}
+              disabled={index > 0}
+            >
+              <span
+                className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold shrink-0 transition-colors ${
+                  currentStep === index
+                    ? "bg-primary text-primary-foreground"
+                    : currentStep > index
+                    ? "bg-primary/20 text-primary"
+                    : "bg-muted text-muted-foreground"
+                }`}
+              >
+                {currentStep > index ? (
+                  <Check className="w-4 h-4" />
+                ) : (
+                  index + 1
+                )}
+              </span>
+              <span
+                className={`text-sm font-medium whitespace-nowrap ${
+                  currentStep === index
+                    ? "text-foreground"
+                    : currentStep > index
+                    ? "text-primary"
+                    : "text-muted-foreground"
+                }`}
+              >
+                {step.label}
+              </span>
+            </button>
+            {index < 1 && (
+              <div className={`flex-1 h-px mx-4 ${currentStep > 0 ? "bg-primary/40" : "bg-border"}`} />
+            )}
+          </div>
+        ))}
+      </div>
 
-        <TabsContent value="setup" className="mt-6 space-y-6">
+      {currentStep === 0 && (
+        <div className="space-y-6">
           {/* Row 1: Grade & Duration */}
           <div className="bg-card border border-border rounded-xl p-6 space-y-6">
             <div className="flex items-center gap-2 text-sm font-medium text-foreground">
@@ -448,15 +485,21 @@ const CreateLessonPlan = () => {
               Generate Lesson Plan
             </Button>
           </div>
-        </TabsContent>
+        </div>
+      )}
 
-        <TabsContent value="generated">
+      {currentStep === 1 && (
+        <div className="space-y-6">
           <div className="bg-card border border-border rounded-xl p-12 text-center text-muted-foreground">
             <Sparkles className="w-10 h-10 mx-auto mb-3 opacity-40" />
             <p>Your generated lesson plan will appear here.</p>
           </div>
-        </TabsContent>
-      </Tabs>
+          <Button variant="outline" onClick={() => setCurrentStep(0)}>
+            <ChevronLeft className="w-4 h-4 mr-1" />
+            Back to Setup
+          </Button>
+        </div>
+      )}
     </div>
   );
 };
