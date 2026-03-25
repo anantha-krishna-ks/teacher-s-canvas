@@ -174,7 +174,7 @@ interface ModuleCardPreviewProps {
 const ModuleCardPreview: React.FC<ModuleCardPreviewProps> = ({ type }) => {
   const Preview = previewMap[type];
   return (
-    <div className="w-full h-28">
+    <div className="w-full h-28 overflow-hidden">
       <Preview />
     </div>
   );
