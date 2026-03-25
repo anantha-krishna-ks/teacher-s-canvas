@@ -46,8 +46,12 @@ const navItems: NavItem[] = [
       { label: "Worksheets", path: "/dashboard/worksheets", icon: FileSpreadsheet },
       { label: "Quizzes", path: "/dashboard/quizzes", icon: HelpCircle },
       { label: "Assessment", path: "/dashboard/assessment", icon: ClipboardList },
-      { label: "Classroom Display", path: "/dashboard/classroom-display", icon: Monitor },
     ],
+  },
+  {
+    label: "Classroom Resources",
+    icon: Monitor,
+    path: "/dashboard/classroom-resources",
   },
   {
     label: "Assign",
