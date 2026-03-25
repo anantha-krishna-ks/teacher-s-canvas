@@ -29,18 +29,20 @@ const Login = () => {
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
-        className="w-full max-w-md mx-4"
+        className="w-full max-w-md mx-4 flex flex-col items-center"
       >
-        <div className="bg-card rounded-2xl shadow-lg border border-border/60 px-8 pt-6 pb-10 sm:px-10 sm:pt-8 sm:pb-12">
-          {/* Logo & Brand */}
+        {/* Logo outside card */}
+        <img
+          src={logo}
+          alt="Saras SchoolAi"
+          className="mb-6 h-14 w-auto"
+        />
+
+        <div className="w-full bg-card rounded-2xl shadow-lg border border-border/60 px-8 pt-6 pb-10 sm:px-10 sm:pt-8 sm:pb-12">
+          {/* Title */}
           <div className="flex flex-col items-center mb-8">
-            <img
-              src={logo}
-              alt="Saras SchoolAi"
-              className="mb-4 h-14 w-auto"
-            />
-            <div className="w-full border-t border-border/60 mt-2 mb-2" />
-            <h1 className="text-2xl font-bold text-foreground tracking-tight">Sign In</h1>
+            <h1 className="text-2xl font-bold text-foreground tracking-tight">ClassSphere</h1>
+            <div className="w-full border-t border-border/60 mt-3 mb-2" />
             <p className="text-muted-foreground text-sm mt-1.5">
               Enter your credentials to access your account
             </p>
