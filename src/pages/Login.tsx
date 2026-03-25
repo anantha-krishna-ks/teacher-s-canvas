@@ -95,12 +95,6 @@ const Login = () => {
             </Button>
           </form>
 
-          <p className="mt-7 text-center text-sm text-muted-foreground">
-            Don't have an account?{" "}
-            <button className="text-primary font-medium hover:underline">
-              Create one
-            </button>
-          </p>
         </div>
       </motion.div>
     </div>
