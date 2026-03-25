@@ -111,7 +111,7 @@ const Dashboard = () => {
             >
               <ModuleCardPreview type={mod.previewType} />
               <div className="p-4">
-              <h4 className="text-sm font-semibold text-foreground mb-3">{mod.title}</h4>
+              <h4 className="text-base font-semibold text-foreground mb-3">{mod.title}</h4>
 
               {mod.recentItems.length > 0 && (
                 <div className="space-y-1.5 mb-4">
