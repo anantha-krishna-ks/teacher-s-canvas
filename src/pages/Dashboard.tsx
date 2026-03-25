@@ -107,13 +107,10 @@ const Dashboard = () => {
               initial="initial"
               animate="animate"
               transition={{ delay: 0.05 * i }}
-              className="bg-card rounded-lg border border-border p-5 card-shadow hover:card-shadow-hover transition-shadow group"
+              className="bg-card rounded-lg border border-border overflow-hidden card-shadow hover:card-shadow-hover transition-shadow group"
             >
-              <div className="flex items-start justify-between mb-3">
-                <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${mod.color}`}>
-                  <mod.icon className="w-5 h-5" />
-                </div>
-              </div>
+              <ModuleCardPreview type={mod.previewType} />
+              <div className="p-4 pt-3">
               <h4 className="text-sm font-semibold text-foreground mb-1">{mod.title}</h4>
               <p className="text-xs text-muted-foreground mb-4 leading-relaxed">{mod.description}</p>
 
