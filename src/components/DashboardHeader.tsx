@@ -33,14 +33,12 @@ const DashboardHeader = ({ title, onMobileMenuToggle }: DashboardHeaderProps) =>
             Personalised Learning
           </span>
         </Link>
-        <div className="h-6 w-px bg-border hidden lg:block" />
         <button
           onClick={onMobileMenuToggle}
           className="lg:hidden p-2 rounded-md text-muted-foreground hover:bg-accent transition-colors"
         >
           <Menu className="w-5 h-5" />
         </button>
-        <h1 className="text-lg font-semibold text-foreground hidden lg:block">{title}</h1>
       </div>
 
       <DropdownMenu>
