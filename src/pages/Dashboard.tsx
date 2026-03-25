@@ -4,60 +4,87 @@ import {
   Users,
   TrendingUp,
   Zap,
+  ChevronRight,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import ModuleCardPreview, { type PreviewType } from "@/components/ModuleCardPreview";
+
+interface RecentItem {
+  name: string;
+  id: string;
+}
 
 interface ModuleCard {
   title: string;
-  description: string;
+  slug: string;
   previewType: PreviewType;
-  recentItems: string[];
+  recentItems: RecentItem[];
 }
 
 const modules: ModuleCard[] = [
   {
     title: "Lesson Plan",
-    description: "Create structured lesson plans for any subject",
+    slug: "lesson-plans",
     previewType: "lesson",
-    recentItems: ["Grade 5 — Fractions Introduction", "Grade 8 — Photosynthesis"],
+    recentItems: [
+      { name: "Grade 5 — Fractions Introduction", id: "lp-001" },
+      { name: "Grade 8 — Photosynthesis", id: "lp-002" },
+    ],
   },
   {
     title: "Class Plan",
-    description: "Organize and schedule your class activities",
+    slug: "class-plans",
     previewType: "class",
-    recentItems: ["Weekly Plan — Science", "Monthly Plan — English"],
+    recentItems: [
+      { name: "Weekly Plan — Science", id: "cp-001" },
+      { name: "Monthly Plan — English", id: "cp-002" },
+    ],
   },
   {
     title: "Presentations",
-    description: "Generate engaging classroom presentations",
+    slug: "presentations",
     previewType: "presentation",
-    recentItems: ["Solar System Overview", "World War II Timeline"],
+    recentItems: [
+      { name: "Solar System Overview", id: "pr-001" },
+      { name: "World War II Timeline", id: "pr-002" },
+    ],
   },
   {
     title: "Worksheets",
-    description: "Build printable worksheets and exercises",
+    slug: "worksheets",
     previewType: "worksheet",
-    recentItems: ["Math — Algebra Practice", "English — Reading Comprehension"],
+    recentItems: [
+      { name: "Math — Algebra Practice", id: "ws-001" },
+      { name: "English — Reading Comprehension", id: "ws-002" },
+    ],
   },
   {
     title: "Quizzes",
-    description: "Create interactive quizzes for assessment",
+    slug: "quizzes",
     previewType: "quiz",
-    recentItems: ["Science — Chapter 4 Quiz", "History — Midterm Review"],
+    recentItems: [
+      { name: "Science — Chapter 4 Quiz", id: "qz-001" },
+      { name: "History — Midterm Review", id: "qz-002" },
+    ],
   },
   {
     title: "Assessment",
-    description: "Design comprehensive assessments",
+    slug: "assessments",
     previewType: "assessment",
-    recentItems: ["Grade 6 — Term 1 Assessment"],
+    recentItems: [
+      { name: "Grade 6 — Term 1 Assessment", id: "as-001" },
+    ],
   },
   {
     title: "Classroom Display",
-    description: "Create visual aids and display materials",
+    slug: "displays",
     previewType: "display",
-    recentItems: ["Periodic Table Poster", "Class Rules Display"],
+    recentItems: [
+      { name: "Periodic Table Poster", id: "cd-001" },
+      { name: "Class Rules Display", id: "cd-002" },
+    ],
   },
 ];
 
@@ -86,6 +113,8 @@ const fadeInUp = {
 };
 
 const Dashboard = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="max-w-7xl mx-auto space-y-8 animate-fade-in">
       {/* Welcome section */}
@@ -114,15 +143,17 @@ const Dashboard = () => {
               <h4 className="text-base font-semibold text-foreground mb-3">{mod.title}</h4>
 
               {mod.recentItems.length > 0 && (
-                <div className="space-y-1.5 mb-4">
+                <div className="space-y-1 mb-4">
                   {mod.recentItems.map((item) => (
-                    <div
-                      key={item}
-                      className="text-xs text-muted-foreground truncate flex items-center gap-1.5"
+                    <button
+                      key={item.id}
+                      onClick={() => navigate(`/dashboard/${mod.slug}/${item.id}`)}
+                      className="w-full flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground hover:bg-accent/50 rounded-md px-2 py-1.5 transition-colors text-left group/item"
                     >
-                      <span className="w-1 h-1 rounded-full bg-muted-foreground/40 shrink-0" />
-                      {item}
-                    </div>
+                      <span className="w-1.5 h-1.5 rounded-full bg-primary/40 shrink-0 group-hover/item:bg-primary transition-colors" />
+                      <span className="truncate flex-1">{item.name}</span>
+                      <ChevronRight className="w-3 h-3 opacity-0 group-hover/item:opacity-100 transition-opacity shrink-0" />
+                    </button>
                   ))}
                 </div>
               )}
@@ -131,7 +162,12 @@ const Dashboard = () => {
                 <Button size="sm" className="h-8 text-xs flex-1">
                   Generate
                 </Button>
-                <Button variant="ghost" size="sm" className="h-8 text-xs text-muted-foreground hover:text-foreground">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 text-xs text-muted-foreground hover:text-foreground"
+                  onClick={() => navigate(`/dashboard/${mod.slug}`)}
+                >
                   View All
                   <ArrowRight className="w-3 h-3 ml-1" />
                 </Button>
