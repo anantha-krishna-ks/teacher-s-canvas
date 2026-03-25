@@ -56,10 +56,6 @@ const PlanCard = ({ plan }: { plan: LessonPlanCard }) => {
       <span className="text-base font-semibold text-foreground">{plan.subject}</span>
       <span className="text-sm text-muted-foreground">Grade - {plan.grade}</span>
       <span className="text-xs text-muted-foreground">No. of Questions: {plan.questionsCount}</span>
-      <Badge variant="outline" className={`mt-1 text-[11px] gap-1 ${config.className}`}>
-        <StatusIcon className="w-3 h-3" />
-        {config.label}
-      </Badge>
     </motion.div>
   );
 };
