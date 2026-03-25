@@ -1,9 +1,5 @@
 import {
   ArrowRight,
-  Clock,
-  Users,
-  TrendingUp,
-  Zap,
   ChevronRight,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -88,24 +84,6 @@ const modules: ModuleCard[] = [
   },
 ];
 
-const stats = [
-  { label: "Content Created", value: "142", icon: Zap, change: "+12 this week" },
-  { label: "Active Students", value: "284", icon: Users, change: "+8 new" },
-  { label: "Completion Rate", value: "87%", icon: TrendingUp, change: "+3% vs last month" },
-];
-
-const recentActivity = [
-  { action: "Generated", item: "Grade 5 Math Worksheet", time: "2 hours ago" },
-  { action: "Created", item: "Science Quiz — Chapter 7", time: "5 hours ago" },
-  { action: "Updated", item: "Weekly Lesson Plan", time: "Yesterday" },
-  { action: "Shared", item: "History Presentation", time: "2 days ago" },
-];
-
-const suggestions = [
-  "Create a quiz on fractions for Grade 5",
-  "Generate a worksheet on photosynthesis",
-  "Build a presentation on climate change",
-];
 
 const fadeInUp = {
   initial: { opacity: 0, y: 12 },
