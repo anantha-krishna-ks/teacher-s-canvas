@@ -96,15 +96,10 @@ const Dashboard = () => {
   return (
     <div className="max-w-7xl mx-auto space-y-8 animate-fade-in">
       {/* Welcome section */}
-      <div className="flex items-center justify-between rounded-xl bg-card border border-border p-5 card-shadow">
-        <div className="space-y-1">
-          <h2 className="text-xl font-semibold text-foreground">
-            Welcome back, Jane 👋
-          </h2>
-          <p className="text-sm text-muted-foreground">
-            Here's your teaching overview for today
-          </p>
-        </div>
+      <div className="flex items-center justify-between rounded-xl bg-card border border-border px-5 py-3.5 card-shadow">
+        <h2 className="text-xl font-semibold text-foreground">
+          Welcome back, Jane 👋
+        </h2>
         <div className="hidden sm:flex items-center gap-2 text-xs text-muted-foreground bg-muted/60 rounded-lg px-3 py-1.5">
           <span className="inline-block w-1.5 h-1.5 rounded-full bg-success shrink-0" />
           Last login: {new Date().toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })},{" "}
