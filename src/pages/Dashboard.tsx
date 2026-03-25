@@ -137,6 +137,7 @@ const Dashboard = () => {
                   <ArrowRight className="w-3 h-3 ml-1" />
                 </Button>
               </div>
+              </div>
             </motion.div>
           ))}
         </div>
