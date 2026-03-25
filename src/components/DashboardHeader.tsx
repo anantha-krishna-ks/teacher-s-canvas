@@ -1,4 +1,5 @@
-import { Menu, LogOut, User, Settings, ChevronDown } from "lucide-react";
+import { Menu, LogOut, User, Settings, ChevronDown, BookOpen } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -22,15 +23,24 @@ const DashboardHeader = ({ title, onMobileMenuToggle }: DashboardHeaderProps) =>
   };
 
   return (
-    <header className="h-16 bg-card border-b border-border flex items-center justify-between px-4 md:px-6 shrink-0 card-shadow sticky top-0 z-20">
-      <div className="flex items-center gap-3">
+    <header className="h-16 bg-card border-b border-border flex items-center justify-between px-4 md:px-6 shrink-0 card-shadow sticky top-0 z-40 w-full">
+      <div className="flex items-center gap-4">
+        <Link to="/dashboard" className="flex items-center gap-2.5">
+          <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center shrink-0">
+            <BookOpen className="w-5 h-5 text-primary-foreground" />
+          </div>
+          <span className="text-sm font-semibold text-foreground whitespace-nowrap hidden sm:block">
+            Personalised Learning
+          </span>
+        </Link>
+        <div className="h-6 w-px bg-border hidden lg:block" />
         <button
           onClick={onMobileMenuToggle}
           className="lg:hidden p-2 rounded-md text-muted-foreground hover:bg-accent transition-colors"
         >
           <Menu className="w-5 h-5" />
         </button>
-        <h1 className="text-lg font-semibold text-foreground">{title}</h1>
+        <h1 className="text-lg font-semibold text-foreground hidden lg:block">{title}</h1>
       </div>
 
       <DropdownMenu>
