@@ -24,7 +24,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { NavLink } from "@/components/NavLink";
-import { Checkbox } from "@/components/ui/checkbox";
+
 
 // --- Mock Data ---
 const grades = ["6", "7", "8", "9", "10", "11", "12"];
@@ -351,57 +351,54 @@ const CreateLessonPlan = () => {
                 <p className="text-sm text-muted-foreground italic">Select a chapter to see available concepts</p>
               ) : (
                 <div className="space-y-4">
-                  {/* Concept checkboxes */}
-                  <div className="border border-border rounded-lg p-4 max-h-56 overflow-y-auto space-y-2">
-                    {concepts.map((concept) => (
-                      <label
-                        key={concept}
-                        className="flex items-center gap-3 p-2 rounded-lg hover:bg-accent/50 cursor-pointer transition-colors"
-                      >
-                        <Checkbox
-                          checked={selectedConcepts.includes(concept)}
-                          onCheckedChange={() => toggleConcept(concept)}
-                        />
-                        <span className="text-sm text-foreground">{concept}</span>
-                      </label>
-                    ))}
-                  </div>
-
-                  {/* Selected concepts display */}
-                  <AnimatePresence>
-                    {selectedConcepts.length > 0 && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: "auto" }}
-                        exit={{ opacity: 0, height: 0 }}
-                        className="space-y-2"
-                      >
-                        <span className="text-xs text-muted-foreground font-medium">
-                          {selectedConcepts.length} selected
-                        </span>
-                        <div className="flex flex-wrap gap-2">
-                          {selectedConcepts.map((concept) => (
-                            <motion.div
+                  {/* Concept pills */}
+                  <div className="border border-primary/20 bg-primary/5 rounded-lg p-4">
+                    <div className="flex items-center gap-2 mb-3 text-sm font-medium text-primary">
+                      <Sparkles className="w-4 h-4" />
+                      Available Concepts:
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {concepts.map((concept) => {
+                        const isSelected = selectedConcepts.includes(concept);
+                        return (
+                          <motion.button
+                            key={concept}
+                            layout
+                            onClick={() => toggleConcept(concept)}
+                            className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium transition-colors ${
+                              isSelected
+                                ? "bg-primary/15 text-primary border border-primary/30"
+                                : "bg-background text-muted-foreground border border-border hover:border-primary/30 hover:text-primary"
+                            }`}
+                          >
+                            <Sparkles className="w-3.5 h-3.5" />
+                            {concept}
+                            {isSelected && (
+                              <X className="w-3.5 h-3.5 ml-0.5 hover:text-destructive" />
+                            )}
+                          </motion.button>
+                        );
+                      })}
+                      <AnimatePresence>
+                        {selectedConcepts
+                          .filter((c) => !concepts.includes(c))
+                          .map((concept) => (
+                            <motion.button
                               key={concept}
                               initial={{ opacity: 0, scale: 0.8 }}
                               animate={{ opacity: 1, scale: 1 }}
                               exit={{ opacity: 0, scale: 0.8 }}
+                              onClick={() => removeConcept(concept)}
+                              className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium bg-primary/15 text-primary border border-primary/30 transition-colors"
                             >
-                              <Badge variant="secondary" className="gap-1.5 pr-1.5 py-1">
-                                {concept}
-                                <button
-                                  onClick={() => removeConcept(concept)}
-                                  className="rounded-full hover:bg-muted p-0.5 transition-colors"
-                                >
-                                  <X className="w-3 h-3" />
-                                </button>
-                              </Badge>
-                            </motion.div>
+                              <Sparkles className="w-3.5 h-3.5" />
+                              {concept}
+                              <X className="w-3.5 h-3.5 ml-0.5 hover:text-destructive" />
+                            </motion.button>
                           ))}
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+                      </AnimatePresence>
+                    </div>
+                  </div>
 
                   {/* Add custom concept */}
                   <div className="flex items-center gap-2">
