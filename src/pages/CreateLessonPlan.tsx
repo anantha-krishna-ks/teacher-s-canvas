@@ -368,7 +368,7 @@ const CreateLessonPlan = () => {
                             className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium transition-colors ${
                               isSelected
                                 ? "bg-primary/15 text-primary border border-primary/30"
-                                : "bg-background text-muted-foreground border border-border hover:border-primary/30 hover:text-primary"
+                                : "bg-background text-foreground/80 border border-border hover:border-primary/30 hover:text-primary"
                             }`}
                           >
                             <span className={`w-4 h-4 rounded border flex items-center justify-center shrink-0 ${
