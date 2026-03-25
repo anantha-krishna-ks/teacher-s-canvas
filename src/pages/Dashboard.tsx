@@ -113,6 +113,8 @@ const fadeInUp = {
 };
 
 const Dashboard = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="max-w-7xl mx-auto space-y-8 animate-fade-in">
       {/* Welcome section */}
@@ -141,15 +143,17 @@ const Dashboard = () => {
               <h4 className="text-base font-semibold text-foreground mb-3">{mod.title}</h4>
 
               {mod.recentItems.length > 0 && (
-                <div className="space-y-1.5 mb-4">
+                <div className="space-y-1 mb-4">
                   {mod.recentItems.map((item) => (
-                    <div
-                      key={item}
-                      className="text-xs text-muted-foreground truncate flex items-center gap-1.5"
+                    <button
+                      key={item.id}
+                      onClick={() => navigate(`/dashboard/${mod.slug}/${item.id}`)}
+                      className="w-full flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground hover:bg-accent/50 rounded-md px-2 py-1.5 transition-colors text-left group/item"
                     >
-                      <span className="w-1 h-1 rounded-full bg-muted-foreground/40 shrink-0" />
-                      {item}
-                    </div>
+                      <span className="w-1.5 h-1.5 rounded-full bg-primary/40 shrink-0 group-hover/item:bg-primary transition-colors" />
+                      <span className="truncate flex-1">{item.name}</span>
+                      <ChevronRight className="w-3 h-3 opacity-0 group-hover/item:opacity-100 transition-opacity shrink-0" />
+                    </button>
                   ))}
                 </div>
               )}
@@ -158,7 +162,12 @@ const Dashboard = () => {
                 <Button size="sm" className="h-8 text-xs flex-1">
                   Generate
                 </Button>
-                <Button variant="ghost" size="sm" className="h-8 text-xs text-muted-foreground hover:text-foreground">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 text-xs text-muted-foreground hover:text-foreground"
+                  onClick={() => navigate(`/dashboard/${mod.slug}`)}
+                >
                   View All
                   <ArrowRight className="w-3 h-3 ml-1" />
                 </Button>
