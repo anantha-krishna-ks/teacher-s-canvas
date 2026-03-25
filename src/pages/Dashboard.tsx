@@ -138,18 +138,18 @@ const Dashboard = () => {
               )}
               </div>
 
-              <div className="flex items-center gap-2 mt-auto">
-                <Button size="sm" className="h-8 text-xs flex-1">
-                  Generate
-                </Button>
+              <div className="flex flex-col gap-2 mt-auto">
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="h-8 text-xs text-muted-foreground hover:text-foreground"
+                  className="h-8 text-xs w-full text-muted-foreground hover:text-foreground"
                   onClick={() => navigate(`/dashboard/${mod.slug}`)}
                 >
                   View All
                   <ArrowRight className="w-3 h-3 ml-1" />
+                </Button>
+                <Button size="sm" className="h-8 text-xs w-full">
+                  Generate
                 </Button>
               </div>
               </div>
