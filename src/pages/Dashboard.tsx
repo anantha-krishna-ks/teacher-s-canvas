@@ -110,9 +110,8 @@ const Dashboard = () => {
               className="bg-card rounded-lg border border-border overflow-hidden card-shadow hover:card-shadow-hover transition-shadow group"
             >
               <ModuleCardPreview type={mod.previewType} />
-              <div className="p-4 pt-3">
-              <h4 className="text-sm font-semibold text-foreground mb-1">{mod.title}</h4>
-              <p className="text-xs text-muted-foreground mb-4 leading-relaxed">{mod.description}</p>
+              <div className="p-4">
+              <h4 className="text-sm font-semibold text-foreground mb-3">{mod.title}</h4>
 
               {mod.recentItems.length > 0 && (
                 <div className="space-y-1.5 mb-4">
