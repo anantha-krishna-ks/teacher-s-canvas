@@ -127,8 +127,6 @@ const ScrollableSection = ({
         className="flex gap-4 overflow-x-auto overflow-y-visible pb-4 pt-2 -mt-2"
         style={{ scrollbarWidth: "thin" }}
       >
-        style={{ scrollbarWidth: "thin" }}
-      >
         {plans.map((plan) => (
           <PlanCard key={plan.id} plan={plan} />
         ))}
