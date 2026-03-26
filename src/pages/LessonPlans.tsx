@@ -1,12 +1,25 @@
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Plus, ChevronLeft, Clock, BookOpen, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import ScrollableSection from "@/components/lesson-plans/ScrollableSection";
 import { RECOMMENDED_PLANS, IN_PROGRESS_PLANS, SAVED_PLANS } from "@/constants/lessonPlansPageData";
+import { getInProgressPlans, getSavedPlans, subscribe } from "@/stores/lessonPlanStore";
 
 const LessonPlans = () => {
   const navigate = useNavigate();
+  const [userInProgress, setUserInProgress] = useState(getInProgressPlans);
+  const [userSaved, setUserSaved] = useState(getSavedPlans);
+
+  useEffect(() => {
+    return subscribe(() => {
+      setUserInProgress(getInProgressPlans());
+      setUserSaved(getSavedPlans());
+    });
+  }, []);
+
+  const allInProgress = [...userInProgress, ...IN_PROGRESS_PLANS];
+  const allSaved = [...userSaved, ...SAVED_PLANS];
 
   const handleNavigateBack = useCallback(() => navigate("/dashboard"), [navigate]);
   const handleCreateNew = useCallback(() => navigate("/dashboard/lesson-plans/create"), [navigate]);
@@ -36,10 +49,10 @@ const LessonPlans = () => {
           <ScrollableSection title="Recommended Lesson Plans" icon={Star} plans={RECOMMENDED_PLANS} count={RECOMMENDED_PLANS.length} />
         </div>
         <div className="bg-card border border-border rounded-xl p-5">
-          <ScrollableSection title="Lesson Plans In Progress" icon={Clock} plans={IN_PROGRESS_PLANS} count={IN_PROGRESS_PLANS.length} />
+          <ScrollableSection title="Lesson Plans In Progress" icon={Clock} plans={allInProgress} count={allInProgress.length} />
         </div>
         <div className="bg-card border border-border rounded-xl p-5">
-          <ScrollableSection title="Lesson Plans Saved" icon={BookOpen} plans={SAVED_PLANS} count={SAVED_PLANS.length} />
+          <ScrollableSection title="Lesson Plans Saved" icon={BookOpen} plans={allSaved} count={allSaved.length} />
         </div>
       </div>
     </div>
