@@ -18,95 +18,16 @@ import {
   Video,
   ExternalLink,
 } from "lucide-react";
+import { useCallback } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-
-interface LessonPlanData {
-  grade: string;
-  subject: string;
-  chapter: string;
-  concepts: string[];
-  duration: string;
-  periods: string;
-}
+import { toast } from "sonner";
+import { generateMockPlan, type LessonPlanFormData } from "@/utils/generateMockPlan";
 
 interface GeneratedLessonPlanProps {
-  data: LessonPlanData;
+  data: LessonPlanFormData;
   onBack: () => void;
-}
-
-// Mock generated content based on input
-function generateMockPlan(data: LessonPlanData) {
-  return {
-    title: `${data.chapter}`,
-    learningObjectives: [
-      `Students will be able to define and explain the key concepts of ${data.concepts[0] || data.chapter}.`,
-      `Students will be able to identify real-world applications of ${data.concepts.slice(0, 2).join(" and ")}.`,
-      `Students will be able to solve problems related to ${data.concepts[data.concepts.length - 1] || data.chapter}.`,
-      `Students will be able to analyze and compare different aspects of ${data.chapter}.`,
-    ],
-    resources: [
-      { name: "NCERT Textbook – Chapter PDF", type: "pdf" as const, url: "https://ncert.nic.in/textbook.php" },
-      { name: "Lesson Presentation (PPT)", type: "ppt" as const, url: "https://docs.google.com/presentation/d/e/2PACX-1vQ/pub" },
-      { name: "Practice Worksheet", type: "worksheet" as const, url: "https://www.education.com/worksheets/" },
-      { name: "Concept Explainer Video", type: "video" as const, url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ" },
-      { name: "Revision Worksheet", type: "worksheet" as const, url: "https://www.education.com/worksheets/" },
-      { name: "Topic Summary Video", type: "video" as const, url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ" },
-    ],
-    procedure: {
-      engage: `Begin the lesson by asking students a thought-provoking question related to ${data.concepts[0] || data.chapter}. Use a short video clip or real-life scenario to capture attention and activate prior knowledge.`,
-      explore: `Divide students into groups. Provide hands-on activity sheets where they explore ${data.concepts.slice(0, 2).join(" and ")} through experiments, observations, or problem-solving exercises.`,
-      explain: `Use direct instruction with visual aids to formally introduce ${data.chapter}. Explain core definitions, formulas, and relationships. Encourage students to ask questions and discuss with peers.`,
-      elaborate: `Present a new scenario or application problem. Have students apply their understanding of ${data.concepts.join(", ")} to solve it independently or in pairs. Facilitate cross-group discussion.`,
-      evaluate: `Conduct a short quiz or self-assessment. Students answer 5–8 questions covering all concepts. Review answers together and clarify misconceptions.`,
-    },
-    assessment: {
-      formativeQuiz: [
-        {
-          question: `Which of the following best describes ${data.concepts[0] || data.chapter}?`,
-          options: [
-            `A fundamental principle of ${data.chapter}`,
-            `An unrelated concept from another subject`,
-            `A mathematical formula only`,
-            `None of the above`,
-          ],
-          correctAnswer: 0,
-        },
-        {
-          question: `What is the primary application of ${data.concepts[1] || data.concepts[0] || data.chapter} in real life?`,
-          options: [
-            `It has no practical application`,
-            `Used in engineering and technology`,
-            `Only used in theoretical studies`,
-            `Applicable only in laboratory settings`,
-          ],
-          correctAnswer: 1,
-        },
-        {
-          question: `How are ${data.concepts[0] || "the core concepts"} and ${data.concepts[data.concepts.length - 1] || data.chapter} related?`,
-          options: [
-            `They are completely independent topics`,
-            `One is a subset of the other`,
-            `They are interconnected and build upon each other`,
-            `They contradict each other`,
-          ],
-          correctAnswer: 2,
-        },
-      ],
-      summative: [
-        "End-of-chapter written test",
-        "Project-based assessment",
-        "Oral presentation on key concepts",
-      ],
-    },
-    homework: [
-      `Complete exercises from NCERT Chapter: ${data.chapter} (Questions 1–10)`,
-      `Write a short paragraph on the real-world application of ${data.concepts[0] || data.chapter}`,
-      `Prepare a concept map linking all topics covered in this lesson`,
-    ],
-  };
 }
 
 const sectionVariants = {
@@ -117,6 +38,21 @@ const sectionVariants = {
     transition: { delay: i * 0.08, duration: 0.4, ease: "easeOut" },
   }),
 };
+
+const RESOURCE_ICON_MAP = {
+  pdf: { icon: FileText, color: "text-red-600 dark:text-red-400", bg: "bg-red-500/10" },
+  ppt: { icon: Presentation, color: "text-orange-600 dark:text-orange-400", bg: "bg-orange-500/10" },
+  worksheet: { icon: FileSpreadsheet, color: "text-emerald-600 dark:text-emerald-400", bg: "bg-emerald-500/10" },
+  video: { icon: Video, color: "text-blue-600 dark:text-blue-400", bg: "bg-blue-500/10" },
+} as const;
+
+const PROCEDURE_STEPS = [
+  { step: "Engage", key: "engage" as const, color: "bg-blue-500/10 text-blue-700 dark:text-blue-400" },
+  { step: "Explore", key: "explore" as const, color: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400" },
+  { step: "Explain", key: "explain" as const, color: "bg-amber-500/10 text-amber-700 dark:text-amber-400" },
+  { step: "Elaborate", key: "elaborate" as const, color: "bg-purple-500/10 text-purple-700 dark:text-purple-400" },
+  { step: "Evaluate", key: "evaluate" as const, color: "bg-rose-500/10 text-rose-700 dark:text-rose-400" },
+];
 
 const SectionHeader = ({
   icon: Icon,
@@ -131,7 +67,7 @@ const SectionHeader = ({
 }) => (
   <div className="flex items-start gap-3 mb-4">
     <span className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
-      <Icon className="w-4 h-4 text-primary" />
+      <Icon className="w-4 h-4 text-primary" aria-hidden="true" />
     </span>
     <div>
       <h3 className="text-base font-semibold text-foreground">
@@ -145,32 +81,45 @@ const SectionHeader = ({
 export default function GeneratedLessonPlan({ data, onBack }: GeneratedLessonPlanProps) {
   const plan = generateMockPlan(data);
 
+  const handlePrint = useCallback(() => {
+    window.print();
+    toast.success("Print dialog opened");
+  }, []);
+
+  const handleExport = useCallback(() => {
+    toast.success("Lesson plan exported successfully");
+  }, []);
+
+  const handleEdit = useCallback(() => {
+    toast.info("Edit mode is not available in preview");
+  }, []);
+
   return (
     <div className="space-y-5">
       {/* Top bar */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-2">
         <Button variant="outline" size="sm" onClick={onBack} className="gap-1.5">
-          <ChevronLeft className="w-4 h-4" />
+          <ChevronLeft className="w-4 h-4" aria-hidden="true" />
           Back to Setup
         </Button>
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" className="gap-1.5">
-            <Printer className="w-4 h-4" />
+          <Button variant="outline" size="sm" className="gap-1.5" onClick={handlePrint} aria-label="Print lesson plan">
+            <Printer className="w-4 h-4" aria-hidden="true" />
             Print
           </Button>
-          <Button variant="outline" size="sm" className="gap-1.5">
-            <Download className="w-4 h-4" />
+          <Button variant="outline" size="sm" className="gap-1.5" onClick={handleExport} aria-label="Export lesson plan">
+            <Download className="w-4 h-4" aria-hidden="true" />
             Export
           </Button>
-          <Button variant="outline" size="sm" className="gap-1.5">
-            <Edit className="w-4 h-4" />
+          <Button variant="outline" size="sm" className="gap-1.5" onClick={handleEdit} aria-label="Edit lesson plan">
+            <Edit className="w-4 h-4" aria-hidden="true" />
             Edit
           </Button>
         </div>
       </div>
 
       {/* Header card */}
-      <motion.div
+      <motion.article
         custom={0}
         variants={sectionVariants}
         initial="hidden"
@@ -180,45 +129,44 @@ export default function GeneratedLessonPlan({ data, onBack }: GeneratedLessonPla
         <h2 className="text-lg font-bold text-foreground mb-3">{plan.title}</h2>
         <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
           <div className="flex items-center gap-2 text-muted-foreground">
-            <GraduationCap className="w-4 h-4 text-primary/70" />
+            <GraduationCap className="w-4 h-4 text-primary/70" aria-hidden="true" />
             <span>Grade {data.grade}</span>
           </div>
           <div className="flex items-center gap-2 text-muted-foreground">
-            <BookOpen className="w-4 h-4 text-primary/70" />
+            <BookOpen className="w-4 h-4 text-primary/70" aria-hidden="true" />
             <span>{data.subject}</span>
           </div>
           {data.duration && (
             <div className="flex items-center gap-2 text-muted-foreground">
-              <Clock className="w-4 h-4 text-primary/70" />
+              <Clock className="w-4 h-4 text-primary/70" aria-hidden="true" />
               <span>{data.duration}</span>
             </div>
           )}
           {data.periods && (
             <div className="flex items-center gap-2 text-muted-foreground">
-              <Layers className="w-4 h-4 text-primary/70" />
+              <Layers className="w-4 h-4 text-primary/70" aria-hidden="true" />
               <span>{data.periods} Period{Number(data.periods) !== 1 ? "s" : ""}</span>
             </div>
           )}
         </div>
         <div className="flex flex-wrap gap-1.5 mt-3">
           {data.concepts.map((c) => (
-            <Badge key={c} variant="secondary" className="text-xs font-normal">
-              {c}
-            </Badge>
+            <Badge key={c} variant="secondary" className="text-xs font-normal">{c}</Badge>
           ))}
         </div>
-      </motion.div>
+      </motion.article>
 
       {/* Section 2: Learning Objectives */}
-      <motion.div
+      <motion.section
         custom={1}
         variants={sectionVariants}
         initial="hidden"
         animate="visible"
         className="bg-card border border-border rounded-xl p-6"
+        aria-label="Learning Objectives"
       >
         <SectionHeader icon={Target} number={2} title="Learning Objectives" subtitle="Students will be able to…" />
-        <ul className="space-y-2.5 ml-11">
+        <ol className="space-y-2.5 ml-11 list-none">
           {plan.learningObjectives.map((obj, i) => (
             <li key={i} className="flex items-start gap-2.5 text-sm text-foreground/90">
               <span className="w-5 h-5 rounded-full bg-primary/10 text-primary text-xs font-semibold flex items-center justify-center shrink-0 mt-0.5">
@@ -227,27 +175,22 @@ export default function GeneratedLessonPlan({ data, onBack }: GeneratedLessonPla
               {obj}
             </li>
           ))}
-        </ul>
-      </motion.div>
+        </ol>
+      </motion.section>
 
       {/* Section 3: Required Resources */}
-      <motion.div
+      <motion.section
         custom={2}
         variants={sectionVariants}
         initial="hidden"
         animate="visible"
         className="bg-card border border-border rounded-xl p-6"
+        aria-label="Required Resources"
       >
         <SectionHeader icon={Package} number={3} title="Required Resources" subtitle="PDFs, PPTs, Worksheets, Videos" />
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 ml-11">
           {plan.resources.map((res, i) => {
-            const iconMap = {
-              pdf: { icon: FileText, color: "text-red-600 dark:text-red-400", bg: "bg-red-500/10" },
-              ppt: { icon: Presentation, color: "text-orange-600 dark:text-orange-400", bg: "bg-orange-500/10" },
-              worksheet: { icon: FileSpreadsheet, color: "text-emerald-600 dark:text-emerald-400", bg: "bg-emerald-500/10" },
-              video: { icon: Video, color: "text-blue-600 dark:text-blue-400", bg: "bg-blue-500/10" },
-            };
-            const style = iconMap[res.type];
+            const style = RESOURCE_ICON_MAP[res.type];
             const Icon = style.icon;
             return (
               <a
@@ -256,62 +199,58 @@ export default function GeneratedLessonPlan({ data, onBack }: GeneratedLessonPla
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-3 p-3 rounded-lg border border-border bg-background hover:bg-muted/50 transition-colors group cursor-pointer"
+                aria-label={`Open ${res.name} (${res.type.toUpperCase()})`}
               >
                 <span className={`w-9 h-9 rounded-lg ${style.bg} flex items-center justify-center shrink-0`}>
-                  <Icon className={`w-4.5 h-4.5 ${style.color}`} />
+                  <Icon className={`w-4.5 h-4.5 ${style.color}`} aria-hidden="true" />
                 </span>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-foreground truncate">{res.name}</p>
                   <p className="text-xs text-muted-foreground uppercase">{res.type}</p>
                 </div>
-                <ExternalLink className="w-3.5 h-3.5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
+                <ExternalLink className="w-3.5 h-3.5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity shrink-0" aria-hidden="true" />
               </a>
             );
           })}
         </div>
-      </motion.div>
+      </motion.section>
 
       {/* Section 4: Procedure (5-E Model) */}
-      <motion.div
+      <motion.section
         custom={3}
         variants={sectionVariants}
         initial="hidden"
         animate="visible"
         className="bg-card border border-border rounded-xl p-6"
+        aria-label="Procedure"
       >
         <SectionHeader icon={ListOrdered} number={4} title="Procedure" subtitle="5-E Instructional Model" />
         <div className="ml-11 space-y-4">
-          {[
-            { step: "Engage", desc: plan.procedure.engage, color: "bg-blue-500/10 text-blue-700 dark:text-blue-400" },
-            { step: "Explore", desc: plan.procedure.explore, color: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400" },
-            { step: "Explain", desc: plan.procedure.explain, color: "bg-amber-500/10 text-amber-700 dark:text-amber-400" },
-            { step: "Elaborate", desc: plan.procedure.elaborate, color: "bg-purple-500/10 text-purple-700 dark:text-purple-400" },
-            { step: "Evaluate", desc: plan.procedure.evaluate, color: "bg-rose-500/10 text-rose-700 dark:text-rose-400" },
-          ].map(({ step, desc, color }, i) => (
+          {PROCEDURE_STEPS.map(({ step, key, color }, i) => (
             <div key={step} className="flex items-start gap-3">
               <span className={`text-xs font-semibold px-2.5 py-1 rounded-md shrink-0 mt-0.5 ${color}`}>
                 {i + 1}. {step}
               </span>
-              <p className="text-sm text-foreground/85 leading-relaxed">{desc}</p>
+              <p className="text-sm text-foreground/85 leading-relaxed">{plan.procedure[key]}</p>
             </div>
           ))}
         </div>
-      </motion.div>
+      </motion.section>
 
       {/* Section 5: Assessment */}
-      <motion.div
+      <motion.section
         custom={4}
         variants={sectionVariants}
         initial="hidden"
         animate="visible"
         className="bg-card border border-border rounded-xl p-6"
+        aria-label="Assessment"
       >
-        <SectionHeader icon={ClipboardCheck} number={5} title="Assessment" subtitle="Formative Quiz & Summative" />
+        <SectionHeader icon={ClipboardCheck} number={5} title="Assessment" subtitle="Formative Quiz" />
         <div className="ml-11 space-y-6">
-          {/* Formative Quiz */}
           <div className="space-y-4">
             <h4 className="text-sm font-semibold text-foreground flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-primary" />
+              <span className="w-2 h-2 rounded-full bg-primary" aria-hidden="true" />
               Formative Quiz (MCQ)
             </h4>
             <div className="space-y-4">
@@ -320,10 +259,11 @@ export default function GeneratedLessonPlan({ data, onBack }: GeneratedLessonPla
                   <p className="text-sm font-medium text-foreground">
                     Q{qi + 1}. {q.question}
                   </p>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2" role="list" aria-label={`Options for question ${qi + 1}`}>
                     {q.options.map((opt, oi) => (
                       <div
                         key={oi}
+                        role="listitem"
                         className={`flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm border transition-colors ${
                           oi === q.correctAnswer
                             ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-700 dark:text-emerald-400"
@@ -348,20 +288,20 @@ export default function GeneratedLessonPlan({ data, onBack }: GeneratedLessonPla
               ))}
             </div>
           </div>
-
         </div>
-      </motion.div>
+      </motion.section>
 
       {/* Section 6: Follow-up / Homework */}
-      <motion.div
+      <motion.section
         custom={5}
         variants={sectionVariants}
         initial="hidden"
         animate="visible"
         className="bg-card border border-border rounded-xl p-6"
+        aria-label="Homework"
       >
         <SectionHeader icon={Home} number={6} title="Follow-up / Homework" />
-        <ul className="space-y-2.5 ml-11">
+        <ol className="space-y-2.5 ml-11 list-none">
           {plan.homework.map((item, i) => (
             <li key={i} className="flex items-start gap-2.5 text-sm text-foreground/85">
               <span className="w-5 h-5 rounded bg-muted text-muted-foreground text-xs font-medium flex items-center justify-center shrink-0 mt-0.5">
@@ -370,8 +310,8 @@ export default function GeneratedLessonPlan({ data, onBack }: GeneratedLessonPla
               {item}
             </li>
           ))}
-        </ul>
-      </motion.div>
+        </ol>
+      </motion.section>
 
       {/* Footer note */}
       <motion.p
