@@ -14,7 +14,7 @@ interface ContentListingPageProps {
   createLabel: string;
   createPath: string;
   backPath?: string;
-  recommended: LessonPlanCard[];
+  recommended?: LessonPlanCard[];
   inProgress: LessonPlanCard[];
   saved: LessonPlanCard[];
   sectionLabels?: {
@@ -65,9 +65,11 @@ const ContentListingPage = ({
 
       {/* Sections */}
       <div className="space-y-8">
-        <div className="bg-card border border-border rounded-xl p-5">
-          <ScrollableSection title={recommendedTitle} icon={Star} plans={recommended} count={recommended.length} />
-        </div>
+        {recommended && recommended.length > 0 && (
+          <div className="bg-card border border-border rounded-xl p-5">
+            <ScrollableSection title={recommendedTitle} icon={Star} plans={recommended} count={recommended.length} />
+          </div>
+        )}
         <div className="bg-card border border-border rounded-xl p-5">
           <ScrollableSection title={inProgressTitle} icon={Clock} plans={inProgress} count={inProgress.length} />
         </div>
