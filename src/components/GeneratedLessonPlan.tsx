@@ -58,10 +58,37 @@ function generateMockPlan(data: LessonPlanData) {
       evaluate: `Conduct a short quiz or self-assessment. Students answer 5–8 questions covering all concepts. Review answers together and clarify misconceptions.`,
     },
     assessment: {
-      formative: [
-        "Observation during group activities",
-        "Q&A participation during explanation",
-        "Worksheet completion and accuracy",
+      formativeQuiz: [
+        {
+          question: `Which of the following best describes ${data.concepts[0] || data.chapter}?`,
+          options: [
+            `A fundamental principle of ${data.chapter}`,
+            `An unrelated concept from another subject`,
+            `A mathematical formula only`,
+            `None of the above`,
+          ],
+          correctAnswer: 0,
+        },
+        {
+          question: `What is the primary application of ${data.concepts[1] || data.concepts[0] || data.chapter} in real life?`,
+          options: [
+            `It has no practical application`,
+            `Used in engineering and technology`,
+            `Only used in theoretical studies`,
+            `Applicable only in laboratory settings`,
+          ],
+          correctAnswer: 1,
+        },
+        {
+          question: `How are ${data.concepts[0] || "the core concepts"} and ${data.concepts[data.concepts.length - 1] || data.chapter} related?`,
+          options: [
+            `They are completely independent topics`,
+            `One is a subset of the other`,
+            `They are interconnected and build upon each other`,
+            `They contradict each other`,
+          ],
+          correctAnswer: 2,
+        },
       ],
       summative: [
         "End-of-chapter written test",
@@ -251,21 +278,57 @@ export default function GeneratedLessonPlan({ data, onBack }: GeneratedLessonPla
         animate="visible"
         className="bg-card border border-border rounded-xl p-6"
       >
-        <SectionHeader icon={ClipboardCheck} number={5} title="Assessment" subtitle="Formative & Summative" />
-        <div className="ml-11 grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <h4 className="text-sm font-medium text-foreground">Formative</h4>
-            <ul className="space-y-1.5">
-              {plan.assessment.formative.map((item, i) => (
-                <li key={i} className="flex items-start gap-2 text-sm text-foreground/80">
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary/50 shrink-0 mt-2" />
-                  {item}
-                </li>
+        <SectionHeader icon={ClipboardCheck} number={5} title="Assessment" subtitle="Formative Quiz & Summative" />
+        <div className="ml-11 space-y-6">
+          {/* Formative Quiz */}
+          <div className="space-y-4">
+            <h4 className="text-sm font-semibold text-foreground flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-primary" />
+              Formative Quiz (MCQ)
+            </h4>
+            <div className="space-y-4">
+              {plan.assessment.formativeQuiz.map((q, qi) => (
+                <div key={qi} className="bg-muted/40 border border-border rounded-lg p-4 space-y-3">
+                  <p className="text-sm font-medium text-foreground">
+                    Q{qi + 1}. {q.question}
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {q.options.map((opt, oi) => (
+                      <div
+                        key={oi}
+                        className={`flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm border transition-colors ${
+                          oi === q.correctAnswer
+                            ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-700 dark:text-emerald-400"
+                            : "bg-background border-border text-foreground/75"
+                        }`}
+                      >
+                        <span className={`w-5 h-5 rounded-full border text-xs font-medium flex items-center justify-center shrink-0 ${
+                          oi === q.correctAnswer
+                            ? "border-emerald-500/50 bg-emerald-500/20 text-emerald-700 dark:text-emerald-400"
+                            : "border-muted-foreground/30 text-muted-foreground"
+                        }`}>
+                          {String.fromCharCode(65 + oi)}
+                        </span>
+                        <span>{opt}</span>
+                        {oi === q.correctAnswer && (
+                          <span className="ml-auto text-xs font-medium text-emerald-600 dark:text-emerald-400">✓ Correct</span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
               ))}
-            </ul>
+            </div>
           </div>
+
+          <Separator />
+
+          {/* Summative */}
           <div className="space-y-2">
-            <h4 className="text-sm font-medium text-foreground">Summative</h4>
+            <h4 className="text-sm font-semibold text-foreground flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-primary" />
+              Summative Assessment
+            </h4>
             <ul className="space-y-1.5">
               {plan.assessment.summative.map((item, i) => (
                 <li key={i} className="flex items-start gap-2 text-sm text-foreground/80">
