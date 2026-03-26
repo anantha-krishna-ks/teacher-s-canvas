@@ -269,6 +269,7 @@ export default function GeneratedLessonPlan({ data, onBack }: GeneratedLessonPla
             );
           })}
         </div>
+      </motion.div>
 
       {/* Section 4: Procedure (5-E Model) */}
       <motion.div
