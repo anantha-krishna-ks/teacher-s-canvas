@@ -22,6 +22,7 @@ export interface LessonPlanCard {
   subject: string;
   grade: string;
   questionsCount: number;
+  countLabel?: string; // e.g. "Slides", "Sessions", "Questions" — defaults to "Questions"
   status?: "in-progress" | "saved" | "recommended";
 }
 

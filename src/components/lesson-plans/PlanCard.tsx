@@ -39,7 +39,7 @@ const PlanCard = ({ plan }: PlanCardProps) => {
         </div>
         <div className="flex items-center justify-between text-xs text-muted-foreground">
           <span>Grade {plan.grade}</span>
-          <span>{plan.questionsCount} Questions</span>
+          <span>{plan.questionsCount} {plan.countLabel || "Questions"}</span>
         </div>
       </div>
     </motion.article>
