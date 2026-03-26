@@ -191,6 +191,24 @@ export default function GeneratedLessonPlan({ data, onBack }: GeneratedLessonPla
     toast.info("Use the Edit button on each section to make changes");
   }, []);
 
+  const handleSaveAsDraft = useCallback(() => {
+    addLessonPlan(
+      { subject: data.subject, grade: data.grade, chapter: data.chapter, questionsCount: plan.assessment.formativeQuiz.length },
+      "in-progress",
+    );
+    toast.success("Lesson plan saved as draft");
+    navigate("/dashboard/lesson-plans");
+  }, [data, plan, navigate]);
+
+  const handleFinalize = useCallback(() => {
+    addLessonPlan(
+      { subject: data.subject, grade: data.grade, chapter: data.chapter, questionsCount: plan.assessment.formativeQuiz.length },
+      "saved",
+    );
+    toast.success("Lesson plan finalized and saved");
+    navigate("/dashboard/lesson-plans");
+  }, [data, plan, navigate]);
+
   return (
     <div className="space-y-5">
       {/* Top bar */}
