@@ -31,7 +31,9 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 import { generateMockPlan, type LessonPlanFormData, type GeneratedPlan } from "@/utils/generateMockPlan";
+import { addLessonPlan } from "@/stores/lessonPlanStore";
 
 interface GeneratedLessonPlanProps {
   data: LessonPlanFormData;
@@ -116,6 +118,7 @@ type EditingSection = "objectives" | "resources" | "procedure" | "assessment" | 
 export default function GeneratedLessonPlan({ data, onBack }: GeneratedLessonPlanProps) {
   const [plan, setPlan] = useState<GeneratedPlan>(() => generateMockPlan(data));
   const [editingSection, setEditingSection] = useState<EditingSection>(null);
+  const navigate = useNavigate();
 
   // Draft states for each section
   const [draftObjectives, setDraftObjectives] = useState<string[]>([]);
@@ -756,16 +759,37 @@ export default function GeneratedLessonPlan({ data, onBack }: GeneratedLessonPla
         )}
       </motion.section>
 
-      {/* Footer note */}
-      <motion.p
-        custom={6}
+      {/* Footer actions */}
+      <motion.div
+        custom={7}
         variants={sectionVariants}
         initial="hidden"
         animate="visible"
-        className="text-xs text-muted-foreground text-center py-2"
+        className="flex items-center justify-between gap-3 pt-2 pb-4"
       >
-        Teachers can customize this plan based on classroom needs and available resources.
-      </motion.p>
+        <p className="text-xs text-muted-foreground">
+          Teachers can customize this plan based on classroom needs and available resources.
+        </p>
+        <div className="flex items-center gap-3 shrink-0">
+          <Button
+            variant="outline"
+            className="gap-1.5"
+            onClick={handleSaveAsDraft}
+            aria-label="Save lesson plan as draft"
+          >
+            <Clock className="w-4 h-4" aria-hidden="true" />
+            Save as Draft
+          </Button>
+          <Button
+            className="gap-1.5"
+            onClick={handleFinalize}
+            aria-label="Finalize and save lesson plan"
+          >
+            <Check className="w-4 h-4" aria-hidden="true" />
+            Finalize & Save
+          </Button>
+        </div>
+      </motion.div>
     </div>
   );
 }
