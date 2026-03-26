@@ -12,6 +12,11 @@ import {
   Clock,
   GraduationCap,
   Layers,
+  FileText,
+  Presentation,
+  FileSpreadsheet,
+  Video,
+  ExternalLink,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -43,12 +48,12 @@ function generateMockPlan(data: LessonPlanData) {
       `Students will be able to analyze and compare different aspects of ${data.chapter}.`,
     ],
     resources: [
-      "NCERT Textbook",
-      "Whiteboard & Markers",
-      "PowerPoint Presentation",
-      "Worksheets (printed)",
-      "Lab Equipment (if applicable)",
-      "Reference Charts / Maps",
+      { name: "NCERT Textbook – Chapter PDF", type: "pdf" as const, url: "https://ncert.nic.in/textbook.php" },
+      { name: "Lesson Presentation (PPT)", type: "ppt" as const, url: "https://docs.google.com/presentation/d/e/2PACX-1vQ/pub" },
+      { name: "Practice Worksheet", type: "worksheet" as const, url: "https://www.education.com/worksheets/" },
+      { name: "Concept Explainer Video", type: "video" as const, url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ" },
+      { name: "Revision Worksheet", type: "worksheet" as const, url: "https://www.education.com/worksheets/" },
+      { name: "Topic Summary Video", type: "video" as const, url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ" },
     ],
     procedure: {
       engage: `Begin the lesson by asking students a thought-provoking question related to ${data.concepts[0] || data.chapter}. Use a short video clip or real-life scenario to capture attention and activate prior knowledge.`,
@@ -233,13 +238,36 @@ export default function GeneratedLessonPlan({ data, onBack }: GeneratedLessonPla
         animate="visible"
         className="bg-card border border-border rounded-xl p-6"
       >
-        <SectionHeader icon={Package} number={3} title="Required Resources" subtitle="Maps, PPTs, Worksheets, Equipment" />
-        <div className="flex flex-wrap gap-2 ml-11">
-          {plan.resources.map((res) => (
-            <Badge key={res} variant="outline" className="text-sm font-normal py-1.5 px-3">
-              {res}
-            </Badge>
-          ))}
+        <SectionHeader icon={Package} number={3} title="Required Resources" subtitle="PDFs, PPTs, Worksheets, Videos" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 ml-11">
+          {plan.resources.map((res, i) => {
+            const iconMap = {
+              pdf: { icon: FileText, color: "text-red-600 dark:text-red-400", bg: "bg-red-500/10" },
+              ppt: { icon: Presentation, color: "text-orange-600 dark:text-orange-400", bg: "bg-orange-500/10" },
+              worksheet: { icon: FileSpreadsheet, color: "text-emerald-600 dark:text-emerald-400", bg: "bg-emerald-500/10" },
+              video: { icon: Video, color: "text-blue-600 dark:text-blue-400", bg: "bg-blue-500/10" },
+            };
+            const style = iconMap[res.type];
+            const Icon = style.icon;
+            return (
+              <a
+                key={i}
+                href={res.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 p-3 rounded-lg border border-border bg-background hover:bg-muted/50 transition-colors group cursor-pointer"
+              >
+                <span className={`w-9 h-9 rounded-lg ${style.bg} flex items-center justify-center shrink-0`}>
+                  <Icon className={`w-4.5 h-4.5 ${style.color}`} />
+                </span>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-foreground truncate">{res.name}</p>
+                  <p className="text-xs text-muted-foreground uppercase">{res.type}</p>
+                </div>
+                <ExternalLink className="w-3.5 h-3.5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
+              </a>
+            );
+          })}
         </div>
       </motion.div>
 
