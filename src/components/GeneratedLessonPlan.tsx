@@ -360,7 +360,22 @@ export default function GeneratedLessonPlan({ data, onBack }: GeneratedLessonPla
                       className="text-sm h-9"
                       placeholder="Resource name"
                     />
-                    <div className="flex items-center gap-2 mb-2">
+                    <select
+                      value={res.type}
+                      onChange={(e) => {
+                        const updated = [...draftResources];
+                        updated[i] = { ...updated[i], type: e.target.value as "pdf" | "ppt" | "worksheet" | "video" };
+                        setDraftResources(updated);
+                      }}
+                      className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground"
+                      aria-label="Resource type"
+                    >
+                      <option value="pdf">PDF</option>
+                      <option value="ppt">PPT</option>
+                      <option value="worksheet">Worksheet</option>
+                      <option value="video">Video</option>
+                    </select>
+                    <div className="flex items-center gap-2">
                       <span className="text-xs text-muted-foreground">Source:</span>
                       <div className="flex rounded-md border border-border overflow-hidden">
                         <button
