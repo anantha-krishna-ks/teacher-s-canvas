@@ -48,12 +48,12 @@ function generateMockPlan(data: LessonPlanData) {
       `Students will be able to analyze and compare different aspects of ${data.chapter}.`,
     ],
     resources: [
-      "NCERT Textbook",
-      "Whiteboard & Markers",
-      "PowerPoint Presentation",
-      "Worksheets (printed)",
-      "Lab Equipment (if applicable)",
-      "Reference Charts / Maps",
+      { name: "NCERT Textbook – Chapter PDF", type: "pdf" as const, url: "https://ncert.nic.in/textbook.php" },
+      { name: "Lesson Presentation (PPT)", type: "ppt" as const, url: "https://docs.google.com/presentation/d/e/2PACX-1vQ/pub" },
+      { name: "Practice Worksheet", type: "worksheet" as const, url: "https://www.education.com/worksheets/" },
+      { name: "Concept Explainer Video", type: "video" as const, url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ" },
+      { name: "Revision Worksheet", type: "worksheet" as const, url: "https://www.education.com/worksheets/" },
+      { name: "Topic Summary Video", type: "video" as const, url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ" },
     ],
     procedure: {
       engage: `Begin the lesson by asking students a thought-provoking question related to ${data.concepts[0] || data.chapter}. Use a short video clip or real-life scenario to capture attention and activate prior knowledge.`,
