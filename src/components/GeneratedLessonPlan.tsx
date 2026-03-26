@@ -22,6 +22,7 @@ import {
   Plus,
   Trash2,
   Upload,
+  Link,
 } from "lucide-react";
 import { useCallback, useRef, useState } from "react";
 import { motion } from "framer-motion";
@@ -359,22 +360,95 @@ export default function GeneratedLessonPlan({ data, onBack }: GeneratedLessonPla
                       className="text-sm h-9"
                       placeholder="Resource name"
                     />
-                    <div className="flex gap-2">
-                      <select
-                        value={res.type}
-                        onChange={(e) => {
-                          const updated = [...draftResources];
-                          updated[i] = { ...updated[i], type: e.target.value as "pdf" | "ppt" | "worksheet" | "video" };
-                          setDraftResources(updated);
-                        }}
-                        className="h-9 rounded-md border border-input bg-background px-3 text-sm text-foreground"
-                        aria-label="Resource type"
-                      >
-                        <option value="pdf">PDF</option>
-                        <option value="ppt">PPT</option>
-                        <option value="worksheet">Worksheet</option>
-                        <option value="video">Video</option>
-                      </select>
+                    <select
+                      value={res.type}
+                      onChange={(e) => {
+                        const updated = [...draftResources];
+                        updated[i] = { ...updated[i], type: e.target.value as "pdf" | "ppt" | "worksheet" | "video" };
+                        setDraftResources(updated);
+                      }}
+                      className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground"
+                      aria-label="Resource type"
+                    >
+                      <option value="pdf">PDF</option>
+                      <option value="ppt">PPT</option>
+                      <option value="worksheet">Worksheet</option>
+                      <option value="video">Video</option>
+                    </select>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-muted-foreground">Source:</span>
+                      <div className="flex rounded-md border border-border overflow-hidden">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const updated = [...draftResources];
+                            updated[i] = { ...updated[i], url: "", fileName: undefined };
+                            setDraftResources(updated);
+                          }}
+                          className={`inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium transition-colors ${
+                            !res.fileName
+                              ? "bg-primary text-primary-foreground"
+                              : "bg-background text-muted-foreground hover:text-foreground"
+                          }`}
+                          aria-pressed={!res.fileName}
+                        >
+                          <Link className="w-3 h-3" aria-hidden="true" />
+                          URL
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const updated = [...draftResources];
+                            updated[i] = { ...updated[i], url: "", fileName: "" };
+                            setDraftResources(updated);
+                          }}
+                          className={`inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium transition-colors ${
+                            res.fileName !== undefined
+                              ? "bg-primary text-primary-foreground"
+                              : "bg-background text-muted-foreground hover:text-foreground"
+                          }`}
+                          aria-pressed={res.fileName !== undefined}
+                        >
+                          <Upload className="w-3 h-3" aria-hidden="true" />
+                          Upload
+                        </button>
+                      </div>
+                    </div>
+                    {res.fileName !== undefined ? (
+                      <div className="flex items-center gap-2">
+                        <label
+                          className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-md border border-dashed border-primary/40 bg-primary/5 text-primary hover:bg-primary/10 transition-colors cursor-pointer flex-1 justify-center"
+                          aria-label={`Upload file for ${res.name || "resource"}`}
+                        >
+                          <Upload className="w-3.5 h-3.5" aria-hidden="true" />
+                          {res.fileName ? "Change File" : "Choose File"}
+                          <input
+                            type="file"
+                            className="sr-only"
+                            accept=".pdf,.ppt,.pptx,.doc,.docx,.xls,.xlsx,.mp4,.webm,.ogg,.jpg,.png"
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              if (!file) return;
+                              const objectUrl = URL.createObjectURL(file);
+                              const updated = [...draftResources];
+                              updated[i] = {
+                                ...updated[i],
+                                name: updated[i].name || file.name,
+                                url: objectUrl,
+                                fileName: file.name,
+                              };
+                              setDraftResources(updated);
+                              toast.success(`"${file.name}" attached`);
+                            }}
+                          />
+                        </label>
+                        {res.fileName && (
+                          <span className="text-xs text-muted-foreground truncate max-w-[200px]" title={res.fileName}>
+                            📎 {res.fileName}
+                          </span>
+                        )}
+                      </div>
+                    ) : (
                       <Input
                         value={res.url}
                         onChange={(e) => {
@@ -382,44 +456,10 @@ export default function GeneratedLessonPlan({ data, onBack }: GeneratedLessonPla
                           updated[i] = { ...updated[i], url: e.target.value };
                           setDraftResources(updated);
                         }}
-                        className="text-sm h-9 flex-1"
-                        placeholder="Paste URL or upload a file"
+                        className="text-sm h-9"
+                        placeholder="Paste resource URL"
                       />
-                    </div>
-                    {/* File upload row */}
-                    <div className="flex items-center gap-2">
-                      <label
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md border border-dashed border-primary/40 bg-primary/5 text-primary hover:bg-primary/10 transition-colors cursor-pointer"
-                        aria-label={`Upload file for ${res.name || "resource"}`}
-                      >
-                        <Upload className="w-3.5 h-3.5" aria-hidden="true" />
-                        Upload File
-                        <input
-                          type="file"
-                          className="sr-only"
-                          accept=".pdf,.ppt,.pptx,.doc,.docx,.xls,.xlsx,.mp4,.webm,.ogg,.jpg,.png"
-                          onChange={(e) => {
-                            const file = e.target.files?.[0];
-                            if (!file) return;
-                            const objectUrl = URL.createObjectURL(file);
-                            const updated = [...draftResources];
-                            updated[i] = {
-                              ...updated[i],
-                              name: updated[i].name || file.name,
-                              url: objectUrl,
-                              fileName: file.name,
-                            };
-                            setDraftResources(updated);
-                            toast.success(`"${file.name}" attached`);
-                          }}
-                        />
-                      </label>
-                      {res.fileName && (
-                        <span className="text-xs text-muted-foreground truncate max-w-[200px]" title={res.fileName}>
-                          📎 {res.fileName}
-                        </span>
-                      )}
-                    </div>
+                    )}
                   </div>
                   <Button
                     variant="ghost"
