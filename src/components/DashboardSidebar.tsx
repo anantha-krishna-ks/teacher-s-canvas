@@ -32,8 +32,8 @@ const navItems: NavItem[] = [
     label: "Plan",
     icon: Calendar,
     children: [
-      { label: "Lesson Plan", path: "/dashboard/lesson-plan", icon: FileText },
-      { label: "Class Plan", path: "/dashboard/class-plan", icon: ClipboardList },
+      { label: "Lesson Plan", path: "/dashboard/lesson-plans", icon: FileText },
+      { label: "Class Plan", path: "/dashboard/class-plans", icon: ClipboardList },
     ],
   },
   {
