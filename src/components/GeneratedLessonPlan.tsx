@@ -386,11 +386,11 @@ export default function GeneratedLessonPlan({ data, onBack }: GeneratedLessonPla
                             setDraftResources(updated);
                           }}
                           className={`inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium transition-colors ${
-                            !res.fileName
+                            res.fileName === undefined
                               ? "bg-primary text-primary-foreground"
                               : "bg-background text-muted-foreground hover:text-foreground"
                           }`}
-                          aria-pressed={!res.fileName}
+                          aria-pressed={res.fileName === undefined}
                         >
                           <Link className="w-3 h-3" aria-hidden="true" />
                           URL
