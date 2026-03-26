@@ -226,10 +226,6 @@ export default function GeneratedLessonPlan({ data, onBack }: GeneratedLessonPla
             <Download className="w-4 h-4" aria-hidden="true" />
             Export
           </Button>
-          <Button variant="outline" size="sm" className="gap-1.5" onClick={handleEditAll} aria-label="Edit lesson plan">
-            <Edit className="w-4 h-4" aria-hidden="true" />
-            Edit
-          </Button>
         </div>
       </div>
 
