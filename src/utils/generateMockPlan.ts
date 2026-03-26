@@ -13,6 +13,7 @@ export interface ResourceItem {
   name: string;
   type: "pdf" | "ppt" | "worksheet" | "video";
   url: string;
+  fileName?: string;
 }
 
 export interface QuizQuestion {
