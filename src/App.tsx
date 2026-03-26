@@ -9,6 +9,11 @@ import DashboardLayout from "./layouts/DashboardLayout";
 import Dashboard from "./pages/Dashboard";
 import LessonPlans from "./pages/LessonPlans";
 import CreateLessonPlan from "./pages/CreateLessonPlan";
+import ClassPlans from "./pages/ClassPlans";
+import Presentations from "./pages/Presentations";
+import Worksheets from "./pages/Worksheets";
+import Quizzes from "./pages/Quizzes";
+import Assessment from "./pages/Assessment";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -27,6 +32,11 @@ const App = () => (
             <Route index element={<Dashboard />} />
             <Route path="lesson-plans" element={<LessonPlans />} />
             <Route path="lesson-plans/create" element={<CreateLessonPlan />} />
+            <Route path="class-plans" element={<ClassPlans />} />
+            <Route path="presentations" element={<Presentations />} />
+            <Route path="worksheets" element={<Worksheets />} />
+            <Route path="quizzes" element={<Quizzes />} />
+            <Route path="assessment" element={<Assessment />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>

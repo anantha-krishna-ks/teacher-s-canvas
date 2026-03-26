@@ -32,8 +32,8 @@ const navItems: NavItem[] = [
     label: "Plan",
     icon: Calendar,
     children: [
-      { label: "Lesson Plan", path: "/dashboard/lesson-plan", icon: FileText },
-      { label: "Class Plan", path: "/dashboard/class-plan", icon: ClipboardList },
+      { label: "Lesson Plan", path: "/dashboard/lesson-plans", icon: FileText },
+      { label: "Class Plan", path: "/dashboard/class-plans", icon: ClipboardList },
     ],
   },
   {
@@ -85,9 +85,9 @@ const DashboardSidebar = ({ collapsed, onToggle }: DashboardSidebarProps) => {
     );
   };
 
-  const isActive = (path: string) => location.pathname === path;
+  const isActive = (path: string) => location.pathname === path || location.pathname.startsWith(path + "/");
   const isGroupActive = (item: NavItem) =>
-    item.children?.some((child) => location.pathname === child.path);
+    item.children?.some((child) => location.pathname === child.path || location.pathname.startsWith(child.path + "/"));
 
   return (
     <aside
