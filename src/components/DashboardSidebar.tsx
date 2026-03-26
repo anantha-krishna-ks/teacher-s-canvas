@@ -85,9 +85,9 @@ const DashboardSidebar = ({ collapsed, onToggle }: DashboardSidebarProps) => {
     );
   };
 
-  const isActive = (path: string) => location.pathname === path;
+  const isActive = (path: string) => location.pathname === path || location.pathname.startsWith(path + "/");
   const isGroupActive = (item: NavItem) =>
-    item.children?.some((child) => location.pathname === child.path);
+    item.children?.some((child) => location.pathname === child.path || location.pathname.startsWith(child.path + "/"));
 
   return (
     <aside
