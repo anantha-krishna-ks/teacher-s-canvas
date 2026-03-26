@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Outlet } from "react-router-dom";
 import DashboardSidebar from "@/components/DashboardSidebar";
 import DashboardHeader from "@/components/DashboardHeader";
@@ -8,19 +8,32 @@ const DashboardLayout = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  const handleToggleMobileMenu = useCallback(() => {
+    setMobileOpen((prev) => !prev);
+  }, []);
+
+  const handleCloseMobileMenu = useCallback(() => {
+    setMobileOpen(false);
+  }, []);
+
+  const handleToggleSidebar = useCallback(() => {
+    setSidebarCollapsed((prev) => !prev);
+  }, []);
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Full-width header on top */}
       <DashboardHeader
         title="Dashboard"
-        onMobileMenuToggle={() => setMobileOpen(!mobileOpen)}
+        onMobileMenuToggle={handleToggleMobileMenu}
       />
 
       {/* Mobile overlay */}
       {mobileOpen && (
         <div
           className="fixed inset-0 bg-foreground/20 z-20 lg:hidden"
-          onClick={() => setMobileOpen(false)}
+          onClick={handleCloseMobileMenu}
+          role="presentation"
         />
       )}
 
@@ -29,7 +42,7 @@ const DashboardLayout = () => {
         <div className={cn("hidden lg:block")}>
           <DashboardSidebar
             collapsed={sidebarCollapsed}
-            onToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
+            onToggle={handleToggleSidebar}
           />
         </div>
 
@@ -40,7 +53,7 @@ const DashboardLayout = () => {
             mobileOpen ? "translate-x-0" : "-translate-x-full"
           )}
         >
-          <DashboardSidebar collapsed={false} onToggle={() => setMobileOpen(false)} />
+          <DashboardSidebar collapsed={false} onToggle={handleCloseMobileMenu} />
         </div>
 
         {/* Main content */}

@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { ArrowLeft, Mail, CheckCircle2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { toast } from "sonner";
 import logo from "@/assets/logo.png";
 
 const ForgotPassword = () => {
@@ -12,16 +14,30 @@ const ForgotPassword = () => {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email) return;
-    setLoading(true);
-    // Simulate API call
-    setTimeout(() => {
-      setLoading(false);
-      setSubmitted(true);
-    }, 1500);
-  };
+  const handleSubmit = useCallback(
+    (e: React.FormEvent) => {
+      e.preventDefault();
+      if (!email) {
+        toast.error("Please enter your email address");
+        return;
+      }
+      setLoading(true);
+      // Simulate API call
+      setTimeout(() => {
+        setLoading(false);
+        setSubmitted(true);
+        toast.success("Password reset link sent successfully");
+      }, 1500);
+    },
+    [email]
+  );
+
+  const handleEmailChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value),
+    []
+  );
+
+  const handleBackToLogin = useCallback(() => navigate("/login"), [navigate]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 via-muted/40 to-accent/10 relative overflow-hidden">
@@ -47,7 +63,7 @@ const ForgotPassword = () => {
               >
                 <div className="flex flex-col items-center mb-8">
                   <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-4">
-                    <Mail className="w-5 h-5 text-primary" />
+                    <Mail className="w-5 h-5 text-primary" aria-hidden="true" />
                   </div>
                   <h1 className="text-2xl font-bold text-foreground tracking-tight">
                     Reset Password
@@ -58,15 +74,20 @@ const ForgotPassword = () => {
                   </p>
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-5">
-                  <Input
-                    type="email"
-                    placeholder="Email Address"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="h-12 rounded-lg bg-background border-border px-4 text-sm placeholder:text-muted-foreground/60"
-                    required
-                  />
+                <form onSubmit={handleSubmit} className="space-y-5" noValidate>
+                  <div>
+                    <Label htmlFor="reset-email" className="sr-only">Email Address</Label>
+                    <Input
+                      id="reset-email"
+                      type="email"
+                      placeholder="Email Address"
+                      value={email}
+                      onChange={handleEmailChange}
+                      className="h-12 rounded-lg bg-background border-border px-4 text-sm placeholder:text-muted-foreground/60"
+                      autoComplete="email"
+                      required
+                    />
+                  </div>
 
                   <Button
                     type="submit"
@@ -75,12 +96,12 @@ const ForgotPassword = () => {
                   >
                     {loading ? (
                       <span className="flex items-center gap-2">
-                        <span className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
+                        <span className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" aria-hidden="true" />
                         Sending...
                       </span>
                     ) : (
                       <>
-                        <Mail className="w-4 h-4" />
+                        <Mail className="w-4 h-4" aria-hidden="true" />
                         Send Reset Link
                       </>
                     )}
@@ -88,10 +109,10 @@ const ForgotPassword = () => {
                 </form>
 
                 <button
-                  onClick={() => navigate("/login")}
+                  onClick={handleBackToLogin}
                   className="mt-6 flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mx-auto"
                 >
-                  <ArrowLeft className="w-4 h-4" />
+                  <ArrowLeft className="w-4 h-4" aria-hidden="true" />
                   Back to Sign In
                 </button>
               </motion.div>
@@ -102,8 +123,8 @@ const ForgotPassword = () => {
                 animate={{ opacity: 1, scale: 1 }}
                 className="flex flex-col items-center py-4"
               >
-                <div className="w-14 h-14 rounded-full bg-green-500/10 flex items-center justify-center mb-5">
-                  <CheckCircle2 className="w-7 h-7 text-green-500" />
+                <div className="w-14 h-14 rounded-full bg-emerald-500/10 flex items-center justify-center mb-5">
+                  <CheckCircle2 className="w-7 h-7 text-emerald-600 dark:text-emerald-400" aria-hidden="true" />
                 </div>
                 <h2 className="text-xl font-bold text-foreground mb-2">Check Your Email</h2>
                 <p className="text-muted-foreground text-sm text-center mb-6 max-w-[280px]">
@@ -111,10 +132,10 @@ const ForgotPassword = () => {
                 </p>
                 <Button
                   variant="outline"
-                  onClick={() => navigate("/login")}
+                  onClick={handleBackToLogin}
                   className="gap-2 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
                 >
-                  <ArrowLeft className="w-4 h-4" />
+                  <ArrowLeft className="w-4 h-4" aria-hidden="true" />
                   Back to Sign In
                 </Button>
               </motion.div>

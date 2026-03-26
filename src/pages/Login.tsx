@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,6 +6,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff, LogIn } from "lucide-react";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 import logo from "@/assets/logo.png";
 
 const Login = () => {
@@ -14,10 +15,36 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    navigate("/dashboard");
-  };
+  const handleLogin = useCallback(
+    (e: React.FormEvent) => {
+      e.preventDefault();
+      if (!email || !password) {
+        toast.error("Please enter both email and password");
+        return;
+      }
+      toast.success("Login successful");
+      navigate("/dashboard");
+    },
+    [email, password, navigate]
+  );
+
+  const handleTogglePassword = useCallback(() => {
+    setShowPassword((prev) => !prev);
+  }, []);
+
+  const handleEmailChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value),
+    []
+  );
+
+  const handlePasswordChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value),
+    []
+  );
+
+  const handleForgotPassword = useCallback(() => {
+    navigate("/forgot-password");
+  }, [navigate]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 via-muted/40 to-accent/10 relative overflow-hidden">
@@ -48,31 +75,38 @@ const Login = () => {
             </p>
           </div>
 
-          <form onSubmit={handleLogin} className="space-y-5">
+          <form onSubmit={handleLogin} className="space-y-5" noValidate>
             <div>
+              <Label htmlFor="email" className="sr-only">Email Address</Label>
               <Input
                 id="email"
                 type="email"
                 placeholder="Email Address"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={handleEmailChange}
                 className="h-12 rounded-lg bg-background border-border px-4 text-sm placeholder:text-muted-foreground/60"
+                autoComplete="email"
+                required
               />
             </div>
 
             <div className="relative">
+              <Label htmlFor="password" className="sr-only">Password</Label>
               <Input
                 id="password"
                 type={showPassword ? "text" : "password"}
                 placeholder="Password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={handlePasswordChange}
                 className="h-12 rounded-lg bg-background border-border px-4 pr-11 text-sm placeholder:text-muted-foreground/60"
+                autoComplete="current-password"
+                required
               />
               <button
                 type="button"
-                onClick={() => setShowPassword(!showPassword)}
+                onClick={handleTogglePassword}
                 className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                aria-label={showPassword ? "Hide password" : "Show password"}
               >
                 {showPassword ? <EyeOff className="w-4.5 h-4.5" /> : <Eye className="w-4.5 h-4.5" />}
               </button>
@@ -85,7 +119,11 @@ const Login = () => {
                   Remember me
                 </Label>
               </div>
-              <button type="button" onClick={() => navigate("/forgot-password")} className="text-sm text-primary hover:underline font-medium">
+              <button
+                type="button"
+                onClick={handleForgotPassword}
+                className="text-sm text-primary hover:underline font-medium"
+              >
                 Forgot password?
               </button>
             </div>
@@ -94,11 +132,10 @@ const Login = () => {
               type="submit"
               className="w-full h-12 rounded-lg text-sm font-semibold gap-2 transition-all duration-200 hover:scale-[1.02] hover:shadow-lg hover:shadow-primary/25 active:scale-[0.98]"
             >
-              <LogIn className="w-4 h-4" />
+              <LogIn className="w-4 h-4" aria-hidden="true" />
               Sign In
             </Button>
           </form>
-
         </div>
       </motion.div>
     </div>
