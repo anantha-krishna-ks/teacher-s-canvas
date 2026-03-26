@@ -321,23 +321,6 @@ export default function GeneratedLessonPlan({ data, onBack }: GeneratedLessonPla
             </div>
           </div>
 
-          <Separator />
-
-          {/* Summative */}
-          <div className="space-y-2">
-            <h4 className="text-sm font-semibold text-foreground flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-primary" />
-              Summative Assessment
-            </h4>
-            <ul className="space-y-1.5">
-              {plan.assessment.summative.map((item, i) => (
-                <li key={i} className="flex items-start gap-2 text-sm text-foreground/80">
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary/50 shrink-0 mt-2" />
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </div>
         </div>
       </motion.div>
 
