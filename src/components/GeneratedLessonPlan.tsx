@@ -21,8 +21,9 @@ import {
   X,
   Plus,
   Trash2,
+  Upload,
 } from "lucide-react";
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -343,7 +344,7 @@ export default function GeneratedLessonPlan({ data, onBack }: GeneratedLessonPla
               const style = RESOURCE_ICON_MAP[res.type];
               const ResIcon = style.icon;
               return (
-                <div key={i} className="flex items-start gap-3 p-3 rounded-lg border border-border bg-muted/40">
+                <div key={i} className="flex items-start gap-3 p-4 rounded-lg border border-border bg-muted/40">
                   <span className={`w-9 h-9 rounded-lg ${style.bg} flex items-center justify-center shrink-0 mt-1`}>
                     <ResIcon className={`w-4.5 h-4.5 ${style.color}`} aria-hidden="true" />
                   </span>
@@ -382,8 +383,42 @@ export default function GeneratedLessonPlan({ data, onBack }: GeneratedLessonPla
                           setDraftResources(updated);
                         }}
                         className="text-sm h-9 flex-1"
-                        placeholder="URL"
+                        placeholder="Paste URL or upload a file"
                       />
+                    </div>
+                    {/* File upload row */}
+                    <div className="flex items-center gap-2">
+                      <label
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md border border-dashed border-primary/40 bg-primary/5 text-primary hover:bg-primary/10 transition-colors cursor-pointer"
+                        aria-label={`Upload file for ${res.name || "resource"}`}
+                      >
+                        <Upload className="w-3.5 h-3.5" aria-hidden="true" />
+                        Upload File
+                        <input
+                          type="file"
+                          className="sr-only"
+                          accept=".pdf,.ppt,.pptx,.doc,.docx,.xls,.xlsx,.mp4,.webm,.ogg,.jpg,.png"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (!file) return;
+                            const objectUrl = URL.createObjectURL(file);
+                            const updated = [...draftResources];
+                            updated[i] = {
+                              ...updated[i],
+                              name: updated[i].name || file.name,
+                              url: objectUrl,
+                              fileName: file.name,
+                            };
+                            setDraftResources(updated);
+                            toast.success(`"${file.name}" attached`);
+                          }}
+                        />
+                      </label>
+                      {res.fileName && (
+                        <span className="text-xs text-muted-foreground truncate max-w-[200px]" title={res.fileName}>
+                          📎 {res.fileName}
+                        </span>
+                      )}
                     </div>
                   </div>
                   <Button
