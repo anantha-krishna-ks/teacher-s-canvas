@@ -117,12 +117,14 @@ export default function GeneratedLessonPlan({ data, onBack }: GeneratedLessonPla
 
   // Draft states for each section
   const [draftObjectives, setDraftObjectives] = useState<string[]>([]);
+  const [draftResources, setDraftResources] = useState<GeneratedPlan["resources"]>([]);
   const [draftProcedure, setDraftProcedure] = useState<GeneratedPlan["procedure"]>({ engage: "", explore: "", explain: "", elaborate: "", evaluate: "" });
   const [draftHomework, setDraftHomework] = useState<string[]>([]);
   const [draftQuiz, setDraftQuiz] = useState<GeneratedPlan["assessment"]["formativeQuiz"]>([]);
 
   const handleStartEdit = useCallback((section: EditingSection) => {
     if (section === "objectives") setDraftObjectives([...plan.learningObjectives]);
+    if (section === "resources") setDraftResources(plan.resources.map(r => ({ ...r })));
     if (section === "procedure") setDraftProcedure({ ...plan.procedure });
     if (section === "homework") setDraftHomework([...plan.homework]);
     if (section === "assessment") setDraftQuiz(plan.assessment.formativeQuiz.map(q => ({ ...q, options: [...q.options] })));
@@ -142,9 +144,12 @@ export default function GeneratedLessonPlan({ data, onBack }: GeneratedLessonPla
   }, [draftObjectives]);
 
   const handleSaveResources = useCallback(() => {
-    toast.info("Resource editing will be available soon");
+    const valid = draftResources.filter(r => r.name.trim() && r.url.trim());
+    if (valid.length === 0) { toast.error("At least one resource is required"); return; }
+    setPlan(prev => ({ ...prev, resources: valid }));
     setEditingSection(null);
-  }, []);
+    toast.success("Resources updated");
+  }, [draftResources]);
 
   const handleSaveProcedure = useCallback(() => {
     setPlan(prev => ({ ...prev, procedure: { ...draftProcedure } }));
@@ -332,31 +337,103 @@ export default function GeneratedLessonPlan({ data, onBack }: GeneratedLessonPla
           onSave={handleSaveResources}
           onCancel={handleCancelEdit}
         />
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 ml-11">
-          {plan.resources.map((res, i) => {
-            const style = RESOURCE_ICON_MAP[res.type];
-            const ResIcon = style.icon;
-            return (
-              <a
-                key={i}
-                href={res.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-3 p-3 rounded-lg border border-border bg-background hover:bg-muted/50 transition-colors group cursor-pointer"
-                aria-label={`Open ${res.name} (${res.type.toUpperCase()})`}
-              >
-                <span className={`w-9 h-9 rounded-lg ${style.bg} flex items-center justify-center shrink-0`}>
-                  <ResIcon className={`w-4.5 h-4.5 ${style.color}`} aria-hidden="true" />
-                </span>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-foreground truncate">{res.name}</p>
-                  <p className="text-xs text-muted-foreground uppercase">{res.type}</p>
+        {editingSection === "resources" ? (
+          <div className="space-y-3 ml-11">
+            {draftResources.map((res, i) => {
+              const style = RESOURCE_ICON_MAP[res.type];
+              const ResIcon = style.icon;
+              return (
+                <div key={i} className="flex items-start gap-3 p-3 rounded-lg border border-border bg-muted/40">
+                  <span className={`w-9 h-9 rounded-lg ${style.bg} flex items-center justify-center shrink-0 mt-1`}>
+                    <ResIcon className={`w-4.5 h-4.5 ${style.color}`} aria-hidden="true" />
+                  </span>
+                  <div className="flex-1 space-y-2">
+                    <Input
+                      value={res.name}
+                      onChange={(e) => {
+                        const updated = [...draftResources];
+                        updated[i] = { ...updated[i], name: e.target.value };
+                        setDraftResources(updated);
+                      }}
+                      className="text-sm h-9"
+                      placeholder="Resource name"
+                    />
+                    <div className="flex gap-2">
+                      <select
+                        value={res.type}
+                        onChange={(e) => {
+                          const updated = [...draftResources];
+                          updated[i] = { ...updated[i], type: e.target.value as "pdf" | "ppt" | "worksheet" | "video" };
+                          setDraftResources(updated);
+                        }}
+                        className="h-9 rounded-md border border-input bg-background px-3 text-sm text-foreground"
+                        aria-label="Resource type"
+                      >
+                        <option value="pdf">PDF</option>
+                        <option value="ppt">PPT</option>
+                        <option value="worksheet">Worksheet</option>
+                        <option value="video">Video</option>
+                      </select>
+                      <Input
+                        value={res.url}
+                        onChange={(e) => {
+                          const updated = [...draftResources];
+                          updated[i] = { ...updated[i], url: e.target.value };
+                          setDraftResources(updated);
+                        }}
+                        className="text-sm h-9 flex-1"
+                        placeholder="URL"
+                      />
+                    </div>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-8 w-8 p-0 text-muted-foreground hover:text-destructive shrink-0 mt-1"
+                    onClick={() => setDraftResources(draftResources.filter((_, idx) => idx !== i))}
+                    aria-label={`Remove ${res.name}`}
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </Button>
                 </div>
-                <ExternalLink className="w-3.5 h-3.5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity shrink-0" aria-hidden="true" />
-              </a>
-            );
-          })}
-        </div>
+              );
+            })}
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-1.5"
+              onClick={() => setDraftResources([...draftResources, { name: "", type: "pdf", url: "" }])}
+            >
+              <Plus className="w-3.5 h-3.5" /> Add Resource
+            </Button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 ml-11">
+            {plan.resources.map((res, i) => {
+              const style = RESOURCE_ICON_MAP[res.type];
+              const ResIcon = style.icon;
+              return (
+                <a
+                  key={i}
+                  href={res.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 p-3 rounded-lg border border-border bg-background hover:bg-muted/50 transition-colors group cursor-pointer"
+                  aria-label={`Open ${res.name} (${res.type.toUpperCase()})`}
+                >
+                  <span className={`w-9 h-9 rounded-lg ${style.bg} flex items-center justify-center shrink-0`}>
+                    <ResIcon className={`w-4.5 h-4.5 ${style.color}`} aria-hidden="true" />
+                  </span>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-foreground truncate">{res.name}</p>
+                    <p className="text-xs text-muted-foreground uppercase">{res.type}</p>
+                  </div>
+                  <ExternalLink className="w-3.5 h-3.5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity shrink-0" aria-hidden="true" />
+                </a>
+              );
+            })}
+          </div>
+        )}
       </motion.section>
 
       {/* Section 4: Procedure (5-E Model) */}
