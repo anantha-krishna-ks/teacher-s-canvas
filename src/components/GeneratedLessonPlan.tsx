@@ -12,6 +12,11 @@ import {
   Clock,
   GraduationCap,
   Layers,
+  FileText,
+  Presentation,
+  FileSpreadsheet,
+  Video,
+  ExternalLink,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
