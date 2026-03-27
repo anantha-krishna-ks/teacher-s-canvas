@@ -68,6 +68,7 @@ export interface QuestionData {
   type: QuestionType;
   questionText: string;
   answerText?: string;
+  trueFalseAnswer?: boolean | null;
   hasImage?: boolean;
   imageData?: string | null;
   marks: string;
@@ -101,6 +102,9 @@ const QuestionEditorDialog = ({
   const [matchPairs, setMatchPairs] = useState<MatchPair[]>(
     editData?.matchPairs ?? createDefaultPairs()
   );
+  const [trueFalseAnswer, setTrueFalseAnswer] = useState<boolean | null>(
+    editData?.trueFalseAnswer ?? null
+  );
 
   const handleImageChange = useCallback((newHasImage: boolean, newImageData: string | null) => {
     setHasImage(newHasImage);
@@ -116,6 +120,7 @@ const QuestionEditorDialog = ({
     setImageData(null);
     setIncludeWordBank(false);
     setMatchPairs(createDefaultPairs());
+    setTrueFalseAnswer(null);
   }, []);
 
   const handleSave = useCallback(() => {
@@ -125,6 +130,7 @@ const QuestionEditorDialog = ({
       type,
       questionText,
       answerText,
+      trueFalseAnswer: type === "true-false" ? trueFalseAnswer : undefined,
       hasImage,
       imageData,
       marks,
@@ -133,7 +139,7 @@ const QuestionEditorDialog = ({
       matchPairs: type === "matching" ? matchPairs : undefined,
     });
     resetState();
-  }, [type, questionText, answerText, hasImage, imageData, marks, editData, onSave, includeWordBank, matchPairs, resetState]);
+  }, [type, questionText, answerText, trueFalseAnswer, hasImage, imageData, marks, editData, onSave, includeWordBank, matchPairs, resetState]);
 
   const handleOpenChange = useCallback(
     (val: boolean) => {
