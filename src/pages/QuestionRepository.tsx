@@ -391,9 +391,8 @@ const QuestionRepository = () => {
                   <SelectItem value="short-answer">Short Answer</SelectItem>
                   <SelectItem value="multiple-choice">Multiple Choice</SelectItem>
                   <SelectItem value="true-false">True / False</SelectItem>
-                  <SelectItem value="matching">Matching</SelectItem>
+                  <SelectItem value="matching">Match the Following</SelectItem>
                   <SelectItem value="fill-blank">Fill in the Blank</SelectItem>
-                  <SelectItem value="section-heading">Section Heading</SelectItem>
                 </SelectContent>
               </Select>
             </div>

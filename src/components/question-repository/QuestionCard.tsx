@@ -27,8 +27,7 @@ export type QuestionType =
   | "multiple-choice"
   | "true-false"
   | "matching"
-  | "fill-blank"
-  | "section-heading";
+  | "fill-blank";
 
 interface QuestionCardProps {
   index: number;
@@ -42,9 +41,8 @@ const TYPE_LABELS: Record<QuestionType, string> = {
   "short-answer": "Short Answer",
   "multiple-choice": "Multiple Choice",
   "true-false": "True / False",
-  matching: "Matching",
+  matching: "Match the Following",
   "fill-blank": "Fill in the Blank",
-  "section-heading": "Section Heading",
 };
 
 const TABS_DEFAULT = ["Answer", "Image", "Options"] as const;

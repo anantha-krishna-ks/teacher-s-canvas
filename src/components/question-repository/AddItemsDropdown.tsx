@@ -17,9 +17,8 @@ const ITEM_TYPES: { type: QuestionType; label: string }[] = [
   { type: "short-answer", label: "Short Answer" },
   { type: "multiple-choice", label: "Multiple Choice" },
   { type: "true-false", label: "True / False" },
-  { type: "matching", label: "Matching" },
+  { type: "matching", label: "Match the Following" },
   { type: "fill-blank", label: "Fill in the Blank" },
-  { type: "section-heading", label: "Section Heading" },
 ];
 
 const AddItemsDropdown = ({ onAdd, onCopyQuestion }: AddItemsDropdownProps) => {
