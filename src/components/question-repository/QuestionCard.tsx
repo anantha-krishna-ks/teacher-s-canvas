@@ -27,8 +27,7 @@ export type QuestionType =
   | "multiple-choice"
   | "true-false"
   | "matching"
-  | "fill-blank"
-  | "section-heading";
+  | "fill-blank";
 
 interface QuestionCardProps {
   index: number;
