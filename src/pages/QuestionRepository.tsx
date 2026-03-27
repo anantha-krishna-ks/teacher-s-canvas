@@ -222,9 +222,9 @@ const FolderTreeItem = ({
 const QuestionRepository = () => {
   const navigate = useNavigate();
   const [selectedProgram, setSelectedProgram] = useState(ACADEMIC_YEARS[1]);
-  const [selectedFolder, setSelectedFolder] = useState("cloud-items");
+  const [selectedFolder, setSelectedFolder] = useState("grade-10");
   const [expandedFolders, setExpandedFolders] = useState<Set<string>>(
-    () => new Set(["cloud-items"])
+    () => new Set(["grade-10"])
   );
   const [searchQuery, setSearchQuery] = useState("");
 
