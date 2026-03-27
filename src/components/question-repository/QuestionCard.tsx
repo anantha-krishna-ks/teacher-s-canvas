@@ -1,5 +1,6 @@
 import { useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
+import MCQOptionsEditor from "./MCQOptionsEditor";
 import { Textarea } from "@/components/ui/textarea";
 import {
   Bold,
@@ -172,8 +173,11 @@ const QuestionCard = ({
             placeholder="Type your question here..."
             value={questionText}
             onChange={handleTextChange}
-            className="min-h-[160px] resize-y text-sm"
+            className="min-h-[120px] resize-y text-sm"
           />
+
+          {/* MCQ Options */}
+          {type === "multiple-choice" && <MCQOptionsEditor />}
         </div>
 
         {/* Side actions */}
