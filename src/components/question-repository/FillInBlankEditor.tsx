@@ -14,7 +14,7 @@ import {
   AlignRight,
   AlignJustify,
   RemoveFormatting,
-  BracketsCurly,
+  Brackets,
 } from "lucide-react";
 
 interface FillInBlankEditorProps {
@@ -129,7 +129,7 @@ const FillInBlankEditor = ({
           onClick={handleMarkWord}
           title="Select a word in the text, then click to mark it as a blank"
         >
-          <BracketsCurly className="w-3.5 h-3.5" />
+          <Brackets className="w-3.5 h-3.5" />
           Mark selected word
         </Button>
       </div>
