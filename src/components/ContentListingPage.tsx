@@ -2,6 +2,7 @@
 // Renders 3 scrollable sections (Recommended, In Progress, Saved) with a header and Create button
 
 import { useCallback } from "react";
+import { cn } from "@/lib/utils";
 import { Plus, ChevronLeft, Clock, BookOpen, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
