@@ -72,7 +72,7 @@ const ContentListingPage = ({
             <Button
               key={action.path}
               variant={action.variant || "outline"}
-              className="gap-2"
+              className={cn("gap-2", action.className)}
               onClick={() => navigate(action.path)}
             >
               {action.icon && <action.icon className="w-4 h-4" aria-hidden="true" />}
