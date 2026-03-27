@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import AddItemsDropdown from "@/components/question-repository/AddItemsDropdown";
 import QuestionEditorDialog from "@/components/question-repository/QuestionEditorDialog";
 import QuestionListTable from "@/components/question-repository/QuestionListTable";
@@ -153,6 +153,21 @@ const QuestionRepository = () => {
   // Questions state
   const [questions, setQuestions] = useState<QuestionData[]>([]);
   const [selectedQuestionIds, setSelectedQuestionIds] = useState<Set<string>>(new Set());
+  const [filterType, setFilterType] = useState("all");
+  const [filterMarks, setFilterMarks] = useState("all");
+
+  const uniqueMarks = useMemo(
+    () => [...new Set(questions.map((q) => q.marks))].sort((a, b) => parseFloat(a) - parseFloat(b)),
+    [questions]
+  );
+
+  const filteredQuestions = useMemo(() => {
+    return questions.filter((q) => {
+      if (filterType !== "all" && q.type !== filterType) return false;
+      if (filterMarks !== "all" && q.marks !== filterMarks) return false;
+      return true;
+    });
+  }, [questions, filterType, filterMarks]);
 
   // Dialog state
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -385,26 +400,61 @@ const QuestionRepository = () => {
             </div>
           </div>
 
+          {/* Filters */}
+          <div className="px-5 pt-4 pb-2 flex items-center gap-4">
+            <div className="w-48">
+              <Select value={filterType} onValueChange={setFilterType}>
+                <SelectTrigger className="h-9 text-sm">
+                  <SelectValue placeholder="All Types" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Types</SelectItem>
+                  <SelectItem value="short-answer">Short Answer</SelectItem>
+                  <SelectItem value="multiple-choice">Multiple Choice</SelectItem>
+                  <SelectItem value="true-false">True / False</SelectItem>
+                  <SelectItem value="matching">Matching</SelectItem>
+                  <SelectItem value="fill-blank">Fill in the Blank</SelectItem>
+                  <SelectItem value="section-heading">Section Heading</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="w-40">
+              <Select value={filterMarks} onValueChange={setFilterMarks}>
+                <SelectTrigger className="h-9 text-sm">
+                  <SelectValue placeholder="All Marks" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Marks</SelectItem>
+                  {uniqueMarks.map((m) => (
+                    <SelectItem key={m} value={m}>{m} marks</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
           {/* Questions list */}
           <ScrollArea className="flex-1">
-            <div className="p-5">
-              {questions.length === 0 ? (
+            <div className="p-5 pt-2">
+              {filteredQuestions.length === 0 ? (
                 <div className="flex items-center justify-center py-16">
                   <div className="text-center space-y-3">
                     <div className="w-16 h-16 mx-auto rounded-2xl bg-muted flex items-center justify-center">
                       <FilePlus className="w-7 h-7 text-muted-foreground" />
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-foreground">No questions yet</p>
+                      <p className="text-sm font-medium text-foreground">No questions found</p>
                       <p className="text-sm text-muted-foreground mt-1">
-                        Click "Add Items" to start building your repository
+                        {questions.length === 0
+                          ? 'Click "Add Items" to start building your repository'
+                          : "Try adjusting your filters"}
                       </p>
                     </div>
                   </div>
                 </div>
               ) : (
                 <QuestionListTable
-                  questions={questions}
+                  questions={filteredQuestions}
                   selectedIds={selectedQuestionIds}
                   onToggleSelect={handleToggleSelect}
                   onToggleSelectAll={handleToggleSelectAll}
