@@ -59,6 +59,7 @@ export interface QuestionData {
   id: string;
   type: QuestionType;
   questionText: string;
+  answerText?: string;
   marks: string;
   label: string;
 }
@@ -80,7 +81,8 @@ const QuestionEditorDialog = ({
 }: QuestionEditorDialogProps) => {
   const [questionText, setQuestionText] = useState(editData?.questionText ?? "");
   const [marks, setMarks] = useState(editData?.marks ?? INITIAL_MARKS);
-  const [activeTab, setActiveTab] = useState<"question" | "image">("question");
+  const [activeTab, setActiveTab] = useState<"question" | "answer" | "image">("question");
+  const [answerText, setAnswerText] = useState(editData?.answerText ?? "");
 
   const handleSave = useCallback(() => {
     const labels = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -88,18 +90,21 @@ const QuestionEditorDialog = ({
       id: editData?.id ?? crypto.randomUUID(),
       type,
       questionText,
+      answerText,
       marks,
       label: editData?.label ?? labels[0],
     });
     setQuestionText("");
+    setAnswerText("");
     setMarks(INITIAL_MARKS);
     setActiveTab("question");
-  }, [type, questionText, marks, editData, onSave]);
+  }, [type, questionText, answerText, marks, editData, onSave]);
 
   const handleOpenChange = useCallback(
     (val: boolean) => {
       if (!val) {
         setQuestionText("");
+        setAnswerText("");
         setMarks(INITIAL_MARKS);
         setActiveTab("question");
       }
@@ -178,11 +183,32 @@ const QuestionEditorDialog = ({
               <ImagePlus className="w-3.5 h-3.5" />
               Image
             </button>
+            <button
+              className={cn(
+                "px-3 py-2 text-sm font-medium transition-colors border-b-2 -mb-px",
+                activeTab === "answer"
+                  ? "border-primary text-primary"
+                  : "border-transparent text-muted-foreground hover:text-foreground"
+              )}
+              onClick={() => setActiveTab("answer")}
+            >
+              Answer
+            </button>
           </div>
 
           {/* Tab content */}
           {activeTab === "image" ? (
             <ImageUploadEditor />
+          ) : activeTab === "answer" ? (
+            <div className="space-y-2">
+              <Label className="text-sm font-medium">Answer</Label>
+              <Textarea
+                placeholder="Type the answer here..."
+                value={answerText}
+                onChange={(e) => setAnswerText(e.target.value)}
+                className="min-h-[180px] resize-y text-sm"
+              />
+            </div>
           ) : (
             <div className="space-y-3">
               {/* Toolbar */}
