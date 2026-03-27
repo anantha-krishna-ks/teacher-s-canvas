@@ -1,4 +1,7 @@
 import { useState, useCallback } from "react";
+import QuestionCard from "@/components/question-repository/QuestionCard";
+import AddItemsDropdown from "@/components/question-repository/AddItemsDropdown";
+import type { QuestionType } from "@/components/question-repository/QuestionCard";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,7 +22,6 @@ import {
   Pencil,
   Trash2,
   ChevronRight,
-  Plus,
   Search,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -151,6 +153,11 @@ const QuestionRepository = () => {
   const [marks, setMarks] = useState("");
   const [taxonomy, setTaxonomy] = useState("");
 
+  // Questions state
+  const [questions, setQuestions] = useState<
+    { id: string; type: QuestionType; label: string }[]
+  >([]);
+
   const handleBack = useCallback(() => navigate("/dashboard/assessment"), [navigate]);
 
   const handleSelectFolder = useCallback((id: string) => {
@@ -166,8 +173,36 @@ const QuestionRepository = () => {
     });
   }, []);
 
-  const handleAddQuestion = useCallback(() => {
-    // Placeholder for adding question
+  const handleAddItem = useCallback((type: QuestionType) => {
+    const labels = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    setQuestions((prev) => [
+      ...prev,
+      {
+        id: crypto.randomUUID(),
+        type,
+        label: labels[prev.length % 26],
+      },
+    ]);
+  }, []);
+
+  const handleDeleteQuestion = useCallback((id: string) => {
+    setQuestions((prev) => prev.filter((q) => q.id !== id));
+  }, []);
+
+  const handleDuplicateQuestion = useCallback((id: string) => {
+    setQuestions((prev) => {
+      const idx = prev.findIndex((q) => q.id === id);
+      if (idx === -1) return prev;
+      const labels = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+      const newQ = {
+        ...prev[idx],
+        id: crypto.randomUUID(),
+        label: labels[prev.length % 26],
+      };
+      const next = [...prev];
+      next.splice(idx + 1, 0, newQ);
+      return next;
+    });
   }, []);
 
   return (
@@ -355,27 +390,41 @@ const QuestionRepository = () => {
               </div>
             </div>
             <div className="mt-4 flex justify-end">
-              <Button onClick={handleAddQuestion} className="gap-2">
-                <Plus className="w-4 h-4" />
-                Add Question
-              </Button>
+              <AddItemsDropdown onAdd={handleAddItem} />
             </div>
           </div>
 
-          {/* Questions area (empty state) */}
-          <div className="flex-1 flex items-center justify-center p-12">
-            <div className="text-center space-y-3">
-              <div className="w-16 h-16 mx-auto rounded-2xl bg-muted flex items-center justify-center">
-                <FilePlus className="w-7 h-7 text-muted-foreground" />
-              </div>
-              <div>
-                <p className="text-sm font-medium text-foreground">No questions yet</p>
-                <p className="text-sm text-muted-foreground mt-1">
-                  Select filters above and click "Add Question" to start building your repository
-                </p>
-              </div>
+          {/* Questions area */}
+          <ScrollArea className="flex-1">
+            <div className="p-5 space-y-4">
+              {questions.length === 0 ? (
+                <div className="flex items-center justify-center py-16">
+                  <div className="text-center space-y-3">
+                    <div className="w-16 h-16 mx-auto rounded-2xl bg-muted flex items-center justify-center">
+                      <FilePlus className="w-7 h-7 text-muted-foreground" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-foreground">No questions yet</p>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        Click "Add Items" to start building your repository
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                questions.map((q, i) => (
+                  <QuestionCard
+                    key={q.id}
+                    index={i + 1}
+                    label={q.label}
+                    type={q.type}
+                    onDelete={() => handleDeleteQuestion(q.id)}
+                    onDuplicate={() => handleDuplicateQuestion(q.id)}
+                  />
+                ))
+              )}
             </div>
-          </div>
+          </ScrollArea>
         </div>
       </div>
     </div>
