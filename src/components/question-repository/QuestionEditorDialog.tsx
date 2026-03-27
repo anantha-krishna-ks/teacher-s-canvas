@@ -404,15 +404,26 @@ const QuestionEditorDialog = ({
               onImageChange={handleImageChange}
             />
           ) : activeTab === "answer" ? (
-            <div className="space-y-2">
-              <Label className="text-sm font-medium">Answer</Label>
-              <Textarea
-                placeholder="Type the answer here..."
-                value={answerText}
-                onChange={(e) => setAnswerText(e.target.value)}
-                className="min-h-[180px] resize-y text-sm"
-              />
-            </div>
+            type === "matching" ? (
+              <div className="space-y-3">
+                <Textarea
+                  placeholder="Type your question or instructions here..."
+                  value={questionText}
+                  onChange={(e) => setQuestionText(e.target.value)}
+                  className="min-h-[140px] resize-y text-sm"
+                />
+              </div>
+            ) : (
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Answer</Label>
+                <Textarea
+                  placeholder="Type the answer here..."
+                  value={answerText}
+                  onChange={(e) => setAnswerText(e.target.value)}
+                  className="min-h-[180px] resize-y text-sm"
+                />
+              </div>
+            )
           ) : (
             renderQuestionContent()
           )}
