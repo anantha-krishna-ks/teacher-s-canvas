@@ -507,6 +507,15 @@ const QuestionRepository = () => {
         }
         onSave={handleSaveRepo}
       />
+
+      {/* Delete Repository Confirmation */}
+      <DeleteRepositoryDialog
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        repositoryName={selectedFolderData?.name ?? ""}
+        questionCount={selectedFolderData?.count ?? 0}
+        onConfirm={handleConfirmDeleteRepo}
+      />
     </div>
   );
 };
