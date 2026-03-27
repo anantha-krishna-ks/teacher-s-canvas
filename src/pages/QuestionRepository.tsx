@@ -1,7 +1,9 @@
 import { useState, useCallback } from "react";
-import QuestionCard from "@/components/question-repository/QuestionCard";
 import AddItemsDropdown from "@/components/question-repository/AddItemsDropdown";
+import QuestionEditorDialog from "@/components/question-repository/QuestionEditorDialog";
+import QuestionListTable from "@/components/question-repository/QuestionListTable";
 import type { QuestionType } from "@/components/question-repository/QuestionCard";
+import type { QuestionData } from "@/components/question-repository/QuestionEditorDialog";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -37,7 +39,6 @@ interface FolderNode {
 // --- Mock data ---
 const ACADEMIC_YEARS = ["2024-2025", "2025-2026", "2026-2027"];
 const GRADES = ["Grade 9", "Grade 10", "Grade 11", "Grade 12"];
-const TEST_TYPES = ["Unit Test 1", "Unit Test 2", "Mid Term Exam", "Final Exam", "Quiz 1", "Quiz 2", "Weekly Test"];
 
 const SUBJECT_FOLDERS: FolderNode[] = [
   { id: "mathematics", name: "Mathematics", count: 25, children: [] },
@@ -51,7 +52,6 @@ const SUBJECT_FOLDERS: FolderNode[] = [
 ];
 
 const CHAPTERS = ["Circles", "Polynomials", "Triangles", "Coordinate Geometry", "Probability"];
-const QUESTION_TYPES = ["MCQ", "Short Answer", "Long Answer", "Assertion - Reasoning", "Case Study", "True / False", "Fill in the Blank"];
 const MARKS_OPTIONS = ["1", "2", "3", "4", "5"];
 const TAXONOMY_OPTIONS = ["Knowledge", "Understanding", "Apply", "Analyze", "Evaluate", "Create"];
 
@@ -140,7 +140,6 @@ const QuestionRepository = () => {
   const navigate = useNavigate();
   const [selectedAcademicYear, setSelectedAcademicYear] = useState(ACADEMIC_YEARS[1]);
   const [selectedGrade, setSelectedGrade] = useState(GRADES[1]);
-  const [selectedTestType, setSelectedTestType] = useState(TEST_TYPES[0]);
   const [selectedFolder, setSelectedFolder] = useState("mathematics");
   const [expandedFolders, setExpandedFolders] = useState<Set<string>>(
     () => new Set([])
@@ -149,14 +148,16 @@ const QuestionRepository = () => {
 
   // Repository setup state
   const [chapter, setChapter] = useState("");
-  const [questionType, setQuestionType] = useState("");
-  const [marks, setMarks] = useState("");
   const [taxonomy, setTaxonomy] = useState("");
 
   // Questions state
-  const [questions, setQuestions] = useState<
-    { id: string; type: QuestionType; label: string }[]
-  >([]);
+  const [questions, setQuestions] = useState<QuestionData[]>([]);
+  const [selectedQuestionIds, setSelectedQuestionIds] = useState<Set<string>>(new Set());
+
+  // Dialog state
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogType, setDialogType] = useState<QuestionType>("short-answer");
+  const [editingQuestion, setEditingQuestion] = useState<QuestionData | null>(null);
 
   const handleBack = useCallback(() => navigate("/dashboard/assessment"), [navigate]);
 
@@ -174,36 +175,56 @@ const QuestionRepository = () => {
   }, []);
 
   const handleAddItem = useCallback((type: QuestionType) => {
-    const labels = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    setQuestions((prev) => [
-      ...prev,
-      {
-        id: crypto.randomUUID(),
-        type,
-        label: labels[prev.length % 26],
-      },
-    ]);
+    setDialogType(type);
+    setEditingQuestion(null);
+    setDialogOpen(true);
+  }, []);
+
+  const handleSaveQuestion = useCallback((data: QuestionData) => {
+    setQuestions((prev) => {
+      const existingIdx = prev.findIndex((q) => q.id === data.id);
+      if (existingIdx !== -1) {
+        const updated = [...prev];
+        updated[existingIdx] = data;
+        return updated;
+      }
+      const labels = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+      return [...prev, { ...data, label: labels[prev.length % 26] }];
+    });
+    setDialogOpen(false);
+    setEditingQuestion(null);
+  }, []);
+
+  const handleEditQuestion = useCallback((question: QuestionData) => {
+    setDialogType(question.type);
+    setEditingQuestion(question);
+    setDialogOpen(true);
   }, []);
 
   const handleDeleteQuestion = useCallback((id: string) => {
     setQuestions((prev) => prev.filter((q) => q.id !== id));
-  }, []);
-
-  const handleDuplicateQuestion = useCallback((id: string) => {
-    setQuestions((prev) => {
-      const idx = prev.findIndex((q) => q.id === id);
-      if (idx === -1) return prev;
-      const labels = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-      const newQ = {
-        ...prev[idx],
-        id: crypto.randomUUID(),
-        label: labels[prev.length % 26],
-      };
-      const next = [...prev];
-      next.splice(idx + 1, 0, newQ);
+    setSelectedQuestionIds((prev) => {
+      const next = new Set(prev);
+      next.delete(id);
       return next;
     });
   }, []);
+
+  const handleToggleSelect = useCallback((id: string) => {
+    setSelectedQuestionIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }, []);
+
+  const handleToggleSelectAll = useCallback(() => {
+    setSelectedQuestionIds((prev) => {
+      if (prev.size === questions.length) return new Set();
+      return new Set(questions.map((q) => q.id));
+    });
+  }, [questions]);
 
   return (
     <div className="max-w-7xl mx-auto space-y-6 animate-fade-in">
@@ -244,7 +265,7 @@ const QuestionRepository = () => {
       <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-6">
         {/* Left Panel - Folder Structure */}
         <div className="bg-card border border-border rounded-xl overflow-visible flex flex-col">
-          {/* Grade & Test Type selectors */}
+          {/* Grade selector */}
           <div className="p-4 border-b border-border space-y-3">
             <div className="space-y-1.5">
               <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
@@ -327,7 +348,7 @@ const QuestionRepository = () => {
 
           {/* Filters */}
           <div className="p-5 border-b border-border">
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
               <div className="space-y-1.5">
                 <label className="text-sm font-medium text-foreground">Chapter</label>
                 <Select value={chapter} onValueChange={setChapter}>
@@ -338,21 +359,6 @@ const QuestionRepository = () => {
                     {CHAPTERS.map((c) => (
                       <SelectItem key={c} value={c}>
                         {c}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-1.5">
-                <label className="text-sm font-medium text-foreground">Marks</label>
-                <Select value={marks} onValueChange={setMarks}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select marks" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {MARKS_OPTIONS.map((m) => (
-                      <SelectItem key={m} value={m}>
-                        {m} mark{Number(m) > 1 ? "s" : ""}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -373,15 +379,15 @@ const QuestionRepository = () => {
                   </SelectContent>
                 </Select>
               </div>
-            </div>
-            <div className="mt-4 flex justify-end">
-              <AddItemsDropdown onAdd={handleAddItem} />
+              <div className="flex items-end">
+                <AddItemsDropdown onAdd={handleAddItem} />
+              </div>
             </div>
           </div>
 
-          {/* Questions area */}
+          {/* Questions list */}
           <ScrollArea className="flex-1">
-            <div className="p-5 space-y-4">
+            <div className="p-5">
               {questions.length === 0 ? (
                 <div className="flex items-center justify-center py-16">
                   <div className="text-center space-y-3">
@@ -397,21 +403,28 @@ const QuestionRepository = () => {
                   </div>
                 </div>
               ) : (
-                questions.map((q, i) => (
-                  <QuestionCard
-                    key={q.id}
-                    index={i + 1}
-                    label={q.label}
-                    type={q.type}
-                    onDelete={() => handleDeleteQuestion(q.id)}
-                    onDuplicate={() => handleDuplicateQuestion(q.id)}
-                  />
-                ))
+                <QuestionListTable
+                  questions={questions}
+                  selectedIds={selectedQuestionIds}
+                  onToggleSelect={handleToggleSelect}
+                  onToggleSelectAll={handleToggleSelectAll}
+                  onEdit={handleEditQuestion}
+                  onDelete={handleDeleteQuestion}
+                />
               )}
             </div>
           </ScrollArea>
         </div>
       </div>
+
+      {/* Question Editor Dialog */}
+      <QuestionEditorDialog
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+        type={dialogType}
+        onSave={handleSaveQuestion}
+        editData={editingQuestion}
+      />
     </div>
   );
 };
