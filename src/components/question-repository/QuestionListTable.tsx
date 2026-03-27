@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { GripVertical, Pencil, Trash2 } from "lucide-react";
+import { GripVertical, Image, Pencil, Trash2 } from "lucide-react";
 import type { QuestionData } from "./QuestionEditorDialog";
 import { cn } from "@/lib/utils";
 
@@ -79,6 +79,11 @@ const QuestionListTable = ({
                   <span className="italic text-muted-foreground">No question text</span>
                 )}
               </p>
+              {q.hasImage && (
+                <span className="shrink-0 ml-auto" title="Image attached">
+                  <Image className="w-4 h-4 text-primary" />
+                </span>
+              )}
             </div>
             <span className="text-sm text-foreground text-center font-medium">
               {q.marks}

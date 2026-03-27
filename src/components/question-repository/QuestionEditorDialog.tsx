@@ -60,6 +60,7 @@ export interface QuestionData {
   type: QuestionType;
   questionText: string;
   answerText?: string;
+  hasImage?: boolean;
   marks: string;
   label: string;
 }
