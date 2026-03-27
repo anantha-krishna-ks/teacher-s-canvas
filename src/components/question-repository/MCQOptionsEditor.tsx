@@ -5,10 +5,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import {
   Plus,
   X,
-  ArrowUp,
-  ArrowDown,
-  Lock,
-  Unlock,
+  GripVertical,
   LayoutGrid,
   Columns2,
   List,
@@ -21,7 +18,6 @@ interface MCQOption {
   id: string;
   text: string;
   isCorrect: boolean;
-  isLocked: boolean;
 }
 
 const LAYOUT_OPTIONS: { mode: LayoutMode; label: string; icon: React.ElementType }[] = [
@@ -34,11 +30,10 @@ const MCQOptionsEditor = () => {
   const [layout, setLayout] = useState<LayoutMode>("list");
   const [allowMultiple, setAllowMultiple] = useState(false);
   const [options, setOptions] = useState<MCQOption[]>(() =>
-    Array.from({ length: 4 }, (_, i) => ({
+    Array.from({ length: 4 }, () => ({
       id: crypto.randomUUID(),
       text: "",
       isCorrect: false,
-      isLocked: false,
     }))
   );
 
@@ -59,26 +54,24 @@ const MCQOptionsEditor = () => {
     [allowMultiple]
   );
 
-  const handleToggleLock = useCallback((id: string) => {
-    setOptions((prev) =>
-      prev.map((o) => (o.id === id ? { ...o, isLocked: !o.isLocked } : o))
-    );
+  const handleDragStart = useCallback((e: React.DragEvent, index: number) => {
+    e.dataTransfer.setData("text/plain", String(index));
+    e.dataTransfer.effectAllowed = "move";
   }, []);
 
-  const handleMoveUp = useCallback((index: number) => {
-    if (index === 0) return;
-    setOptions((prev) => {
-      const next = [...prev];
-      [next[index - 1], next[index]] = [next[index], next[index - 1]];
-      return next;
-    });
+  const handleDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
   }, []);
 
-  const handleMoveDown = useCallback((index: number) => {
+  const handleDrop = useCallback((e: React.DragEvent, dropIndex: number) => {
+    e.preventDefault();
+    const dragIndex = Number(e.dataTransfer.getData("text/plain"));
+    if (dragIndex === dropIndex) return;
     setOptions((prev) => {
-      if (index >= prev.length - 1) return prev;
       const next = [...prev];
-      [next[index], next[index + 1]] = [next[index + 1], next[index]];
+      const [moved] = next.splice(dragIndex, 1);
+      next.splice(dropIndex, 0, moved);
       return next;
     });
   }, []);
@@ -140,6 +133,10 @@ const MCQOptionsEditor = () => {
         {options.map((opt, i) => (
           <div
             key={opt.id}
+            draggable
+            onDragStart={(e) => handleDragStart(e, i)}
+            onDragOver={handleDragOver}
+            onDrop={(e) => handleDrop(e, i)}
             className={cn(
               "flex items-center gap-2 group/opt rounded-lg border p-2 transition-colors",
               opt.isCorrect
@@ -147,6 +144,11 @@ const MCQOptionsEditor = () => {
                 : "border-border bg-background"
             )}
           >
+            {/* Drag handle */}
+            <div className="shrink-0 cursor-grab active:cursor-grabbing text-muted-foreground/50 hover:text-muted-foreground transition-colors">
+              <GripVertical className="w-4 h-4" />
+            </div>
+
             {/* Select correct */}
             <button
               onClick={() => handleToggleCorrect(opt.id)}
@@ -169,52 +171,17 @@ const MCQOptionsEditor = () => {
               className="flex-1 h-8 text-sm border-0 bg-transparent shadow-none focus-visible:ring-0 px-2"
             />
 
-            {/* Actions */}
-            <div className="flex items-center gap-0.5 opacity-0 group-hover/opt:opacity-100 transition-opacity">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-7 w-7 text-muted-foreground hover:text-foreground"
-                onClick={() => handleToggleLock(opt.id)}
-                title={opt.isLocked ? "Unlock" : "Lock"}
-              >
-                {opt.isLocked ? (
-                  <Lock className="w-3.5 h-3.5" />
-                ) : (
-                  <Unlock className="w-3.5 h-3.5" />
-                )}
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-7 w-7 text-muted-foreground hover:text-foreground"
-                onClick={() => handleMoveUp(i)}
-                disabled={i === 0}
-                title="Move up"
-              >
-                <ArrowUp className="w-3.5 h-3.5" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-7 w-7 text-muted-foreground hover:text-foreground"
-                onClick={() => handleMoveDown(i)}
-                disabled={i === options.length - 1}
-                title="Move down"
-              >
-                <ArrowDown className="w-3.5 h-3.5" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-7 w-7 text-destructive/70 hover:text-destructive"
-                onClick={() => handleRemove(opt.id)}
-                disabled={options.length <= 2}
-                title="Remove"
-              >
-                <X className="w-3.5 h-3.5" />
-              </Button>
-            </div>
+            {/* Remove */}
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-7 w-7 text-destructive/70 hover:text-destructive opacity-0 group-hover/opt:opacity-100 transition-opacity"
+              onClick={() => handleRemove(opt.id)}
+              disabled={options.length <= 2}
+              title="Remove"
+            >
+              <X className="w-3.5 h-3.5" />
+            </Button>
           </div>
         ))}
       </div>
