@@ -173,8 +173,11 @@ const QuestionCard = ({
             placeholder="Type your question here..."
             value={questionText}
             onChange={handleTextChange}
-            className="min-h-[160px] resize-y text-sm"
+            className="min-h-[120px] resize-y text-sm"
           />
+
+          {/* MCQ Options */}
+          {type === "multiple-choice" && <MCQOptionsEditor />}
         </div>
 
         {/* Side actions */}
