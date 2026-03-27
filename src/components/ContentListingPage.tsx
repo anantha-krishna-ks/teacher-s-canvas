@@ -8,6 +8,13 @@ import { useNavigate } from "react-router-dom";
 import ScrollableSection from "@/components/lesson-plans/ScrollableSection";
 import type { LessonPlanCard } from "@/constants/lessonPlansPageData";
 
+interface ExtraAction {
+  label: string;
+  path: string;
+  icon?: React.ComponentType<{ className?: string }>;
+  variant?: "default" | "outline" | "secondary" | "ghost";
+}
+
 interface ContentListingPageProps {
   title: string;
   subtitle: string;
@@ -22,6 +29,7 @@ interface ContentListingPageProps {
     inProgress?: string;
     saved?: string;
   };
+  extraActions?: ExtraAction[];
 }
 
 const ContentListingPage = ({
