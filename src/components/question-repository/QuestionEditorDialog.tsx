@@ -117,14 +117,11 @@ const QuestionEditorDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-lg">
             {editData ? "Edit" : "Add"} {TYPE_LABELS[type]} Question
           </DialogTitle>
-          <DialogDescription className="text-sm text-muted-foreground">
-            Fill in the question details below and click save when done.
-          </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-5 py-2">
