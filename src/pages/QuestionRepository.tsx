@@ -1,4 +1,7 @@
 import { useState, useCallback } from "react";
+import QuestionCard from "@/components/question-repository/QuestionCard";
+import AddItemsDropdown from "@/components/question-repository/AddItemsDropdown";
+import type { QuestionType } from "@/components/question-repository/QuestionCard";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -151,6 +154,11 @@ const QuestionRepository = () => {
   const [marks, setMarks] = useState("");
   const [taxonomy, setTaxonomy] = useState("");
 
+  // Questions state
+  const [questions, setQuestions] = useState<
+    { id: string; type: QuestionType; label: string }[]
+  >([]);
+
   const handleBack = useCallback(() => navigate("/dashboard/assessment"), [navigate]);
 
   const handleSelectFolder = useCallback((id: string) => {
@@ -166,8 +174,36 @@ const QuestionRepository = () => {
     });
   }, []);
 
-  const handleAddQuestion = useCallback(() => {
-    // Placeholder for adding question
+  const handleAddItem = useCallback((type: QuestionType) => {
+    const labels = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    setQuestions((prev) => [
+      ...prev,
+      {
+        id: crypto.randomUUID(),
+        type,
+        label: labels[prev.length % 26],
+      },
+    ]);
+  }, []);
+
+  const handleDeleteQuestion = useCallback((id: string) => {
+    setQuestions((prev) => prev.filter((q) => q.id !== id));
+  }, []);
+
+  const handleDuplicateQuestion = useCallback((id: string) => {
+    setQuestions((prev) => {
+      const idx = prev.findIndex((q) => q.id === id);
+      if (idx === -1) return prev;
+      const labels = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+      const newQ = {
+        ...prev[idx],
+        id: crypto.randomUUID(),
+        label: labels[prev.length % 26],
+      };
+      const next = [...prev];
+      next.splice(idx + 1, 0, newQ);
+      return next;
+    });
   }, []);
 
   return (
