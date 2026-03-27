@@ -14,6 +14,7 @@ import Presentations from "./pages/Presentations";
 import Worksheets from "./pages/Worksheets";
 import Quizzes from "./pages/Quizzes";
 import Assessment from "./pages/Assessment";
+import QuestionRepository from "./pages/QuestionRepository";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -37,6 +38,7 @@ const App = () => (
             <Route path="worksheets" element={<Worksheets />} />
             <Route path="quizzes" element={<Quizzes />} />
             <Route path="assessment" element={<Assessment />} />
+            <Route path="assessment/question-repository" element={<QuestionRepository />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
