@@ -2,6 +2,7 @@
 // Renders 3 scrollable sections (Recommended, In Progress, Saved) with a header and Create button
 
 import { useCallback } from "react";
+import { cn } from "@/lib/utils";
 import { Plus, ChevronLeft, Clock, BookOpen, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -13,6 +14,7 @@ interface ExtraAction {
   path: string;
   icon?: React.ComponentType<{ className?: string }>;
   variant?: "default" | "outline" | "secondary" | "ghost";
+  className?: string;
 }
 
 interface ContentListingPageProps {
@@ -71,7 +73,7 @@ const ContentListingPage = ({
             <Button
               key={action.path}
               variant={action.variant || "outline"}
-              className="gap-2"
+              className={cn("gap-2", action.className)}
               onClick={() => navigate(action.path)}
             >
               {action.icon && <action.icon className="w-4 h-4" aria-hidden="true" />}

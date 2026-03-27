@@ -21,6 +21,7 @@ const Assessment = () => (
         path: "/dashboard/assessment/question-repository",
         icon: Database,
         variant: "outline",
+        className: "border-primary text-primary hover:bg-primary/5 [&_svg]:text-primary",
       },
     ]}
   />
