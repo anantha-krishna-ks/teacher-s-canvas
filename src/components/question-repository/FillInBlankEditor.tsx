@@ -1,21 +1,9 @@
-import { useState, useCallback, useRef } from "react";
+import { useCallback, useRef, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import {
-  Bold,
-  Italic,
-  Underline,
-  Subscript,
-  Superscript,
-  AlignLeft,
-  AlignCenter,
-  AlignRight,
-  AlignJustify,
-  RemoveFormatting,
-  Brackets,
-} from "lucide-react";
+import { Brackets, Info } from "lucide-react";
 
 interface FillInBlankEditorProps {
   value: string;
@@ -23,21 +11,6 @@ interface FillInBlankEditorProps {
   includeWordBank: boolean;
   onWordBankChange: (value: boolean) => void;
 }
-
-const TOOLBAR_BUTTONS = [
-  { icon: Bold, label: "Bold" },
-  { icon: Italic, label: "Italic" },
-  { icon: Underline, label: "Underline" },
-  { icon: Subscript, label: "Subscript" },
-  { icon: Superscript, label: "Superscript" },
-] as const;
-
-const ALIGN_BUTTONS = [
-  { icon: AlignLeft, label: "Align Left" },
-  { icon: AlignCenter, label: "Align Center" },
-  { icon: AlignRight, label: "Align Right" },
-  { icon: AlignJustify, label: "Justify" },
-] as const;
 
 const FillInBlankEditor = ({
   value,
@@ -54,117 +27,141 @@ const FillInBlankEditor = ({
     const start = textarea.selectionStart;
     const end = textarea.selectionEnd;
 
-    if (start === end) return; // No selection
+    if (start === end) return;
 
     const selectedText = value.substring(start, end);
     const newText = value.substring(0, start) + `[${selectedText}]` + value.substring(end);
     onChange(newText);
 
-    // Restore cursor after the bracket
     requestAnimationFrame(() => {
       textarea.focus();
       textarea.setSelectionRange(start + 1, end + 1);
     });
   }, [value, onChange]);
 
-  // Extract blanks from the text
-  const blanksCount = (value.match(/\[.*?\]/g) || []).length;
+  const blanks = useMemo(() => {
+    const matches = value.match(/\[(.*?)\]/g) || [];
+    return matches.map((m) => m.slice(1, -1));
+  }, [value]);
+
+  // Build a preview with blanks shown as underlines
+  const previewParts = useMemo(() => {
+    if (!value || blanks.length === 0) return null;
+    const parts = value.split(/\[.*?\]/);
+    const result: { text: string; isBlank: boolean }[] = [];
+    parts.forEach((part, i) => {
+      if (part) result.push({ text: part, isBlank: false });
+      if (i < blanks.length) result.push({ text: blanks[i], isBlank: true });
+    });
+    return result;
+  }, [value, blanks]);
 
   return (
-    <div className="space-y-4">
-      {/* Hint banner */}
-      <div className="rounded-lg border border-primary/20 bg-primary/5 px-4 py-3">
-        <p className="text-sm text-foreground">
-          Surround your fill-in-the-blank word with brackets{" "}
-          <code className="font-mono bg-muted px-1.5 py-0.5 rounded text-xs font-semibold">[ ]</code>.
-        </p>
-        <p className="text-xs text-muted-foreground mt-1">
-          Example: The <code className="font-mono bg-muted px-1 py-0.5 rounded text-xs">[brown]</code> fox jumped over the <code className="font-mono bg-muted px-1 py-0.5 rounded text-xs">[log]</code>.
-        </p>
-      </div>
-
-      {/* Toolbar */}
-      <div className="flex items-center gap-0.5 flex-wrap">
-        {TOOLBAR_BUTTONS.map(({ icon: Icon, label }) => (
-          <Button
-            key={label}
-            type="button"
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8 text-muted-foreground hover:text-foreground"
-            aria-label={label}
-          >
-            <Icon className="w-4 h-4" />
-          </Button>
-        ))}
-        <div className="w-px h-5 bg-border mx-1" />
-        {ALIGN_BUTTONS.map(({ icon: Icon, label }) => (
-          <Button
-            key={label}
-            type="button"
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8 text-muted-foreground hover:text-foreground"
-            aria-label={label}
-          >
-            <Icon className="w-4 h-4" />
-          </Button>
-        ))}
-        <div className="w-px h-5 bg-border mx-1" />
+    <div className="space-y-5">
+      {/* Top bar: instruction + mark button */}
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center gap-2 text-muted-foreground">
+          <Info className="w-4 h-4 shrink-0" />
+          <p className="text-xs">
+            Type your sentence, select a word, then click <strong className="text-foreground">Mark as blank</strong>
+          </p>
+        </div>
         <Button
           type="button"
-          variant="ghost"
-          size="icon"
-          className="h-8 w-8 text-muted-foreground hover:text-foreground"
-          aria-label="Clear formatting"
-        >
-          <RemoveFormatting className="w-4 h-4" />
-        </Button>
-        <div className="w-px h-5 bg-border mx-1" />
-        <Button
-          type="button"
-          variant="outline"
           size="sm"
-          className="h-8 gap-1.5 text-xs font-medium bg-primary text-primary-foreground hover:bg-primary/90"
+          className="h-8 gap-1.5 text-xs font-medium shrink-0"
           onClick={handleMarkWord}
-          title="Select a word in the text, then click to mark it as a blank"
         >
           <Brackets className="w-3.5 h-3.5" />
-          Mark selected word
+          Mark as blank
         </Button>
       </div>
 
-      {/* Textarea */}
-      <Textarea
-        ref={textareaRef}
-        placeholder="Type your sentence here and select words to mark as blanks..."
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="min-h-[140px] resize-y text-sm font-mono"
-      />
-
-      {/* Blanks count indicator */}
-      {blanksCount > 0 && (
-        <p className="text-xs text-muted-foreground">
-          <span className="font-medium text-primary">{blanksCount}</span>{" "}
-          blank{blanksCount !== 1 ? "s" : ""} detected
-        </p>
-      )}
-
-      {/* Word bank option */}
-      <div className="flex items-center gap-2.5 pt-1">
-        <Checkbox
-          id="word-bank"
-          checked={includeWordBank}
-          onCheckedChange={(checked) => onWordBankChange(checked === true)}
+      {/* Editor area */}
+      <div className="rounded-xl border border-border bg-muted/10 overflow-hidden">
+        <Textarea
+          ref={textareaRef}
+          placeholder='e.g. The [brown] fox jumped over the [log].'
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          className="min-h-[130px] resize-y text-sm border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent"
         />
-        <Label
-          htmlFor="word-bank"
-          className="text-sm font-normal cursor-pointer text-foreground"
-        >
-          Include words in word bank
-        </Label>
+
+        {/* Status bar */}
+        <div className="flex items-center justify-between px-3 py-2 border-t border-border bg-muted/30">
+          <div className="flex items-center gap-3">
+            {blanks.length > 0 ? (
+              <div className="flex items-center gap-1.5">
+                <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-primary text-primary-foreground text-[10px] font-bold">
+                  {blanks.length}
+                </span>
+                <span className="text-xs text-muted-foreground">
+                  blank{blanks.length !== 1 ? "s" : ""}
+                </span>
+              </div>
+            ) : (
+              <span className="text-xs text-muted-foreground">No blanks yet</span>
+            )}
+          </div>
+          <div className="flex items-center gap-2">
+            <Checkbox
+              id="word-bank"
+              checked={includeWordBank}
+              onCheckedChange={(checked) => onWordBankChange(checked === true)}
+              className="h-3.5 w-3.5"
+            />
+            <Label
+              htmlFor="word-bank"
+              className="text-xs font-normal cursor-pointer text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Show word bank
+            </Label>
+          </div>
+        </div>
       </div>
+
+      {/* Live preview */}
+      {previewParts && previewParts.length > 0 && (
+        <div className="space-y-2">
+          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+            Preview
+          </p>
+          <div className="rounded-lg border border-border bg-background px-4 py-3">
+            <p className="text-sm leading-relaxed text-foreground">
+              {previewParts.map((part, i) =>
+                part.isBlank ? (
+                  <span
+                    key={i}
+                    className="inline-block min-w-[60px] mx-0.5 border-b-2 border-primary text-center text-primary font-medium"
+                  >
+                    {includeWordBank ? "\u00A0\u00A0\u00A0\u00A0\u00A0" : "\u00A0\u00A0\u00A0\u00A0\u00A0"}
+                  </span>
+                ) : (
+                  <span key={i}>{part.text}</span>
+                )
+              )}
+            </p>
+          </div>
+
+          {/* Word bank */}
+          {includeWordBank && blanks.length > 0 && (
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-xs font-medium text-muted-foreground mr-1">Word bank:</span>
+              {blanks
+                .slice()
+                .sort(() => Math.random() - 0.5)
+                .map((word, i) => (
+                  <span
+                    key={i}
+                    className="inline-flex items-center px-2.5 py-1 rounded-md bg-primary/10 text-primary text-xs font-medium border border-primary/20"
+                  >
+                    {word}
+                  </span>
+                ))}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };
