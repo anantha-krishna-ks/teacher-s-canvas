@@ -391,27 +391,41 @@ const QuestionRepository = () => {
               </div>
             </div>
             <div className="mt-4 flex justify-end">
-              <Button onClick={handleAddQuestion} className="gap-2">
-                <Plus className="w-4 h-4" />
-                Add Question
-              </Button>
+              <AddItemsDropdown onAdd={handleAddItem} />
             </div>
           </div>
 
-          {/* Questions area (empty state) */}
-          <div className="flex-1 flex items-center justify-center p-12">
-            <div className="text-center space-y-3">
-              <div className="w-16 h-16 mx-auto rounded-2xl bg-muted flex items-center justify-center">
-                <FilePlus className="w-7 h-7 text-muted-foreground" />
-              </div>
-              <div>
-                <p className="text-sm font-medium text-foreground">No questions yet</p>
-                <p className="text-sm text-muted-foreground mt-1">
-                  Select filters above and click "Add Question" to start building your repository
-                </p>
-              </div>
+          {/* Questions area */}
+          <ScrollArea className="flex-1">
+            <div className="p-5 space-y-4">
+              {questions.length === 0 ? (
+                <div className="flex items-center justify-center py-16">
+                  <div className="text-center space-y-3">
+                    <div className="w-16 h-16 mx-auto rounded-2xl bg-muted flex items-center justify-center">
+                      <FilePlus className="w-7 h-7 text-muted-foreground" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-foreground">No questions yet</p>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        Click "Add Items" to start building your repository
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                questions.map((q, i) => (
+                  <QuestionCard
+                    key={q.id}
+                    index={i + 1}
+                    label={q.label}
+                    type={q.type}
+                    onDelete={() => handleDeleteQuestion(q.id)}
+                    onDuplicate={() => handleDuplicateQuestion(q.id)}
+                  />
+                ))
+              )}
             </div>
-          </div>
+          </ScrollArea>
         </div>
       </div>
     </div>
