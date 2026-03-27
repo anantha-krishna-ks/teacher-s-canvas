@@ -33,6 +33,7 @@ interface FolderNode {
 }
 
 // --- Mock data ---
+const ACADEMIC_YEARS = ["2024-2025", "2025-2026", "2026-2027"];
 const GRADES = ["Grade 9", "Grade 10", "Grade 11", "Grade 12"];
 const TEST_TYPES = ["Unit Test 1", "Unit Test 2", "Mid Term Exam", "Final Exam", "Quiz 1", "Quiz 2", "Weekly Test"];
 
@@ -135,6 +136,7 @@ const FolderTreeItem = ({
 // --- Main Page ---
 const QuestionRepository = () => {
   const navigate = useNavigate();
+  const [selectedAcademicYear, setSelectedAcademicYear] = useState(ACADEMIC_YEARS[1]);
   const [selectedGrade, setSelectedGrade] = useState(GRADES[1]);
   const [selectedTestType, setSelectedTestType] = useState(TEST_TYPES[0]);
   const [selectedFolder, setSelectedFolder] = useState("mathematics");
@@ -186,6 +188,20 @@ const QuestionRepository = () => {
           <p className="text-sm text-muted-foreground">
             Manage and organize your question bank
           </p>
+        </div>
+        <div className="ml-auto w-44">
+          <Select value={selectedAcademicYear} onValueChange={setSelectedAcademicYear}>
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {ACADEMIC_YEARS.map((y) => (
+                <SelectItem key={y} value={y}>
+                  {y}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       </div>
 
