@@ -42,7 +42,7 @@ interface FolderNode {
 const ACADEMIC_YEARS = ["2024-2025", "2025-2026", "2026-2027"];
 const GRADES = ["Grade 9", "Grade 10", "Grade 11", "Grade 12"];
 
-const SUBJECT_FOLDERS: FolderNode[] = [
+const INITIAL_FOLDERS: FolderNode[] = [
   { id: "mathematics", name: "Mathematics", count: 25, children: [] },
   { id: "science", name: "Science", count: 18, children: [] },
   { id: "english", name: "English", count: 12, children: [] },
@@ -142,6 +142,7 @@ const QuestionRepository = () => {
   const navigate = useNavigate();
   const [selectedAcademicYear, setSelectedAcademicYear] = useState(ACADEMIC_YEARS[1]);
   const [selectedGrade, setSelectedGrade] = useState(GRADES[1]);
+  const [folders, setFolders] = useState<FolderNode[]>(INITIAL_FOLDERS);
   const [selectedFolder, setSelectedFolder] = useState("mathematics");
   const [expandedFolders, setExpandedFolders] = useState<Set<string>>(
     () => new Set([])
@@ -192,17 +193,22 @@ const QuestionRepository = () => {
 
   const handleSaveRepo = useCallback((data: { name: string; description: string; isRoot: boolean }) => {
     if (repoDialogMode === "create") {
-      const newId = data.name.toLowerCase().replace(/\s+/g, "-");
-      // In a real app, this would persist to backend
-      console.log("Create repository:", data);
+      const newId = data.name.toLowerCase().replace(/\s+/g, "-") + "-" + Date.now();
+      const newFolder: FolderNode = { id: newId, name: data.name, count: 0, children: [] };
+      setFolders((prev) => [...prev, newFolder]);
+      setSelectedFolder(newId);
     } else {
-      console.log("Edit repository:", selectedFolder, data);
+      setFolders((prev) =>
+        prev.map((f) =>
+          f.id === selectedFolder ? { ...f, name: data.name } : f
+        )
+      );
     }
   }, [repoDialogMode, selectedFolder]);
 
   const selectedFolderData = useMemo(
-    () => SUBJECT_FOLDERS.find((f) => f.id === selectedFolder),
-    [selectedFolder]
+    () => folders.find((f) => f.id === selectedFolder),
+    [folders, selectedFolder]
   );
 
   // Delete repo dialog state
@@ -213,7 +219,11 @@ const QuestionRepository = () => {
   }, []);
 
   const handleConfirmDeleteRepo = useCallback(() => {
-    console.log("Delete repository:", selectedFolder);
+    setFolders((prev) => {
+      const updated = prev.filter((f) => f.id !== selectedFolder);
+      if (updated.length > 0) setSelectedFolder(updated[0].id);
+      return updated;
+    });
     setDeleteDialogOpen(false);
   }, [selectedFolder]);
 
@@ -357,7 +367,7 @@ const QuestionRepository = () => {
           {/* Folder tree */}
           <div className="px-2 pb-4">
             <div className="space-y-0.5">
-              {SUBJECT_FOLDERS.filter((f) =>
+              {folders.filter((f) =>
                 f.name.toLowerCase().includes(searchQuery.toLowerCase())
               ).map((folder) => (
                 <FolderTreeItem
