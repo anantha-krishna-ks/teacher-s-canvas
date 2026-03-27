@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import MCQOptionsEditor from "./MCQOptionsEditor";
+import ImageUploadEditor from "./ImageUploadEditor";
 import { Textarea } from "@/components/ui/textarea";
 import {
   Bold,
@@ -46,7 +47,8 @@ const TYPE_LABELS: Record<QuestionType, string> = {
   "section-heading": "Section Heading",
 };
 
-const TABS = ["Answer", "Image", "Options"] as const;
+const TABS_DEFAULT = ["Answer", "Image", "Options"] as const;
+const TABS_MCQ = ["Image"] as const;
 
 const TOOLBAR_BUTTONS = [
   { icon: Bold, label: "Bold" },
@@ -115,7 +117,7 @@ const QuestionCard = ({
             >
               {TYPE_LABELS[type]}
             </button>
-            {TABS.map((tab) => (
+            {(type === "multiple-choice" ? TABS_MCQ : TABS_DEFAULT).map((tab) => (
               <button
                 key={tab}
                 className={cn(
@@ -132,52 +134,59 @@ const QuestionCard = ({
             ))}
           </div>
 
-          {/* Toolbar */}
-          <div className="flex items-center gap-0.5 flex-wrap">
-            {TOOLBAR_BUTTONS.map(({ icon: Icon, label: btnLabel }) => (
-              <Button
-                key={btnLabel}
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8 text-muted-foreground hover:text-foreground"
-                aria-label={btnLabel}
-              >
-                <Icon className="w-4 h-4" />
-              </Button>
-            ))}
-            <div className="w-px h-5 bg-border mx-1" />
-            {ALIGN_BUTTONS.map(({ icon: Icon, label: btnLabel }) => (
-              <Button
-                key={btnLabel}
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8 text-muted-foreground hover:text-foreground"
-                aria-label={btnLabel}
-              >
-                <Icon className="w-4 h-4" />
-              </Button>
-            ))}
-            <div className="w-px h-5 bg-border mx-1" />
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8 text-muted-foreground hover:text-foreground"
-              aria-label="Clear formatting"
-            >
-              <RemoveFormatting className="w-4 h-4" />
-            </Button>
-          </div>
+          {/* Tab content */}
+          {activeTab === "Image" ? (
+            <ImageUploadEditor />
+          ) : (
+            <>
+              {/* Toolbar */}
+              <div className="flex items-center gap-0.5 flex-wrap">
+                {TOOLBAR_BUTTONS.map(({ icon: Icon, label: btnLabel }) => (
+                  <Button
+                    key={btnLabel}
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                    aria-label={btnLabel}
+                  >
+                    <Icon className="w-4 h-4" />
+                  </Button>
+                ))}
+                <div className="w-px h-5 bg-border mx-1" />
+                {ALIGN_BUTTONS.map(({ icon: Icon, label: btnLabel }) => (
+                  <Button
+                    key={btnLabel}
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                    aria-label={btnLabel}
+                  >
+                    <Icon className="w-4 h-4" />
+                  </Button>
+                ))}
+                <div className="w-px h-5 bg-border mx-1" />
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                  aria-label="Clear formatting"
+                >
+                  <RemoveFormatting className="w-4 h-4" />
+                </Button>
+              </div>
 
-          {/* Text area */}
-          <Textarea
-            placeholder="Type your question here..."
-            value={questionText}
-            onChange={handleTextChange}
-            className="min-h-[120px] resize-y text-sm"
-          />
+              {/* Text area */}
+              <Textarea
+                placeholder="Type your question here..."
+                value={questionText}
+                onChange={handleTextChange}
+                className="min-h-[120px] resize-y text-sm"
+              />
 
-          {/* MCQ Options */}
-          {type === "multiple-choice" && <MCQOptionsEditor />}
+              {/* MCQ Options */}
+              {type === "multiple-choice" && <MCQOptionsEditor />}
+            </>
+          )}
         </div>
 
         {/* Side actions */}
