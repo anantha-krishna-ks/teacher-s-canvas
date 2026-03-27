@@ -68,6 +68,7 @@ export interface QuestionData {
   type: QuestionType;
   questionText: string;
   answerText?: string;
+  trueFalseAnswer?: boolean | null;
   hasImage?: boolean;
   imageData?: string | null;
   marks: string;
@@ -101,6 +102,9 @@ const QuestionEditorDialog = ({
   const [matchPairs, setMatchPairs] = useState<MatchPair[]>(
     editData?.matchPairs ?? createDefaultPairs()
   );
+  const [trueFalseAnswer, setTrueFalseAnswer] = useState<boolean | null>(
+    editData?.trueFalseAnswer ?? null
+  );
 
   const handleImageChange = useCallback((newHasImage: boolean, newImageData: string | null) => {
     setHasImage(newHasImage);
@@ -116,6 +120,7 @@ const QuestionEditorDialog = ({
     setImageData(null);
     setIncludeWordBank(false);
     setMatchPairs(createDefaultPairs());
+    setTrueFalseAnswer(null);
   }, []);
 
   const handleSave = useCallback(() => {
@@ -125,6 +130,7 @@ const QuestionEditorDialog = ({
       type,
       questionText,
       answerText,
+      trueFalseAnswer: type === "true-false" ? trueFalseAnswer : undefined,
       hasImage,
       imageData,
       marks,
@@ -133,7 +139,7 @@ const QuestionEditorDialog = ({
       matchPairs: type === "matching" ? matchPairs : undefined,
     });
     resetState();
-  }, [type, questionText, answerText, hasImage, imageData, marks, editData, onSave, includeWordBank, matchPairs, resetState]);
+  }, [type, questionText, answerText, trueFalseAnswer, hasImage, imageData, marks, editData, onSave, includeWordBank, matchPairs, resetState]);
 
   const handleOpenChange = useCallback(
     (val: boolean) => {
@@ -153,6 +159,74 @@ const QuestionEditorDialog = ({
           includeWordBank={includeWordBank}
           onWordBankChange={setIncludeWordBank}
         />
+      );
+    }
+
+    if (type === "true-false") {
+      return (
+        <div className="space-y-5">
+          {/* Question text */}
+          <Textarea
+            placeholder="Type your true/false statement here..."
+            value={questionText}
+            onChange={(e) => setQuestionText(e.target.value)}
+            className="min-h-[100px] resize-y text-sm"
+          />
+
+          {/* True/False selector */}
+          <div className="space-y-3">
+            <Label className="text-sm font-medium">Correct Answer</Label>
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() => setTrueFalseAnswer(true)}
+                className={cn(
+                  "relative flex items-center justify-center gap-2.5 rounded-xl border-2 py-4 text-sm font-semibold transition-all",
+                  trueFalseAnswer === true
+                    ? "border-emerald-500 bg-emerald-50 text-emerald-700 shadow-sm dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/60"
+                    : "border-border bg-background text-muted-foreground hover:border-emerald-300 hover:bg-emerald-50/50 dark:hover:bg-emerald-500/5"
+                )}
+              >
+                <span className={cn(
+                  "flex items-center justify-center w-5 h-5 rounded-full border-2 transition-all",
+                  trueFalseAnswer === true
+                    ? "border-emerald-500 bg-emerald-500"
+                    : "border-muted-foreground/30"
+                )}>
+                  {trueFalseAnswer === true && (
+                    <span className="w-2 h-2 rounded-full bg-white" />
+                  )}
+                </span>
+                True
+              </button>
+              <button
+                type="button"
+                onClick={() => setTrueFalseAnswer(false)}
+                className={cn(
+                  "relative flex items-center justify-center gap-2.5 rounded-xl border-2 py-4 text-sm font-semibold transition-all",
+                  trueFalseAnswer === false
+                    ? "border-red-500 bg-red-50 text-red-700 shadow-sm dark:bg-red-500/10 dark:text-red-400 dark:border-red-500/60"
+                    : "border-border bg-background text-muted-foreground hover:border-red-300 hover:bg-red-50/50 dark:hover:bg-red-500/5"
+                )}
+              >
+                <span className={cn(
+                  "flex items-center justify-center w-5 h-5 rounded-full border-2 transition-all",
+                  trueFalseAnswer === false
+                    ? "border-red-500 bg-red-500"
+                    : "border-muted-foreground/30"
+                )}>
+                  {trueFalseAnswer === false && (
+                    <span className="w-2 h-2 rounded-full bg-white" />
+                  )}
+                </span>
+                False
+              </button>
+            </div>
+            {trueFalseAnswer === null && (
+              <p className="text-xs text-muted-foreground">Select the correct answer above</p>
+            )}
+          </div>
+        </div>
       );
     }
 
@@ -293,7 +367,7 @@ const QuestionEditorDialog = ({
                 <span className="w-2 h-2 rounded-full bg-primary" />
               )}
             </button>
-            {type !== "fill-blank" && (
+            {type !== "fill-blank" && type !== "true-false" && (
               <button
                 type="button"
                 className={cn(
