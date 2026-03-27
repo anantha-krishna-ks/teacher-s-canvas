@@ -5,12 +5,12 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
-  DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import MCQOptionsEditor from "./MCQOptionsEditor";
 import ImageUploadEditor from "./ImageUploadEditor";
 import type { QuestionType } from "./QuestionCard";
@@ -28,6 +28,9 @@ import {
   ImagePlus,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import {
+  DialogDescription,
+} from "@/components/ui/dialog";
 
 const TYPE_LABELS: Record<QuestionType, string> = {
   "short-answer": "Short Answer",
@@ -61,6 +64,7 @@ export interface QuestionData {
   questionText: string;
   answerText?: string;
   hasImage?: boolean;
+  imageData?: string | null;
   marks: string;
   label: string;
 }
@@ -84,6 +88,13 @@ const QuestionEditorDialog = ({
   const [marks, setMarks] = useState(editData?.marks ?? INITIAL_MARKS);
   const [activeTab, setActiveTab] = useState<"question" | "answer" | "image">("question");
   const [answerText, setAnswerText] = useState(editData?.answerText ?? "");
+  const [hasImage, setHasImage] = useState(editData?.hasImage ?? false);
+  const [imageData, setImageData] = useState<string | null>(editData?.imageData ?? null);
+
+  const handleImageChange = useCallback((newHasImage: boolean, newImageData: string | null) => {
+    setHasImage(newHasImage);
+    setImageData(newImageData);
+  }, []);
 
   const handleSave = useCallback(() => {
     const labels = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -92,6 +103,8 @@ const QuestionEditorDialog = ({
       type,
       questionText,
       answerText,
+      hasImage,
+      imageData,
       marks,
       label: editData?.label ?? labels[0],
     });
@@ -99,7 +112,9 @@ const QuestionEditorDialog = ({
     setAnswerText("");
     setMarks(INITIAL_MARKS);
     setActiveTab("question");
-  }, [type, questionText, answerText, marks, editData, onSave]);
+    setHasImage(false);
+    setImageData(null);
+  }, [type, questionText, answerText, hasImage, imageData, marks, editData, onSave]);
 
   const handleOpenChange = useCallback(
     (val: boolean) => {
@@ -108,6 +123,8 @@ const QuestionEditorDialog = ({
         setAnswerText("");
         setMarks(INITIAL_MARKS);
         setActiveTab("question");
+        setHasImage(false);
+        setImageData(null);
       }
       onOpenChange(val);
     },
@@ -116,7 +133,7 @@ const QuestionEditorDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto" aria-describedby={undefined}>
         <DialogHeader>
           <DialogTitle className="text-lg">
             {editData ? "Edit" : "Add"} {TYPE_LABELS[type]} Question
@@ -162,6 +179,7 @@ const QuestionEditorDialog = ({
           {/* Tabs */}
           <div className="flex items-center gap-1 border-b border-border">
             <button
+              type="button"
               className={cn(
                 "px-3 py-2 text-sm font-medium transition-colors border-b-2 -mb-px",
                 activeTab === "question"
@@ -173,6 +191,7 @@ const QuestionEditorDialog = ({
               Question
             </button>
             <button
+              type="button"
               className={cn(
                 "px-3 py-2 text-sm font-medium transition-colors border-b-2 -mb-px flex items-center gap-1.5",
                 activeTab === "image"
@@ -183,8 +202,12 @@ const QuestionEditorDialog = ({
             >
               <ImagePlus className="w-3.5 h-3.5" />
               Image
+              {hasImage && (
+                <span className="w-2 h-2 rounded-full bg-primary" />
+              )}
             </button>
             <button
+              type="button"
               className={cn(
                 "px-3 py-2 text-sm font-medium transition-colors border-b-2 -mb-px",
                 activeTab === "answer"
@@ -199,7 +222,10 @@ const QuestionEditorDialog = ({
 
           {/* Tab content */}
           {activeTab === "image" ? (
-            <ImageUploadEditor />
+            <ImageUploadEditor
+              initialImage={imageData}
+              onImageChange={handleImageChange}
+            />
           ) : activeTab === "answer" ? (
             <div className="space-y-2">
               <Label className="text-sm font-medium">Answer</Label>
@@ -217,6 +243,7 @@ const QuestionEditorDialog = ({
                 {TOOLBAR_BUTTONS.map(({ icon: Icon, label: btnLabel }) => (
                   <Button
                     key={btnLabel}
+                    type="button"
                     variant="ghost"
                     size="icon"
                     className="h-8 w-8 text-muted-foreground hover:text-foreground"
@@ -229,6 +256,7 @@ const QuestionEditorDialog = ({
                 {ALIGN_BUTTONS.map(({ icon: Icon, label: btnLabel }) => (
                   <Button
                     key={btnLabel}
+                    type="button"
                     variant="ghost"
                     size="icon"
                     className="h-8 w-8 text-muted-foreground hover:text-foreground"
@@ -239,6 +267,7 @@ const QuestionEditorDialog = ({
                 ))}
                 <div className="w-px h-5 bg-border mx-1" />
                 <Button
+                  type="button"
                   variant="ghost"
                   size="icon"
                   className="h-8 w-8 text-muted-foreground hover:text-foreground"
@@ -261,10 +290,10 @@ const QuestionEditorDialog = ({
         </div>
 
         <DialogFooter className="gap-2">
-          <Button variant="outline" onClick={() => handleOpenChange(false)}>
+          <Button type="button" variant="outline" onClick={() => handleOpenChange(false)}>
             Cancel
           </Button>
-          <Button onClick={handleSave}>
+          <Button type="button" onClick={handleSave}>
             {editData ? "Update" : "Save"} Question
           </Button>
         </DialogFooter>

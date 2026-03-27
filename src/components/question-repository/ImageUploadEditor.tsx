@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Upload,
@@ -10,25 +10,37 @@ import {
   FlipVertical,
   Crop,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
 
-const ImageUploadEditor = () => {
-  const [image, setImage] = useState<string | null>(null);
+interface ImageUploadEditorProps {
+  initialImage?: string | null;
+  onImageChange?: (hasImage: boolean, imageData: string | null) => void;
+}
+
+const ImageUploadEditor = ({ initialImage = null, onImageChange }: ImageUploadEditorProps) => {
+  const [image, setImage] = useState<string | null>(initialImage);
   const [zoom, setZoom] = useState(100);
   const [rotation, setRotation] = useState(0);
   const [flipH, setFlipH] = useState(false);
   const [flipV, setFlipV] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  useEffect(() => {
+    setImage(initialImage);
+  }, [initialImage]);
+
   const handleFileChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0];
       if (!file) return;
       const reader = new FileReader();
-      reader.onload = () => setImage(reader.result as string);
+      reader.onload = () => {
+        const result = reader.result as string;
+        setImage(result);
+        onImageChange?.(true, result);
+      };
       reader.readAsDataURL(file);
     },
-    []
+    [onImageChange]
   );
 
   const handleRemove = useCallback(() => {
@@ -38,7 +50,8 @@ const ImageUploadEditor = () => {
     setFlipH(false);
     setFlipV(false);
     if (fileInputRef.current) fileInputRef.current.value = "";
-  }, []);
+    onImageChange?.(false, null);
+  }, [onImageChange]);
 
   const handleZoomIn = useCallback(() => setZoom((z) => Math.min(z + 10, 200)), []);
   const handleZoomOut = useCallback(() => setZoom((z) => Math.max(z - 10, 30)), []);
@@ -59,6 +72,7 @@ const ImageUploadEditor = () => {
           className="hidden"
         />
         <button
+          type="button"
           onClick={() => fileInputRef.current?.click()}
           className="w-full border-2 border-dashed border-border rounded-xl py-12 flex flex-col items-center gap-3 text-muted-foreground hover:border-primary/40 hover:text-foreground transition-colors cursor-pointer"
         >
@@ -90,6 +104,7 @@ const ImageUploadEditor = () => {
         ].map(({ icon: Icon, label, onClick }) => (
           <Button
             key={label}
+            type="button"
             variant="outline"
             size="sm"
             className="h-8 gap-1.5 text-xs"
@@ -106,6 +121,7 @@ const ImageUploadEditor = () => {
         </span>
 
         <Button
+          type="button"
           variant="outline"
           size="sm"
           className="h-8 gap-1.5 text-xs ml-auto text-destructive border-destructive/30 hover:bg-destructive/10"
@@ -135,6 +151,7 @@ const ImageUploadEditor = () => {
         className="hidden"
       />
       <Button
+        type="button"
         variant="outline"
         size="sm"
         className="gap-1.5 text-xs"
