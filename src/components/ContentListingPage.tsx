@@ -13,6 +13,7 @@ interface ExtraAction {
   path: string;
   icon?: React.ComponentType<{ className?: string }>;
   variant?: "default" | "outline" | "secondary" | "ghost";
+  className?: string;
 }
 
 interface ContentListingPageProps {
