@@ -351,6 +351,20 @@ const QuestionEditorDialog = ({
             >
               {TYPE_LABELS[type]}
             </button>
+            {type === "matching" && (
+              <button
+                type="button"
+                className={cn(
+                  "px-3 py-2 text-sm font-medium transition-colors border-b-2 -mb-px",
+                  activeTab === "answer"
+                    ? "border-primary text-primary"
+                    : "border-transparent text-muted-foreground hover:text-foreground"
+                )}
+                onClick={() => setActiveTab("answer")}
+              >
+                Question
+              </button>
+            )}
             <button
               type="button"
               className={cn(
@@ -367,7 +381,7 @@ const QuestionEditorDialog = ({
                 <span className="w-2 h-2 rounded-full bg-primary" />
               )}
             </button>
-            {type !== "fill-blank" && type !== "true-false" && (
+            {type !== "fill-blank" && type !== "true-false" && type !== "matching" && (
               <button
                 type="button"
                 className={cn(
@@ -390,15 +404,26 @@ const QuestionEditorDialog = ({
               onImageChange={handleImageChange}
             />
           ) : activeTab === "answer" ? (
-            <div className="space-y-2">
-              <Label className="text-sm font-medium">Answer</Label>
-              <Textarea
-                placeholder="Type the answer here..."
-                value={answerText}
-                onChange={(e) => setAnswerText(e.target.value)}
-                className="min-h-[180px] resize-y text-sm"
-              />
-            </div>
+            type === "matching" ? (
+              <div className="space-y-3">
+                <Textarea
+                  placeholder="Type your question or instructions here..."
+                  value={questionText}
+                  onChange={(e) => setQuestionText(e.target.value)}
+                  className="min-h-[140px] resize-y text-sm"
+                />
+              </div>
+            ) : (
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Answer</Label>
+                <Textarea
+                  placeholder="Type the answer here..."
+                  value={answerText}
+                  onChange={(e) => setAnswerText(e.target.value)}
+                  className="min-h-[180px] resize-y text-sm"
+                />
+              </div>
+            )
           ) : (
             renderQuestionContent()
           )}
