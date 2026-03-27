@@ -63,7 +63,7 @@ const DashboardLayout = () => {
             sidebarCollapsed ? "lg:ml-16" : "lg:ml-60"
           )}
         >
-          <main className="p-4 md:p-6 lg:p-8">
+          <main className="p-3 md:p-4 lg:p-6">
             <Outlet />
           </main>
         </div>
