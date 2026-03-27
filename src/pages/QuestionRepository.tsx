@@ -3,6 +3,7 @@ import AddItemsDropdown from "@/components/question-repository/AddItemsDropdown"
 import QuestionEditorDialog from "@/components/question-repository/QuestionEditorDialog";
 import QuestionListTable from "@/components/question-repository/QuestionListTable";
 import RepositoryDialog from "@/components/question-repository/RepositoryDialog";
+import DeleteRepositoryDialog from "@/components/question-repository/DeleteRepositoryDialog";
 import type { QuestionType } from "@/components/question-repository/QuestionCard";
 import type { QuestionData } from "@/components/question-repository/QuestionEditorDialog";
 import { useNavigate } from "react-router-dom";
