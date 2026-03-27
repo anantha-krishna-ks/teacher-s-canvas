@@ -152,7 +152,7 @@ const QuestionRepository = () => {
 
   // Questions state
   const [questions, setQuestions] = useState<QuestionData[]>([]);
-  const [selectedQuestionIds, setSelectedQuestionIds] = useState<Set<string>>(new Set());
+  
   const [filterType, setFilterType] = useState("all");
   const [filterMarks, setFilterMarks] = useState("all");
 
@@ -218,28 +218,7 @@ const QuestionRepository = () => {
 
   const handleDeleteQuestion = useCallback((id: string) => {
     setQuestions((prev) => prev.filter((q) => q.id !== id));
-    setSelectedQuestionIds((prev) => {
-      const next = new Set(prev);
-      next.delete(id);
-      return next;
-    });
   }, []);
-
-  const handleToggleSelect = useCallback((id: string) => {
-    setSelectedQuestionIds((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
-    });
-  }, []);
-
-  const handleToggleSelectAll = useCallback(() => {
-    setSelectedQuestionIds((prev) => {
-      if (prev.size === questions.length) return new Set();
-      return new Set(questions.map((q) => q.id));
-    });
-  }, [questions]);
 
   return (
     <div className="max-w-7xl mx-auto space-y-6 animate-fade-in">
