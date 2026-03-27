@@ -3,6 +3,7 @@ import AddItemsDropdown from "@/components/question-repository/AddItemsDropdown"
 import QuestionEditorDialog from "@/components/question-repository/QuestionEditorDialog";
 import QuestionListTable from "@/components/question-repository/QuestionListTable";
 import RepositoryDialog from "@/components/question-repository/RepositoryDialog";
+import DeleteRepositoryDialog from "@/components/question-repository/DeleteRepositoryDialog";
 import type { QuestionType } from "@/components/question-repository/QuestionCard";
 import type { QuestionData } from "@/components/question-repository/QuestionEditorDialog";
 import { useNavigate } from "react-router-dom";
@@ -204,6 +205,18 @@ const QuestionRepository = () => {
     [selectedFolder]
   );
 
+  // Delete repo dialog state
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
+  const handleDeleteRepo = useCallback(() => {
+    setDeleteDialogOpen(true);
+  }, []);
+
+  const handleConfirmDeleteRepo = useCallback(() => {
+    console.log("Delete repository:", selectedFolder);
+    setDeleteDialogOpen(false);
+  }, [selectedFolder]);
+
   const handleBack = useCallback(() => navigate("/dashboard/assessment"), [navigate]);
 
   const handleSelectFolder = useCallback((id: string) => {
@@ -322,7 +335,7 @@ const QuestionRepository = () => {
               <Button variant="ghost" size="icon" className="h-7 w-7" aria-label="Rename" onClick={handleEditRepo}>
                 <Pencil className="w-3.5 h-3.5" />
               </Button>
-              <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive hover:text-destructive" aria-label="Delete">
+              <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive hover:text-destructive" aria-label="Delete" onClick={handleDeleteRepo}>
                 <Trash2 className="w-3.5 h-3.5" />
               </Button>
             </div>
@@ -493,6 +506,15 @@ const QuestionRepository = () => {
             : undefined
         }
         onSave={handleSaveRepo}
+      />
+
+      {/* Delete Repository Confirmation */}
+      <DeleteRepositoryDialog
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        repositoryName={selectedFolderData?.name ?? ""}
+        questionCount={selectedFolderData?.count ?? 0}
+        onConfirm={handleConfirmDeleteRepo}
       />
     </div>
   );
