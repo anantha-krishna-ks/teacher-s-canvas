@@ -59,6 +59,7 @@ export interface QuestionData {
   id: string;
   type: QuestionType;
   questionText: string;
+  answerText?: string;
   marks: string;
   label: string;
 }
