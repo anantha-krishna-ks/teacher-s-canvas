@@ -22,7 +22,6 @@ import {
   Pencil,
   Trash2,
   ChevronRight,
-  Plus,
   Search,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
