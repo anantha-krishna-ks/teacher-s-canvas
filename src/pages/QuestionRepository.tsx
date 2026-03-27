@@ -455,11 +455,9 @@ const QuestionRepository = () => {
               ) : (
                 <QuestionListTable
                   questions={filteredQuestions}
-                  selectedIds={selectedQuestionIds}
-                  onToggleSelect={handleToggleSelect}
-                  onToggleSelectAll={handleToggleSelectAll}
                   onEdit={handleEditQuestion}
                   onDelete={handleDeleteQuestion}
+                  onReorder={(reordered) => setQuestions(reordered)}
                 />
               )}
             </div>
