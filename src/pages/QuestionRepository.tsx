@@ -205,6 +205,18 @@ const QuestionRepository = () => {
     [selectedFolder]
   );
 
+  // Delete repo dialog state
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
+  const handleDeleteRepo = useCallback(() => {
+    setDeleteDialogOpen(true);
+  }, []);
+
+  const handleConfirmDeleteRepo = useCallback(() => {
+    console.log("Delete repository:", selectedFolder);
+    setDeleteDialogOpen(false);
+  }, [selectedFolder]);
+
   const handleBack = useCallback(() => navigate("/dashboard/assessment"), [navigate]);
 
   const handleSelectFolder = useCallback((id: string) => {
@@ -323,7 +335,7 @@ const QuestionRepository = () => {
               <Button variant="ghost" size="icon" className="h-7 w-7" aria-label="Rename" onClick={handleEditRepo}>
                 <Pencil className="w-3.5 h-3.5" />
               </Button>
-              <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive hover:text-destructive" aria-label="Delete">
+              <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive hover:text-destructive" aria-label="Delete" onClick={handleDeleteRepo}>
                 <Trash2 className="w-3.5 h-3.5" />
               </Button>
             </div>
