@@ -36,9 +36,8 @@ const TYPE_LABELS: Record<QuestionType, string> = {
   "short-answer": "Short Answer",
   "multiple-choice": "Multiple Choice",
   "true-false": "True / False",
-  matching: "Matching",
+  matching: "Match the Following",
   "fill-blank": "Fill in the Blank",
-  "section-heading": "Section Heading",
 };
 
 const INITIAL_MARKS = "1.00";
