@@ -10,9 +10,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import MCQOptionsEditor from "./MCQOptionsEditor";
 import ImageUploadEditor from "./ImageUploadEditor";
+import FillInBlankEditor from "./FillInBlankEditor";
+import MatchTheFollowingEditor from "./MatchTheFollowingEditor";
+import type { MatchPair } from "./MatchTheFollowingEditor";
 import type { QuestionType } from "./QuestionCard";
 import {
   Bold,
@@ -28,9 +30,6 @@ import {
   ImagePlus,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import {
-  DialogDescription,
-} from "@/components/ui/dialog";
 
 const TYPE_LABELS: Record<QuestionType, string> = {
   "short-answer": "Short Answer",
@@ -57,6 +56,13 @@ const ALIGN_BUTTONS = [
   { icon: AlignJustify, label: "Justify" },
 ] as const;
 
+const createDefaultPairs = (): MatchPair[] =>
+  Array.from({ length: 4 }, () => ({
+    id: crypto.randomUUID(),
+    left: "",
+    right: "",
+  }));
+
 export interface QuestionData {
   id: string;
   type: QuestionType;
@@ -66,6 +72,8 @@ export interface QuestionData {
   imageData?: string | null;
   marks: string;
   label: string;
+  includeWordBank?: boolean;
+  matchPairs?: MatchPair[];
 }
 
 interface QuestionEditorDialogProps {
@@ -89,10 +97,25 @@ const QuestionEditorDialog = ({
   const [answerText, setAnswerText] = useState(editData?.answerText ?? "");
   const [hasImage, setHasImage] = useState(editData?.hasImage ?? false);
   const [imageData, setImageData] = useState<string | null>(editData?.imageData ?? null);
+  const [includeWordBank, setIncludeWordBank] = useState(editData?.includeWordBank ?? false);
+  const [matchPairs, setMatchPairs] = useState<MatchPair[]>(
+    editData?.matchPairs ?? createDefaultPairs()
+  );
 
   const handleImageChange = useCallback((newHasImage: boolean, newImageData: string | null) => {
     setHasImage(newHasImage);
     setImageData(newImageData);
+  }, []);
+
+  const resetState = useCallback(() => {
+    setQuestionText("");
+    setAnswerText("");
+    setMarks(INITIAL_MARKS);
+    setActiveTab("question");
+    setHasImage(false);
+    setImageData(null);
+    setIncludeWordBank(false);
+    setMatchPairs(createDefaultPairs());
   }, []);
 
   const handleSave = useCallback(() => {
@@ -106,29 +129,94 @@ const QuestionEditorDialog = ({
       imageData,
       marks,
       label: editData?.label ?? labels[0],
+      includeWordBank: type === "fill-blank" ? includeWordBank : undefined,
+      matchPairs: type === "matching" ? matchPairs : undefined,
     });
-    setQuestionText("");
-    setAnswerText("");
-    setMarks(INITIAL_MARKS);
-    setActiveTab("question");
-    setHasImage(false);
-    setImageData(null);
-  }, [type, questionText, answerText, hasImage, imageData, marks, editData, onSave]);
+    resetState();
+  }, [type, questionText, answerText, hasImage, imageData, marks, editData, onSave, includeWordBank, matchPairs, resetState]);
 
   const handleOpenChange = useCallback(
     (val: boolean) => {
-      if (!val) {
-        setQuestionText("");
-        setAnswerText("");
-        setMarks(INITIAL_MARKS);
-        setActiveTab("question");
-        setHasImage(false);
-        setImageData(null);
-      }
+      if (!val) resetState();
       onOpenChange(val);
     },
-    [onOpenChange]
+    [onOpenChange, resetState]
   );
+
+  // Determine which question-tab content to render
+  const renderQuestionContent = () => {
+    if (type === "fill-blank") {
+      return (
+        <FillInBlankEditor
+          value={questionText}
+          onChange={setQuestionText}
+          includeWordBank={includeWordBank}
+          onWordBankChange={setIncludeWordBank}
+        />
+      );
+    }
+
+    if (type === "matching") {
+      return (
+        <MatchTheFollowingEditor
+          pairs={matchPairs}
+          onChange={setMatchPairs}
+        />
+      );
+    }
+
+    return (
+      <div className="space-y-3">
+        {/* Toolbar */}
+        <div className="flex items-center gap-0.5 flex-wrap">
+          {TOOLBAR_BUTTONS.map(({ icon: Icon, label: btnLabel }) => (
+            <Button
+              key={btnLabel}
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 text-muted-foreground hover:text-foreground"
+              aria-label={btnLabel}
+            >
+              <Icon className="w-4 h-4" />
+            </Button>
+          ))}
+          <div className="w-px h-5 bg-border mx-1" />
+          {ALIGN_BUTTONS.map(({ icon: Icon, label: btnLabel }) => (
+            <Button
+              key={btnLabel}
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 text-muted-foreground hover:text-foreground"
+              aria-label={btnLabel}
+            >
+              <Icon className="w-4 h-4" />
+            </Button>
+          ))}
+          <div className="w-px h-5 bg-border mx-1" />
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 text-muted-foreground hover:text-foreground"
+            aria-label="Clear formatting"
+          >
+            <RemoveFormatting className="w-4 h-4" />
+          </Button>
+        </div>
+
+        <Textarea
+          placeholder="Type your question here..."
+          value={questionText}
+          onChange={(e) => setQuestionText(e.target.value)}
+          className="min-h-[120px] resize-y text-sm"
+        />
+
+        {type === "multiple-choice" && <MCQOptionsEditor />}
+      </div>
+    );
+  };
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
@@ -140,7 +228,7 @@ const QuestionEditorDialog = ({
         </DialogHeader>
 
         <div className="space-y-5 py-2">
-          {/* Marks */}
+          {/* Marks & Type */}
           <div className="flex items-center gap-4">
             <div className="space-y-1.5 w-32">
               <Label className="text-sm font-medium">Marks</Label>
@@ -187,7 +275,7 @@ const QuestionEditorDialog = ({
               )}
               onClick={() => setActiveTab("question")}
             >
-              Question
+              {TYPE_LABELS[type]}
             </button>
             <button
               type="button"
@@ -236,55 +324,7 @@ const QuestionEditorDialog = ({
               />
             </div>
           ) : (
-            <div className="space-y-3">
-              {/* Toolbar */}
-              <div className="flex items-center gap-0.5 flex-wrap">
-                {TOOLBAR_BUTTONS.map(({ icon: Icon, label: btnLabel }) => (
-                  <Button
-                    key={btnLabel}
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    className="h-8 w-8 text-muted-foreground hover:text-foreground"
-                    aria-label={btnLabel}
-                  >
-                    <Icon className="w-4 h-4" />
-                  </Button>
-                ))}
-                <div className="w-px h-5 bg-border mx-1" />
-                {ALIGN_BUTTONS.map(({ icon: Icon, label: btnLabel }) => (
-                  <Button
-                    key={btnLabel}
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    className="h-8 w-8 text-muted-foreground hover:text-foreground"
-                    aria-label={btnLabel}
-                  >
-                    <Icon className="w-4 h-4" />
-                  </Button>
-                ))}
-                <div className="w-px h-5 bg-border mx-1" />
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8 text-muted-foreground hover:text-foreground"
-                  aria-label="Clear formatting"
-                >
-                  <RemoveFormatting className="w-4 h-4" />
-                </Button>
-              </div>
-
-              <Textarea
-                placeholder="Type your question here..."
-                value={questionText}
-                onChange={(e) => setQuestionText(e.target.value)}
-                className="min-h-[120px] resize-y text-sm"
-              />
-
-              {type === "multiple-choice" && <MCQOptionsEditor />}
-            </div>
+            renderQuestionContent()
           )}
         </div>
 
