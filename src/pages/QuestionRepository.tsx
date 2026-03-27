@@ -33,7 +33,7 @@ interface FolderNode {
 }
 
 // --- Mock data ---
-const PROGRAMS = ["Basics of Cloud", "Mathematics Grade 10", "Science Grade 9"];
+const ACADEMIC_YEARS = ["2024-2025", "2025-2026", "2026-2027"];
 
 const FOLDER_TREE: FolderNode[] = [
   {
@@ -150,7 +150,7 @@ const FolderTreeItem = ({
 // --- Main Page ---
 const QuestionRepository = () => {
   const navigate = useNavigate();
-  const [selectedProgram, setSelectedProgram] = useState(PROGRAMS[0]);
+  const [selectedProgram, setSelectedProgram] = useState(ACADEMIC_YEARS[1]);
   const [selectedFolder, setSelectedFolder] = useState("cloud-items");
   const [expandedFolders, setExpandedFolders] = useState<Set<string>>(
     () => new Set(["cloud-items"])
@@ -210,14 +210,14 @@ const QuestionRepository = () => {
           {/* Program selector */}
           <div className="p-4 border-b border-border space-y-2">
             <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              Program
+              Academic Year
             </label>
             <Select value={selectedProgram} onValueChange={setSelectedProgram}>
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {PROGRAMS.map((p) => (
+                {ACADEMIC_YEARS.map((p) => (
                   <SelectItem key={p} value={p}>
                     {p}
                   </SelectItem>
