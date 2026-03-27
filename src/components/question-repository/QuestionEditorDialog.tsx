@@ -129,18 +129,28 @@ const QuestionEditorDialog = ({
           <div className="flex items-center gap-4">
             <div className="space-y-1.5 w-32">
               <Label className="text-sm font-medium">Marks</Label>
-              <Select value={marks} onValueChange={setMarks}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {MARKS_OPTIONS.map((m) => (
-                    <SelectItem key={m} value={m}>
-                      {m} mark{Number(m) > 1 ? "s" : ""}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <Input
+                type="number"
+                min="0"
+                step="0.01"
+                value={marks}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  if (/^\d*\.?\d{0,2}$/.test(val)) {
+                    setMarks(val);
+                  }
+                }}
+                onBlur={() => {
+                  const num = parseFloat(marks);
+                  if (!isNaN(num)) {
+                    setMarks(num.toFixed(2));
+                  } else {
+                    setMarks("1.00");
+                  }
+                }}
+                className="h-9"
+                placeholder="0.00"
+              />
             </div>
             <div className="space-y-1.5">
               <Label className="text-sm font-medium">Type</Label>
