@@ -42,6 +42,7 @@ const ContentListingPage = ({
   inProgress,
   saved,
   sectionLabels,
+  extraActions,
 }: ContentListingPageProps) => {
   const navigate = useNavigate();
 
