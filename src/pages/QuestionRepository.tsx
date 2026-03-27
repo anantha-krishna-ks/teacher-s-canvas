@@ -243,7 +243,7 @@ const QuestionRepository = () => {
       {/* Main layout */}
       <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-6">
         {/* Left Panel - Folder Structure */}
-        <div className="bg-card border border-border rounded-xl overflow-hidden flex flex-col">
+        <div className="bg-card border border-border rounded-xl overflow-visible flex flex-col">
           {/* Grade & Test Type selectors */}
           <div className="p-4 border-b border-border space-y-3">
             <div className="space-y-1.5">
@@ -297,7 +297,7 @@ const QuestionRepository = () => {
           </div>
 
           {/* Folder tree */}
-          <ScrollArea className="flex-1 px-2 pb-4">
+          <div className="px-2 pb-4">
             <div className="space-y-0.5">
               {SUBJECT_FOLDERS.filter((f) =>
                 f.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -312,7 +312,7 @@ const QuestionRepository = () => {
                 />
               ))}
             </div>
-          </ScrollArea>
+          </div>
         </div>
 
         {/* Right Panel - Repository Setup */}
