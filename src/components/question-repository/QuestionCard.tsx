@@ -1,5 +1,6 @@
 import { useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
+import MCQOptionsEditor from "./MCQOptionsEditor";
 import { Textarea } from "@/components/ui/textarea";
 import {
   Bold,
