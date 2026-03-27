@@ -191,7 +191,7 @@ const QuestionRepository = () => {
         </div>
         <div className="ml-auto w-44">
           <Select value={selectedAcademicYear} onValueChange={setSelectedAcademicYear}>
-            <SelectTrigger>
+            <SelectTrigger className="bg-[hsl(0,0%,100%)] text-foreground">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
