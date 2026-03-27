@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import AddItemsDropdown from "@/components/question-repository/AddItemsDropdown";
 import QuestionEditorDialog from "@/components/question-repository/QuestionEditorDialog";
 import QuestionListTable from "@/components/question-repository/QuestionListTable";
@@ -153,6 +153,21 @@ const QuestionRepository = () => {
   // Questions state
   const [questions, setQuestions] = useState<QuestionData[]>([]);
   const [selectedQuestionIds, setSelectedQuestionIds] = useState<Set<string>>(new Set());
+  const [filterType, setFilterType] = useState("all");
+  const [filterMarks, setFilterMarks] = useState("all");
+
+  const uniqueMarks = useMemo(
+    () => [...new Set(questions.map((q) => q.marks))].sort((a, b) => parseFloat(a) - parseFloat(b)),
+    [questions]
+  );
+
+  const filteredQuestions = useMemo(() => {
+    return questions.filter((q) => {
+      if (filterType !== "all" && q.type !== filterType) return false;
+      if (filterMarks !== "all" && q.marks !== filterMarks) return false;
+      return true;
+    });
+  }, [questions, filterType, filterMarks]);
 
   // Dialog state
   const [dialogOpen, setDialogOpen] = useState(false);
