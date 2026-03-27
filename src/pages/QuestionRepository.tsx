@@ -33,7 +33,7 @@ interface FolderNode {
 }
 
 // --- Mock data ---
-const PROGRAMS = ["Basics of Cloud", "Mathematics Grade 10", "Science Grade 9"];
+const ACADEMIC_YEARS = ["2024-2025", "2025-2026", "2026-2027"];
 
 const FOLDER_TREE: FolderNode[] = [
   {
