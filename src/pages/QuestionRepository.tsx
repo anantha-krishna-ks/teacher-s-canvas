@@ -33,104 +33,18 @@ interface FolderNode {
 }
 
 // --- Mock data ---
-const ACADEMIC_YEARS = ["2024-2025", "2025-2026", "2026-2027"];
+const GRADES = ["Grade 9", "Grade 10", "Grade 11", "Grade 12"];
+const TEST_TYPES = ["Unit Test 1", "Unit Test 2", "Mid Term Exam", "Final Exam", "Quiz 1", "Quiz 2", "Weekly Test"];
 
-const FOLDER_TREE: FolderNode[] = [
-  {
-    id: "grade-9",
-    name: "Grade 9",
-    count: 45,
-    children: [
-      {
-        id: "g9-mathematics",
-        name: "Mathematics",
-        count: 20,
-        children: [
-          { id: "g9-math-unit-test-1", name: "Unit Test 1", count: 8, children: [] },
-          { id: "g9-math-midterm", name: "Mid Term Exam", count: 7, children: [] },
-          { id: "g9-math-final", name: "Final Exam", count: 5, children: [] },
-        ],
-      },
-      {
-        id: "g9-science",
-        name: "Science",
-        count: 15,
-        children: [
-          { id: "g9-sci-quiz-1", name: "Quiz 1", count: 6, children: [] },
-          { id: "g9-sci-unit-test-1", name: "Unit Test 1", count: 9, children: [] },
-        ],
-      },
-      {
-        id: "g9-english",
-        name: "English",
-        count: 10,
-        children: [
-          { id: "g9-eng-weekly-test", name: "Weekly Test", count: 4, children: [] },
-          { id: "g9-eng-midterm", name: "Mid Term Exam", count: 6, children: [] },
-        ],
-      },
-    ],
-  },
-  {
-    id: "grade-10",
-    name: "Grade 10",
-    count: 52,
-    children: [
-      {
-        id: "g10-mathematics",
-        name: "Mathematics",
-        count: 25,
-        children: [
-          { id: "g10-math-quiz-1", name: "Quiz 1", count: 5, children: [] },
-          { id: "g10-math-unit-test-1", name: "Unit Test 1", count: 10, children: [] },
-          { id: "g10-math-midterm", name: "Mid Term Exam", count: 10, children: [] },
-        ],
-      },
-      {
-        id: "g10-science",
-        name: "Science",
-        count: 18,
-        children: [
-          { id: "g10-sci-unit-test-1", name: "Unit Test 1", count: 8, children: [] },
-          { id: "g10-sci-final", name: "Final Exam", count: 10, children: [] },
-        ],
-      },
-      {
-        id: "g10-social-studies",
-        name: "Social Studies",
-        count: 9,
-        children: [
-          { id: "g10-ss-quiz-1", name: "Quiz 1", count: 4, children: [] },
-          { id: "g10-ss-midterm", name: "Mid Term Exam", count: 5, children: [] },
-        ],
-      },
-    ],
-  },
-  {
-    id: "grade-11",
-    name: "Grade 11",
-    count: 30,
-    children: [
-      {
-        id: "g11-physics",
-        name: "Physics",
-        count: 15,
-        children: [
-          { id: "g11-phy-unit-test-1", name: "Unit Test 1", count: 8, children: [] },
-          { id: "g11-phy-midterm", name: "Mid Term Exam", count: 7, children: [] },
-        ],
-      },
-      {
-        id: "g11-chemistry",
-        name: "Chemistry",
-        count: 15,
-        children: [
-          { id: "g11-chem-quiz-1", name: "Quiz 1", count: 5, children: [] },
-          { id: "g11-chem-final", name: "Final Exam", count: 10, children: [] },
-        ],
-      },
-    ],
-  },
+const SUBJECT_FOLDERS: FolderNode[] = [
+  { id: "mathematics", name: "Mathematics", count: 25, children: [] },
+  { id: "science", name: "Science", count: 18, children: [] },
+  { id: "english", name: "English", count: 12, children: [] },
+  { id: "social-studies", name: "Social Studies", count: 9, children: [] },
+  { id: "physics", name: "Physics", count: 15, children: [] },
+  { id: "chemistry", name: "Chemistry", count: 15, children: [] },
+  { id: "biology", name: "Biology", count: 10, children: [] },
+  { id: "hindi", name: "Hindi", count: 8, children: [] },
 ];
 
 const CHAPTERS = ["Circles", "Polynomials", "Triangles", "Coordinate Geometry", "Probability"];
@@ -221,10 +135,11 @@ const FolderTreeItem = ({
 // --- Main Page ---
 const QuestionRepository = () => {
   const navigate = useNavigate();
-  const [selectedProgram, setSelectedProgram] = useState(ACADEMIC_YEARS[1]);
-  const [selectedFolder, setSelectedFolder] = useState("grade-10");
+  const [selectedGrade, setSelectedGrade] = useState(GRADES[1]);
+  const [selectedTestType, setSelectedTestType] = useState(TEST_TYPES[0]);
+  const [selectedFolder, setSelectedFolder] = useState("mathematics");
   const [expandedFolders, setExpandedFolders] = useState<Set<string>>(
-    () => new Set(["grade-10"])
+    () => new Set([])
   );
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -278,23 +193,42 @@ const QuestionRepository = () => {
       <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-6">
         {/* Left Panel - Folder Structure */}
         <div className="bg-card border border-border rounded-xl overflow-hidden flex flex-col">
-          {/* Program selector */}
-          <div className="p-4 border-b border-border space-y-2">
-            <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              Academic Year
-            </label>
-            <Select value={selectedProgram} onValueChange={setSelectedProgram}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {ACADEMIC_YEARS.map((p) => (
-                  <SelectItem key={p} value={p}>
-                    {p}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+          {/* Grade & Test Type selectors */}
+          <div className="p-4 border-b border-border space-y-3">
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                Grade
+              </label>
+              <Select value={selectedGrade} onValueChange={setSelectedGrade}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {GRADES.map((g) => (
+                    <SelectItem key={g} value={g}>
+                      {g}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                Type of Test
+              </label>
+              <Select value={selectedTestType} onValueChange={setSelectedTestType}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {TEST_TYPES.map((t) => (
+                    <SelectItem key={t} value={t}>
+                      {t}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
           {/* Repository header with actions */}
@@ -331,7 +265,7 @@ const QuestionRepository = () => {
           {/* Folder tree */}
           <ScrollArea className="flex-1 px-2 pb-4">
             <div className="space-y-0.5">
-              {FOLDER_TREE.filter((f) =>
+              {SUBJECT_FOLDERS.filter((f) =>
                 f.name.toLowerCase().includes(searchQuery.toLowerCase())
               ).map((folder) => (
                 <FolderTreeItem
