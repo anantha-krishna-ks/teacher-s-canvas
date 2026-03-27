@@ -344,21 +344,6 @@ const QuestionRepository = () => {
                 </Select>
               </div>
               <div className="space-y-1.5">
-                <label className="text-sm font-medium text-foreground">Type of Question</label>
-                <Select value={questionType} onValueChange={setQuestionType}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {QUESTION_TYPES.map((t) => (
-                      <SelectItem key={t} value={t}>
-                        {t}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-1.5">
                 <label className="text-sm font-medium text-foreground">Marks</label>
                 <Select value={marks} onValueChange={setMarks}>
                   <SelectTrigger>
