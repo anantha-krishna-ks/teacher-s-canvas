@@ -14,6 +14,7 @@ import Presentations from "./pages/Presentations";
 import Worksheets from "./pages/Worksheets";
 import Quizzes from "./pages/Quizzes";
 import Assessment from "./pages/Assessment";
+import QuestionRepository from "./pages/QuestionRepository";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();

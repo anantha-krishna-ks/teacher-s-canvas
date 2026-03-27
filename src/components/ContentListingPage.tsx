@@ -66,10 +66,23 @@ const ContentListingPage = ({
             <p className="text-sm text-muted-foreground">{subtitle}</p>
           </div>
         </div>
-        <Button className="gap-2" onClick={handleCreateNew}>
-          <Plus className="w-4 h-4" aria-hidden="true" />
-          {createLabel}
-        </Button>
+        <div className="flex items-center gap-2">
+          {extraActions?.map((action) => (
+            <Button
+              key={action.path}
+              variant={action.variant || "outline"}
+              className="gap-2"
+              onClick={() => navigate(action.path)}
+            >
+              {action.icon && <action.icon className="w-4 h-4" aria-hidden="true" />}
+              {action.label}
+            </Button>
+          ))}
+          <Button className="gap-2" onClick={handleCreateNew}>
+            <Plus className="w-4 h-4" aria-hidden="true" />
+            {createLabel}
+          </Button>
+        </div>
       </div>
 
       {/* Sections */}
