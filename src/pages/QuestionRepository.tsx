@@ -37,27 +37,98 @@ const ACADEMIC_YEARS = ["2024-2025", "2025-2026", "2026-2027"];
 
 const FOLDER_TREE: FolderNode[] = [
   {
-    id: "items",
-    name: "Items",
-    count: 0,
-    children: [],
-  },
-  {
-    id: "cloud-items",
-    name: "Cloud Items",
-    count: 25,
+    id: "grade-9",
+    name: "Grade 9",
+    count: 45,
     children: [
-      { id: "test", name: "Test", count: 0, children: [] },
-      { id: "test1", name: "Test1", count: 0, children: [] },
+      {
+        id: "g9-mathematics",
+        name: "Mathematics",
+        count: 20,
+        children: [
+          { id: "g9-math-unit-test-1", name: "Unit Test 1", count: 8, children: [] },
+          { id: "g9-math-midterm", name: "Mid Term Exam", count: 7, children: [] },
+          { id: "g9-math-final", name: "Final Exam", count: 5, children: [] },
+        ],
+      },
+      {
+        id: "g9-science",
+        name: "Science",
+        count: 15,
+        children: [
+          { id: "g9-sci-quiz-1", name: "Quiz 1", count: 6, children: [] },
+          { id: "g9-sci-unit-test-1", name: "Unit Test 1", count: 9, children: [] },
+        ],
+      },
+      {
+        id: "g9-english",
+        name: "English",
+        count: 10,
+        children: [
+          { id: "g9-eng-weekly-test", name: "Weekly Test", count: 4, children: [] },
+          { id: "g9-eng-midterm", name: "Mid Term Exam", count: 6, children: [] },
+        ],
+      },
     ],
   },
   {
-    id: "math-items",
-    name: "Math Items",
-    count: 12,
+    id: "grade-10",
+    name: "Grade 10",
+    count: 52,
     children: [
-      { id: "algebra", name: "Algebra", count: 5, children: [] },
-      { id: "geometry", name: "Geometry", count: 7, children: [] },
+      {
+        id: "g10-mathematics",
+        name: "Mathematics",
+        count: 25,
+        children: [
+          { id: "g10-math-quiz-1", name: "Quiz 1", count: 5, children: [] },
+          { id: "g10-math-unit-test-1", name: "Unit Test 1", count: 10, children: [] },
+          { id: "g10-math-midterm", name: "Mid Term Exam", count: 10, children: [] },
+        ],
+      },
+      {
+        id: "g10-science",
+        name: "Science",
+        count: 18,
+        children: [
+          { id: "g10-sci-unit-test-1", name: "Unit Test 1", count: 8, children: [] },
+          { id: "g10-sci-final", name: "Final Exam", count: 10, children: [] },
+        ],
+      },
+      {
+        id: "g10-social-studies",
+        name: "Social Studies",
+        count: 9,
+        children: [
+          { id: "g10-ss-quiz-1", name: "Quiz 1", count: 4, children: [] },
+          { id: "g10-ss-midterm", name: "Mid Term Exam", count: 5, children: [] },
+        ],
+      },
+    ],
+  },
+  {
+    id: "grade-11",
+    name: "Grade 11",
+    count: 30,
+    children: [
+      {
+        id: "g11-physics",
+        name: "Physics",
+        count: 15,
+        children: [
+          { id: "g11-phy-unit-test-1", name: "Unit Test 1", count: 8, children: [] },
+          { id: "g11-phy-midterm", name: "Mid Term Exam", count: 7, children: [] },
+        ],
+      },
+      {
+        id: "g11-chemistry",
+        name: "Chemistry",
+        count: 15,
+        children: [
+          { id: "g11-chem-quiz-1", name: "Quiz 1", count: 5, children: [] },
+          { id: "g11-chem-final", name: "Final Exam", count: 10, children: [] },
+        ],
+      },
     ],
   },
 ];
@@ -151,9 +222,9 @@ const FolderTreeItem = ({
 const QuestionRepository = () => {
   const navigate = useNavigate();
   const [selectedProgram, setSelectedProgram] = useState(ACADEMIC_YEARS[1]);
-  const [selectedFolder, setSelectedFolder] = useState("cloud-items");
+  const [selectedFolder, setSelectedFolder] = useState("grade-10");
   const [expandedFolders, setExpandedFolders] = useState<Set<string>>(
-    () => new Set(["cloud-items"])
+    () => new Set(["grade-10"])
   );
   const [searchQuery, setSearchQuery] = useState("");
 
