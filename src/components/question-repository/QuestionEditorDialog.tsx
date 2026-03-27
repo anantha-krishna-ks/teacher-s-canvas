@@ -11,13 +11,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import MCQOptionsEditor from "./MCQOptionsEditor";
 import ImageUploadEditor from "./ImageUploadEditor";
 import type { QuestionType } from "./QuestionCard";
@@ -45,7 +38,7 @@ const TYPE_LABELS: Record<QuestionType, string> = {
   "section-heading": "Section Heading",
 };
 
-const MARKS_OPTIONS = ["1", "2", "3", "4", "5"];
+const INITIAL_MARKS = "1.00";
 
 const TOOLBAR_BUTTONS = [
   { icon: Bold, label: "Bold" },
@@ -86,7 +79,7 @@ const QuestionEditorDialog = ({
   editData,
 }: QuestionEditorDialogProps) => {
   const [questionText, setQuestionText] = useState(editData?.questionText ?? "");
-  const [marks, setMarks] = useState(editData?.marks ?? "1");
+  const [marks, setMarks] = useState(editData?.marks ?? INITIAL_MARKS);
   const [activeTab, setActiveTab] = useState<"question" | "image">("question");
 
   const handleSave = useCallback(() => {
@@ -99,7 +92,7 @@ const QuestionEditorDialog = ({
       label: editData?.label ?? labels[0],
     });
     setQuestionText("");
-    setMarks("1");
+    setMarks(INITIAL_MARKS);
     setActiveTab("question");
   }, [type, questionText, marks, editData, onSave]);
 
@@ -107,7 +100,7 @@ const QuestionEditorDialog = ({
     (val: boolean) => {
       if (!val) {
         setQuestionText("");
-        setMarks("1");
+        setMarks(INITIAL_MARKS);
         setActiveTab("question");
       }
       onOpenChange(val);
