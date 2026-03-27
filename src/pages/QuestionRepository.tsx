@@ -2,6 +2,7 @@ import { useState, useCallback, useMemo } from "react";
 import AddItemsDropdown from "@/components/question-repository/AddItemsDropdown";
 import QuestionEditorDialog from "@/components/question-repository/QuestionEditorDialog";
 import QuestionListTable from "@/components/question-repository/QuestionListTable";
+import RepositoryDialog from "@/components/question-repository/RepositoryDialog";
 import type { QuestionType } from "@/components/question-repository/QuestionCard";
 import type { QuestionData } from "@/components/question-repository/QuestionEditorDialog";
 import { useNavigate } from "react-router-dom";
@@ -174,6 +175,35 @@ const QuestionRepository = () => {
   const [dialogType, setDialogType] = useState<QuestionType>("short-answer");
   const [editingQuestion, setEditingQuestion] = useState<QuestionData | null>(null);
 
+  // Repository dialog state
+  const [repoDialogOpen, setRepoDialogOpen] = useState(false);
+  const [repoDialogMode, setRepoDialogMode] = useState<"create" | "edit">("create");
+
+  const handleCreateRepo = useCallback(() => {
+    setRepoDialogMode("create");
+    setRepoDialogOpen(true);
+  }, []);
+
+  const handleEditRepo = useCallback(() => {
+    setRepoDialogMode("edit");
+    setRepoDialogOpen(true);
+  }, []);
+
+  const handleSaveRepo = useCallback((data: { name: string; description: string; isRoot: boolean }) => {
+    if (repoDialogMode === "create") {
+      const newId = data.name.toLowerCase().replace(/\s+/g, "-");
+      // In a real app, this would persist to backend
+      console.log("Create repository:", data);
+    } else {
+      console.log("Edit repository:", selectedFolder, data);
+    }
+  }, [repoDialogMode, selectedFolder]);
+
+  const selectedFolderData = useMemo(
+    () => SUBJECT_FOLDERS.find((f) => f.id === selectedFolder),
+    [selectedFolder]
+  );
+
   const handleBack = useCallback(() => navigate("/dashboard/assessment"), [navigate]);
 
   const handleSelectFolder = useCallback((id: string) => {
@@ -286,10 +316,10 @@ const QuestionRepository = () => {
               Repositories
             </span>
             <div className="flex items-center gap-1">
-              <Button variant="ghost" size="icon" className="h-7 w-7" aria-label="Add folder">
+              <Button variant="ghost" size="icon" className="h-7 w-7" aria-label="Add folder" onClick={handleCreateRepo}>
                 <FolderPlus className="w-3.5 h-3.5" />
               </Button>
-              <Button variant="ghost" size="icon" className="h-7 w-7" aria-label="Rename">
+              <Button variant="ghost" size="icon" className="h-7 w-7" aria-label="Rename" onClick={handleEditRepo}>
                 <Pencil className="w-3.5 h-3.5" />
               </Button>
               <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive hover:text-destructive" aria-label="Delete">
@@ -450,6 +480,19 @@ const QuestionRepository = () => {
         type={dialogType}
         onSave={handleSaveQuestion}
         editData={editingQuestion}
+      />
+
+      {/* Repository Create/Edit Dialog */}
+      <RepositoryDialog
+        open={repoDialogOpen}
+        onOpenChange={setRepoDialogOpen}
+        mode={repoDialogMode}
+        initialData={
+          repoDialogMode === "edit" && selectedFolderData
+            ? { name: selectedFolderData.name, description: "", isRoot: true }
+            : undefined
+        }
+        onSave={handleSaveRepo}
       />
     </div>
   );
