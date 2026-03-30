@@ -299,7 +299,7 @@ const AddItemsModal = ({ open, onOpenChange, sectionLabel, onAddItems }: AddItem
                 questions.map((q, i) => (
                   <div
                     key={q.id}
-                    className={`grid grid-cols-[36px_40px_1fr_64px_120px] items-start px-4 py-3 border-b border-border/60 transition-colors cursor-pointer
+                    className={`grid grid-cols-[40px_44px_1fr_72px_130px] items-start px-5 py-3.5 border-b border-border/60 transition-colors cursor-pointer
                       ${selectedIds.has(q.id) ? "bg-primary/[0.04]" : "hover:bg-muted/20"}`}
                     onClick={() => toggleSelect(q.id)}
                   >
@@ -309,13 +309,13 @@ const AddItemsModal = ({ open, onOpenChange, sectionLabel, onAddItems }: AddItem
                         onCheckedChange={() => toggleSelect(q.id)}
                       />
                     </div>
-                    <span className="text-xs text-muted-foreground text-center pt-0.5 tabular-nums">{i + 1}</span>
-                    <div className="pl-1 pr-3">
+                    <span className="text-sm text-muted-foreground text-center pt-0.5 tabular-nums">{i + 1}</span>
+                    <div className="pl-1 pr-4">
                       <QuestionPreview q={q} />
                     </div>
-                    <span className="text-[13px] text-foreground text-center font-medium pt-0.5 tabular-nums">{q.score}</span>
+                    <span className="text-sm text-foreground text-center font-medium pt-0.5 tabular-nums">{q.score}</span>
                     <div className="flex justify-center pt-0.5">
-                      <Badge variant="secondary" className="text-[10px] font-normal px-2 py-0.5 rounded-md">
+                      <Badge variant="secondary" className="text-[11px] font-normal px-2.5 py-0.5 rounded-md">
                         {q.type}
                       </Badge>
                     </div>
