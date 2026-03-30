@@ -199,21 +199,21 @@ const AddItemsModal = ({ open, onOpenChange, sectionLabel, onAddItems }: AddItem
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="max-w-[92vw] w-[1200px] h-[90vh] flex flex-col p-0 gap-0 rounded-xl overflow-hidden [&>button:last-child]:hidden">
+      <DialogContent className="max-w-[96vw] w-[1400px] h-[94vh] flex flex-col p-0 gap-0 rounded-xl overflow-hidden [&>button:last-child]:hidden">
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-3.5 border-b border-border bg-card shrink-0">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-card shrink-0">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-              <FileText className="w-4 h-4 text-primary" />
+            <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center">
+              <FileText className="w-4.5 h-4.5 text-primary" />
             </div>
             <div>
-              <DialogTitle className="text-sm font-semibold text-foreground">Add Items to Section</DialogTitle>
-              <p className="text-[11px] text-muted-foreground mt-0.5">
+              <DialogTitle className="text-base font-semibold text-foreground">Add Items to Section</DialogTitle>
+              <p className="text-xs text-muted-foreground mt-0.5">
                 Browse and select questions from your repository
               </p>
             </div>
           </div>
-          <Badge variant="outline" className="text-[11px] font-medium h-6">
+          <Badge variant="outline" className="text-xs font-medium h-7 px-3">
             Section {sectionLabel}
           </Badge>
         </div>
@@ -221,9 +221,9 @@ const AddItemsModal = ({ open, onOpenChange, sectionLabel, onAddItems }: AddItem
         {/* Body */}
         <div className="flex flex-1 overflow-hidden">
           {/* Sidebar */}
-          <div className="w-52 border-r border-border flex flex-col bg-muted/20 shrink-0">
-            <div className="px-3 py-2.5 border-b border-border">
-              <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Folders</span>
+          <div className="w-56 border-r border-border flex flex-col bg-muted/20 shrink-0">
+            <div className="px-4 py-3 border-b border-border">
+              <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Folders</span>
             </div>
             <ScrollArea className="flex-1 py-1.5 px-1.5">
               {REPOSITORY_FOLDERS.map((folder) => (
@@ -240,19 +240,19 @@ const AddItemsModal = ({ open, onOpenChange, sectionLabel, onAddItems }: AddItem
           {/* Main content */}
           <div className="flex-1 flex flex-col overflow-hidden">
             {/* Toolbar */}
-            <div className="flex items-center justify-between gap-3 px-4 py-2.5 border-b border-border shrink-0">
-              <div className="relative flex-1 max-w-xs">
-                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
+            <div className="flex items-center justify-between gap-3 px-5 py-3 border-b border-border shrink-0">
+              <div className="relative flex-1 max-w-sm">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search questions..."
-                  className="h-8 pl-8 text-xs"
+                  className="h-9 pl-9 text-sm"
                 />
               </div>
               <div className="flex items-center gap-3">
                 <Select value={typeFilter} onValueChange={setTypeFilter}>
-                  <SelectTrigger className="h-8 w-[130px] text-xs">
+                  <SelectTrigger className="h-9 w-[140px] text-sm">
                     <SelectValue placeholder="All Types" />
                   </SelectTrigger>
                   <SelectContent>
@@ -262,11 +262,11 @@ const AddItemsModal = ({ open, onOpenChange, sectionLabel, onAddItems }: AddItem
                     ))}
                   </SelectContent>
                 </Select>
-                <div className="flex items-center gap-2 text-[11px] text-muted-foreground">
-                  <span className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-muted/60">
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-muted/60">
                     <span className="font-semibold text-foreground tabular-nums">{selectedIds.size}</span> selected
                   </span>
-                  <span className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-muted/60">
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-muted/60">
                     <span className="font-semibold text-foreground tabular-nums">{questions.length}</span> total
                   </span>
                 </div>
@@ -276,7 +276,7 @@ const AddItemsModal = ({ open, onOpenChange, sectionLabel, onAddItems }: AddItem
             {/* Table */}
             <ScrollArea className="flex-1">
               {/* Table header */}
-              <div className="grid grid-cols-[36px_40px_1fr_64px_120px] items-center px-4 py-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground border-b border-border bg-muted/30 sticky top-0 z-10">
+              <div className="grid grid-cols-[40px_44px_1fr_72px_130px] items-center px-5 py-2.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground border-b border-border bg-muted/30 sticky top-0 z-10">
                 <div className="flex justify-center">
                   <Checkbox checked={allSelected} onCheckedChange={toggleAll} />
                 </div>
@@ -299,7 +299,7 @@ const AddItemsModal = ({ open, onOpenChange, sectionLabel, onAddItems }: AddItem
                 questions.map((q, i) => (
                   <div
                     key={q.id}
-                    className={`grid grid-cols-[36px_40px_1fr_64px_120px] items-start px-4 py-3 border-b border-border/60 transition-colors cursor-pointer
+                    className={`grid grid-cols-[40px_44px_1fr_72px_130px] items-start px-5 py-3.5 border-b border-border/60 transition-colors cursor-pointer
                       ${selectedIds.has(q.id) ? "bg-primary/[0.04]" : "hover:bg-muted/20"}`}
                     onClick={() => toggleSelect(q.id)}
                   >
@@ -309,13 +309,13 @@ const AddItemsModal = ({ open, onOpenChange, sectionLabel, onAddItems }: AddItem
                         onCheckedChange={() => toggleSelect(q.id)}
                       />
                     </div>
-                    <span className="text-xs text-muted-foreground text-center pt-0.5 tabular-nums">{i + 1}</span>
-                    <div className="pl-1 pr-3">
+                    <span className="text-sm text-muted-foreground text-center pt-0.5 tabular-nums">{i + 1}</span>
+                    <div className="pl-1 pr-4">
                       <QuestionPreview q={q} />
                     </div>
-                    <span className="text-[13px] text-foreground text-center font-medium pt-0.5 tabular-nums">{q.score}</span>
+                    <span className="text-sm text-foreground text-center font-medium pt-0.5 tabular-nums">{q.score}</span>
                     <div className="flex justify-center pt-0.5">
-                      <Badge variant="secondary" className="text-[10px] font-normal px-2 py-0.5 rounded-md">
+                      <Badge variant="secondary" className="text-[11px] font-normal px-2.5 py-0.5 rounded-md">
                         {q.type}
                       </Badge>
                     </div>
@@ -327,24 +327,24 @@ const AddItemsModal = ({ open, onOpenChange, sectionLabel, onAddItems }: AddItem
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between px-5 py-3 border-t border-border bg-card shrink-0">
-          <span className="text-[12px] text-muted-foreground">
+        <div className="flex items-center justify-between px-6 py-3.5 border-t border-border bg-card shrink-0">
+          <span className="text-sm text-muted-foreground">
             {selectedIds.size > 0
               ? `${selectedIds.size} question${selectedIds.size !== 1 ? "s" : ""} ready to add`
               : "Select questions to add them to the section"}
           </span>
-          <div className="flex items-center gap-2">
-            <Button type="button" variant="ghost" size="sm" className="h-8 text-xs" onClick={handleClose}>
+          <div className="flex items-center gap-2.5">
+            <Button type="button" variant="ghost" size="sm" className="h-9 text-sm px-4" onClick={handleClose}>
               Cancel
             </Button>
             <Button
               type="button"
               size="sm"
-              className="h-8 text-xs gap-1.5"
+              className="h-9 text-sm gap-1.5 px-4"
               onClick={handleAdd}
               disabled={selectedIds.size === 0}
             >
-              <Plus className="w-3.5 h-3.5" />
+              <Plus className="w-4 h-4" />
               Add {selectedIds.size > 0 ? `(${selectedIds.size})` : "Items"}
             </Button>
           </div>
