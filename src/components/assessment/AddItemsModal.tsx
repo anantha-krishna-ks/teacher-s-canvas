@@ -327,24 +327,24 @@ const AddItemsModal = ({ open, onOpenChange, sectionLabel, onAddItems }: AddItem
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between px-5 py-3 border-t border-border bg-card shrink-0">
-          <span className="text-[12px] text-muted-foreground">
+        <div className="flex items-center justify-between px-6 py-3.5 border-t border-border bg-card shrink-0">
+          <span className="text-sm text-muted-foreground">
             {selectedIds.size > 0
               ? `${selectedIds.size} question${selectedIds.size !== 1 ? "s" : ""} ready to add`
               : "Select questions to add them to the section"}
           </span>
-          <div className="flex items-center gap-2">
-            <Button type="button" variant="ghost" size="sm" className="h-8 text-xs" onClick={handleClose}>
+          <div className="flex items-center gap-2.5">
+            <Button type="button" variant="ghost" size="sm" className="h-9 text-sm px-4" onClick={handleClose}>
               Cancel
             </Button>
             <Button
               type="button"
               size="sm"
-              className="h-8 text-xs gap-1.5"
+              className="h-9 text-sm gap-1.5 px-4"
               onClick={handleAdd}
               disabled={selectedIds.size === 0}
             >
-              <Plus className="w-3.5 h-3.5" />
+              <Plus className="w-4 h-4" />
               Add {selectedIds.size > 0 ? `(${selectedIds.size})` : "Items"}
             </Button>
           </div>
