@@ -42,6 +42,7 @@ const SectionPanel = ({ sections, onChange }: SectionPanelProps) => {
   const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingLabel, setEditingLabel] = useState("");
+  const [addItemsOpen, setAddItemsOpen] = useState(false);
   const editInputRef = useRef<HTMLInputElement>(null);
 
   const activeSection = sections.find((s) => s.id === activeSectionId) ?? null;
