@@ -1,7 +1,6 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Plus, Trash2, ArrowRight, GripVertical, Shuffle } from "lucide-react";
+import { Plus, Trash2, ArrowRight, GripVertical, Shuffle, X } from "lucide-react";
 
 export interface MatchItem {
   id: string;
@@ -42,6 +41,40 @@ const shuffleArray = <T,>(arr: T[]): T[] => {
   return shuffled;
 };
 
+/* ─── Auto-resize Textarea ───────────────────────────────────────────── */
+
+const AutoTextarea = ({
+  value,
+  onChange,
+  placeholder,
+  className = "",
+}: {
+  value: string;
+  onChange: (val: string) => void;
+  placeholder: string;
+  className?: string;
+}) => {
+  const ref = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    if (ref.current) {
+      ref.current.style.height = "0";
+      ref.current.style.height = `${ref.current.scrollHeight}px`;
+    }
+  }, [value]);
+
+  return (
+    <textarea
+      ref={ref}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      placeholder={placeholder}
+      rows={1}
+      className={`w-full resize-none overflow-hidden text-sm border-0 bg-transparent shadow-none focus-visible:outline-none focus-visible:ring-0 px-1 py-1 placeholder:text-muted-foreground/50 ${className}`}
+    />
+  );
+};
+
 /* ─── Draggable List ─────────────────────────────────────────────────── */
 
 interface DraggableInputListProps {
@@ -51,6 +84,8 @@ interface DraggableInputListProps {
   onTextChange: (index: number, value: string) => void;
   onReorder: (from: number, to: number) => void;
   onShuffle: () => void;
+  onDelete: (index: number) => void;
+  canDelete: boolean;
   label: string;
 }
 
@@ -63,6 +98,8 @@ const DraggableInputList = ({
   onTextChange,
   onReorder,
   onShuffle,
+  onDelete,
+  canDelete,
   label,
 }: DraggableInputListProps) => {
   const [dragIdx, setDragIdx] = useState<number | null>(null);
@@ -110,20 +147,29 @@ const DraggableInputList = ({
                 setOverIdx(i);
               }}
               onDragEnd={handleDragEnd}
-              className={`flex items-center gap-1.5 rounded-lg border border-border bg-background px-1.5 py-1 transition-all group
+              className={`flex items-start gap-1.5 rounded-lg border border-border bg-background px-1.5 py-1 transition-all group
                 ${dragIdx === i ? "opacity-30" : ""}
                 ${overIdx === i && dragIdx !== i ? "ring-2 ring-primary/30" : ""}`}
             >
-              <GripVertical className="w-3.5 h-3.5 shrink-0 cursor-grab active:cursor-grabbing text-muted-foreground/40 group-hover:text-muted-foreground/70" />
-              <span className="text-[11px] font-bold text-muted-foreground/50 shrink-0 w-4 text-center select-none">
+              <GripVertical className="w-3.5 h-3.5 shrink-0 cursor-grab active:cursor-grabbing text-muted-foreground/40 group-hover:text-muted-foreground/70 mt-1.5" />
+              <span className="text-[11px] font-bold text-muted-foreground/50 shrink-0 w-4 text-center select-none mt-1.5">
                 {badge}
               </span>
-              <Input
+              <AutoTextarea
                 value={item.text}
-                onChange={(e) => onTextChange(i, e.target.value)}
+                onChange={(val) => onTextChange(i, val)}
                 placeholder={`${placeholder} ${badge}`}
-                className="h-8 text-sm border-0 bg-transparent shadow-none focus-visible:ring-0 px-1"
               />
+              {canDelete && (
+                <button
+                  type="button"
+                  onClick={() => onDelete(i)}
+                  className="shrink-0 mt-1 p-0.5 rounded text-muted-foreground/30 hover:text-destructive hover:bg-destructive/10 transition-colors opacity-0 group-hover:opacity-100"
+                  title="Delete"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              )}
             </div>
           );
         })}
@@ -139,22 +185,10 @@ const MatchTheFollowingEditor = ({ pairs, onChange }: MatchTheFollowingEditorPro
     pairs.length > 0 ? pairs : [createPair(), createPair()]
   );
 
-  const sync = useCallback(
-    (updated: MatchPair[]) => {
-      setRows(updated);
-      onChange(updated);
-    },
-    [onChange]
-  );
-
-  // Items (left column)
-  const items = rows.map((r) => ({ id: r.id, text: r.left }));
-  // Matches (right column) — stored separately for independent reordering
   const [matchOrder, setMatchOrder] = useState<{ id: string; text: string }[]>(() =>
     rows.map((r) => ({ id: r.id, text: r.right }))
   );
 
-  // Keep matchOrder in sync when rows are added/removed
   const syncAll = useCallback(
     (newRows: MatchPair[], newMatchOrder?: { id: string; text: string }[]) => {
       setRows(newRows);
@@ -164,6 +198,9 @@ const MatchTheFollowingEditor = ({ pairs, onChange }: MatchTheFollowingEditorPro
     [onChange]
   );
 
+  const items = rows.map((r) => ({ id: r.id, text: r.left }));
+  const canDelete = rows.length > 2;
+
   const handleLeftChange = (index: number, value: string) => {
     const updated = rows.map((r, i) => (i === index ? { ...r, left: value } : r));
     syncAll(updated);
@@ -172,7 +209,6 @@ const MatchTheFollowingEditor = ({ pairs, onChange }: MatchTheFollowingEditorPro
   const handleRightChange = (index: number, value: string) => {
     const newMatch = matchOrder.map((m, i) => (i === index ? { ...m, text: value } : m));
     setMatchOrder(newMatch);
-    // Also update the corresponding row
     const updated = rows.map((r) => {
       const match = newMatch.find((m) => m.id === r.id);
       return match ? { ...r, right: match.text } : r;
@@ -209,17 +245,24 @@ const MatchTheFollowingEditor = ({ pairs, onChange }: MatchTheFollowingEditorPro
     syncAll(newRows, newMatch);
   };
 
-  const handleRemove = (index: number) => {
-    if (rows.length <= 2) return;
+  const handleDeleteItem = (index: number) => {
+    if (!canDelete) return;
     const removedId = rows[index].id;
     const newRows = rows.filter((_, i) => i !== index);
     const newMatch = matchOrder.filter((m) => m.id !== removedId);
     syncAll(newRows, newMatch);
   };
 
+  const handleDeleteMatch = (index: number) => {
+    if (!canDelete) return;
+    const removedId = matchOrder[index].id;
+    const newMatch = matchOrder.filter((_, i) => i !== index);
+    const newRows = rows.filter((r) => r.id !== removedId);
+    syncAll(newRows, newMatch);
+  };
+
   return (
     <div className="space-y-4">
-      {/* Two-column layout */}
       <div className="flex gap-4">
         <DraggableInputList
           items={items}
@@ -228,10 +271,11 @@ const MatchTheFollowingEditor = ({ pairs, onChange }: MatchTheFollowingEditorPro
           onTextChange={handleLeftChange}
           onReorder={handleReorderItems}
           onShuffle={handleShuffleItems}
+          onDelete={handleDeleteItem}
+          canDelete={canDelete}
           label="Items"
         />
 
-        {/* Center arrows */}
         <div className="flex flex-col pt-8 gap-[0.45rem]">
           {rows.map((_, i) => (
             <div key={i} className="h-[2.375rem] flex items-center justify-center">
@@ -247,11 +291,12 @@ const MatchTheFollowingEditor = ({ pairs, onChange }: MatchTheFollowingEditorPro
           onTextChange={handleRightChange}
           onReorder={handleReorderMatches}
           onShuffle={handleShuffleMatches}
+          onDelete={handleDeleteMatch}
+          canDelete={canDelete}
           label="Matches"
         />
       </div>
 
-      {/* Add / Remove row */}
       <div className="flex items-center gap-2">
         <Button
           type="button"
@@ -263,18 +308,6 @@ const MatchTheFollowingEditor = ({ pairs, onChange }: MatchTheFollowingEditorPro
           <Plus className="w-3.5 h-3.5" />
           Add Pair
         </Button>
-        {rows.length > 2 && (
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            className="h-9 text-xs gap-1.5 border-dashed border-destructive/30 text-muted-foreground hover:text-destructive hover:border-destructive/60"
-            onClick={() => handleRemove(rows.length - 1)}
-          >
-            <Trash2 className="w-3.5 h-3.5" />
-            Remove Last
-          </Button>
-        )}
       </div>
 
       <p className="text-xs text-muted-foreground text-center">
