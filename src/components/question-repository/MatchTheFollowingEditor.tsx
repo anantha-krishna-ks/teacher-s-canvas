@@ -84,8 +84,6 @@ interface DraggableInputListProps {
   onTextChange: (index: number, value: string) => void;
   onReorder: (from: number, to: number) => void;
   onShuffle: () => void;
-  onDelete: (index: number) => void;
-  canDelete: boolean;
   label: string;
 }
 
@@ -98,8 +96,6 @@ const DraggableInputList = ({
   onTextChange,
   onReorder,
   onShuffle,
-  onDelete,
-  canDelete,
   label,
 }: DraggableInputListProps) => {
   const [dragIdx, setDragIdx] = useState<number | null>(null);
@@ -160,16 +156,6 @@ const DraggableInputList = ({
                 onChange={(val) => onTextChange(i, val)}
                 placeholder={`${placeholder} ${badge}`}
               />
-              {canDelete && (
-                <button
-                  type="button"
-                  onClick={() => onDelete(i)}
-                  className="shrink-0 mt-1 p-0.5 rounded text-muted-foreground/30 hover:text-destructive hover:bg-destructive/10 transition-colors opacity-0 group-hover:opacity-100"
-                  title="Delete"
-                >
-                  <X className="w-3.5 h-3.5" />
-                </button>
-              )}
             </div>
           );
         })}
@@ -263,7 +249,7 @@ const MatchTheFollowingEditor = ({ pairs, onChange }: MatchTheFollowingEditorPro
 
   return (
     <div className="space-y-4">
-      <div className="flex gap-4">
+      <div className="flex gap-3">
         <DraggableInputList
           items={items}
           prefix="number"
@@ -271,8 +257,6 @@ const MatchTheFollowingEditor = ({ pairs, onChange }: MatchTheFollowingEditorPro
           onTextChange={handleLeftChange}
           onReorder={handleReorderItems}
           onShuffle={handleShuffleItems}
-          onDelete={handleDeleteItem}
-          canDelete={canDelete}
           label="Items"
         />
 
@@ -291,10 +275,28 @@ const MatchTheFollowingEditor = ({ pairs, onChange }: MatchTheFollowingEditorPro
           onTextChange={handleRightChange}
           onReorder={handleReorderMatches}
           onShuffle={handleShuffleMatches}
-          onDelete={handleDeleteMatch}
-          canDelete={canDelete}
           label="Matches"
         />
+
+        {/* Delete column */}
+        <div className="flex flex-col pt-8 gap-[0.45rem]">
+          {rows.map((r, i) => (
+            <div key={r.id} className="h-[2.375rem] flex items-center justify-center">
+              {canDelete ? (
+                <button
+                  type="button"
+                  onClick={() => handleDeleteItem(i)}
+                  className="p-1 rounded-md text-muted-foreground/40 hover:text-destructive hover:bg-destructive/10 transition-colors"
+                  title={`Delete pair ${i + 1}`}
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                </button>
+              ) : (
+                <span className="w-5" />
+              )}
+            </div>
+          ))}
+        </div>
       </div>
 
       <div className="flex items-center gap-2">
