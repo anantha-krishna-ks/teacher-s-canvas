@@ -199,8 +199,9 @@ const CreateNewItemForm = ({ onAddItem }: { onAddItem: (item: SectionItem) => vo
       item.correctAnswer = correctAnswer.trim();
     }
     onAddItem(item);
+    const folderName = flatFolders.find(({ folder: f }) => f.id === targetFolderId)?.folder.name ?? "repository";
     resetForm();
-    toast.success("Item created and added.");
+    toast.success(`Item created and saved to "${folderName}".`);
   };
 
   return (
