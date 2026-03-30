@@ -40,6 +40,9 @@ const SectionPanel = ({ sections, onChange }: SectionPanelProps) => {
   );
   const [collapsedIds, setCollapsedIds] = useState<Set<string>>(new Set());
   const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingLabel, setEditingLabel] = useState("");
+  const editInputRef = useRef<HTMLInputElement>(null);
 
   const activeSection = sections.find((s) => s.id === activeSectionId) ?? null;
 
@@ -66,6 +69,51 @@ const SectionPanel = ({ sections, onChange }: SectionPanelProps) => {
     },
     [sections, onChange, activeSectionId]
   );
+
+  const handleDuplicateSection = useCallback(
+    (sectionId: string) => {
+      const source = sections.find((s) => s.id === sectionId);
+      if (!source) return;
+      const nextLabel = SECTION_LABELS[sections.length] ?? `${sections.length + 1}`;
+      const duplicated: Section = {
+        id: crypto.randomUUID(),
+        label: nextLabel,
+        items: source.items.map((it) => ({ ...it, id: crypto.randomUUID() })),
+      };
+      const idx = sections.findIndex((s) => s.id === sectionId);
+      const updated = [...sections];
+      updated.splice(idx + 1, 0, duplicated);
+      onChange(updated);
+      setActiveSectionId(duplicated.id);
+      toast.success("Section duplicated.");
+    },
+    [sections, onChange]
+  );
+
+  const handleRenameSection = useCallback(
+    (sectionId: string) => {
+      const sec = sections.find((s) => s.id === sectionId);
+      if (!sec) return;
+      setEditingId(sectionId);
+      setEditingLabel(sec.label);
+      setTimeout(() => editInputRef.current?.focus(), 50);
+    },
+    [sections]
+  );
+
+  const commitRename = useCallback(() => {
+    if (!editingId || !editingLabel.trim()) {
+      setEditingId(null);
+      return;
+    }
+    onChange(
+      sections.map((s) =>
+        s.id === editingId ? { ...s, label: editingLabel.trim() } : s
+      )
+    );
+    setEditingId(null);
+    toast.success("Section renamed.");
+  }, [editingId, editingLabel, sections, onChange]);
 
   const updateSectionItems = useCallback(
     (sectionId: string, items: SectionItem[]) => {
