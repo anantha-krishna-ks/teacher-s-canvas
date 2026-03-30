@@ -223,8 +223,11 @@ const SectionPanel = ({ sections, onChange }: SectionPanelProps) => {
 
   return (
     <div className="space-y-5">
-      {/* Add Section Button */}
-      <div className="flex justify-end">
+      {/* Header with Add Button */}
+      <div className="flex items-center justify-between">
+        <span className="text-sm font-medium text-muted-foreground">
+          {sections.length} Section{sections.length !== 1 ? "s" : ""}
+        </span>
         <Button
           type="button"
           variant="outline"
