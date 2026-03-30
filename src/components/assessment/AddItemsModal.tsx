@@ -427,23 +427,23 @@ const AddItemsModal = ({ open, onOpenChange, sectionLabel, onAddItems }: AddItem
           </div>
           <div className="flex items-center gap-3">
             {/* Tab switcher */}
-            <div className="flex items-center rounded-lg border border-border bg-muted/40 p-0.5">
+            <div className="flex items-center rounded-full bg-muted/50 p-1 border border-border/60">
               <button
                 type="button"
                 onClick={() => setActiveTab("repository")}
-                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-md text-xs font-medium transition-all
-                  ${activeTab === "repository" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
+                className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-semibold transition-all duration-200
+                  ${activeTab === "repository" ? "bg-primary/10 text-primary shadow-sm ring-1 ring-primary/20" : "text-muted-foreground hover:text-foreground"}`}
               >
-                <FileText className="w-3.5 h-3.5" />
+                <FileText className={`w-3.5 h-3.5 ${activeTab === "repository" ? "text-primary" : ""}`} />
                 From Repository
               </button>
               <button
                 type="button"
                 onClick={() => setActiveTab("create")}
-                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-md text-xs font-medium transition-all
-                  ${activeTab === "create" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
+                className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-semibold transition-all duration-200
+                  ${activeTab === "create" ? "bg-primary/10 text-primary shadow-sm ring-1 ring-primary/20" : "text-muted-foreground hover:text-foreground"}`}
               >
-                <PlusCircle className="w-3.5 h-3.5" />
+                <PlusCircle className={`w-3.5 h-3.5 ${activeTab === "create" ? "text-primary" : ""}`} />
                 Create New
               </button>
             </div>
