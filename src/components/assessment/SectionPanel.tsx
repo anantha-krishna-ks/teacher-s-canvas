@@ -223,6 +223,19 @@ const SectionPanel = ({ sections, onChange }: SectionPanelProps) => {
 
   return (
     <div className="space-y-5">
+      {/* Add Section Button */}
+      <div className="flex justify-end">
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          className="h-8 text-xs gap-1.5"
+          onClick={handleAddSection}
+        >
+          <Plus className="w-3.5 h-3.5" />
+          Add Section
+        </Button>
+      </div>
 
       {/* Section Cards Grid */}
       <div className="flex flex-wrap gap-3">
