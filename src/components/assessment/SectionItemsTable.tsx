@@ -1,4 +1,5 @@
 import { useState } from "react";
+import emptyIllustration from "@/assets/empty-section-items.png";
 import { GripVertical, Trash2 } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
