@@ -1,6 +1,6 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Plus, Trash2, ArrowRight, GripVertical, Shuffle, X } from "lucide-react";
+import { Plus, Trash2, ArrowRight, GripVertical, Shuffle, X, Lock, Unlock } from "lucide-react";
 
 export interface MatchItem {
   id: string;
