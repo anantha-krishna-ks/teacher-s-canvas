@@ -240,19 +240,19 @@ const AddItemsModal = ({ open, onOpenChange, sectionLabel, onAddItems }: AddItem
           {/* Main content */}
           <div className="flex-1 flex flex-col overflow-hidden">
             {/* Toolbar */}
-            <div className="flex items-center justify-between gap-3 px-4 py-2.5 border-b border-border shrink-0">
-              <div className="relative flex-1 max-w-xs">
-                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
+            <div className="flex items-center justify-between gap-3 px-5 py-3 border-b border-border shrink-0">
+              <div className="relative flex-1 max-w-sm">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search questions..."
-                  className="h-8 pl-8 text-xs"
+                  className="h-9 pl-9 text-sm"
                 />
               </div>
               <div className="flex items-center gap-3">
                 <Select value={typeFilter} onValueChange={setTypeFilter}>
-                  <SelectTrigger className="h-8 w-[130px] text-xs">
+                  <SelectTrigger className="h-9 w-[140px] text-sm">
                     <SelectValue placeholder="All Types" />
                   </SelectTrigger>
                   <SelectContent>
@@ -262,11 +262,11 @@ const AddItemsModal = ({ open, onOpenChange, sectionLabel, onAddItems }: AddItem
                     ))}
                   </SelectContent>
                 </Select>
-                <div className="flex items-center gap-2 text-[11px] text-muted-foreground">
-                  <span className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-muted/60">
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-muted/60">
                     <span className="font-semibold text-foreground tabular-nums">{selectedIds.size}</span> selected
                   </span>
-                  <span className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-muted/60">
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-muted/60">
                     <span className="font-semibold text-foreground tabular-nums">{questions.length}</span> total
                   </span>
                 </div>
