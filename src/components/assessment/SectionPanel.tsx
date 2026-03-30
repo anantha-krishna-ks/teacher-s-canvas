@@ -241,8 +241,8 @@ const SectionPanel = ({ sections, onChange }: SectionPanelProps) => {
       </div>
 
       {/* Section Cards Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-        {sections.map((sec) => {
+      <div className="flex flex-wrap gap-3">
+        {sections.map((sec, idx) => {
           const isActive = activeSectionId === sec.id;
           const isEditing = editingId === sec.id;
           const secItems = sec.items.length;
@@ -256,14 +256,14 @@ const SectionPanel = ({ sections, onChange }: SectionPanelProps) => {
                   setSelectedItems(new Set());
                 }
               }}
-              className={`relative group rounded-lg border cursor-pointer transition-all
+              className={`relative group w-[160px] rounded-xl cursor-pointer transition-all duration-200
                 ${isActive
-                  ? "border-primary bg-primary/5 shadow-sm ring-1 ring-primary/20"
-                  : "border-border bg-card hover:border-muted-foreground/30"
+                  ? "bg-primary text-primary-foreground shadow-md shadow-primary/20 scale-[1.02]"
+                  : "bg-card border border-border hover:border-primary/30 hover:shadow-sm"
                 }`}
             >
-              {/* Card Header */}
-              <div className="flex items-center justify-between px-3 pt-2.5 pb-1">
+              {/* Card Top */}
+              <div className="px-3.5 pt-3 pb-1.5 flex items-start justify-between">
                 {isEditing ? (
                   <div className="flex items-center gap-1 flex-1 mr-1">
                     <Input
@@ -274,19 +274,24 @@ const SectionPanel = ({ sections, onChange }: SectionPanelProps) => {
                         if (e.key === "Enter") commitRename();
                         if (e.key === "Escape") setEditingId(null);
                       }}
-                      className="h-6 text-xs px-1.5 w-full"
+                      className="h-6 text-xs px-1.5 w-full bg-background text-foreground"
                     />
-                    <button type="button" onClick={commitRename} className="text-primary hover:text-primary/80">
+                    <button type="button" onClick={commitRename} className={isActive ? "text-primary-foreground/80 hover:text-primary-foreground" : "text-primary hover:text-primary/80"}>
                       <Check className="w-3.5 h-3.5" />
                     </button>
-                    <button type="button" onClick={() => setEditingId(null)} className="text-muted-foreground hover:text-foreground">
+                    <button type="button" onClick={() => setEditingId(null)} className={isActive ? "text-primary-foreground/60 hover:text-primary-foreground" : "text-muted-foreground hover:text-foreground"}>
                       <X className="w-3.5 h-3.5" />
                     </button>
                   </div>
                 ) : (
-                  <span className={`text-xs font-semibold truncate ${isActive ? "text-primary" : "text-foreground"}`}>
-                    {sec.label}
-                  </span>
+                  <div className="flex flex-col gap-0.5">
+                    <span className={`text-[10px] uppercase tracking-wider font-medium ${isActive ? "text-primary-foreground/60" : "text-muted-foreground"}`}>
+                      Section {String(idx + 1).padStart(2, "0")}
+                    </span>
+                    <span className={`text-sm font-semibold truncate max-w-[100px] ${isActive ? "text-primary-foreground" : "text-foreground"}`}>
+                      {sec.label}
+                    </span>
+                  </div>
                 )}
 
                 {!isEditing && (
@@ -295,9 +300,9 @@ const SectionPanel = ({ sections, onChange }: SectionPanelProps) => {
                       <button
                         type="button"
                         onClick={(e) => e.stopPropagation()}
-                        className="opacity-0 group-hover:opacity-100 transition-opacity p-0.5 rounded hover:bg-muted"
+                        className={`opacity-0 group-hover:opacity-100 transition-opacity p-0.5 rounded-md ${isActive ? "hover:bg-primary-foreground/10" : "hover:bg-muted"}`}
                       >
-                        <MoreHorizontal className="w-3.5 h-3.5 text-muted-foreground" />
+                        <MoreHorizontal className={`w-3.5 h-3.5 ${isActive ? "text-primary-foreground/70" : "text-muted-foreground"}`} />
                       </button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-36">
@@ -323,14 +328,15 @@ const SectionPanel = ({ sections, onChange }: SectionPanelProps) => {
               </div>
 
               {/* Card Stats */}
-              <div className="px-3 pb-2.5 pt-1 flex flex-col gap-0.5">
-                <div className="flex items-center justify-between text-[11px] text-muted-foreground">
-                  <span>Sections</span>
-                  <span className="font-medium text-foreground">{String(secItems).padStart(2, "0")}</span>
+              <div className={`px-3.5 pb-3 pt-1 flex items-center gap-3 ${isActive ? "text-primary-foreground" : "text-foreground"}`}>
+                <div className="flex flex-col items-center">
+                  <span className="text-lg font-bold leading-tight">{String(secItems).padStart(2, "0")}</span>
+                  <span className={`text-[9px] uppercase tracking-wide font-medium ${isActive ? "text-primary-foreground/60" : "text-muted-foreground"}`}>Items</span>
                 </div>
-                <div className="flex items-center justify-between text-[11px] text-muted-foreground">
-                  <span>Items</span>
-                  <span className="font-medium text-foreground">{String(secScore).padStart(2, "0")}</span>
+                <div className={`w-px h-6 ${isActive ? "bg-primary-foreground/20" : "bg-border"}`} />
+                <div className="flex flex-col items-center">
+                  <span className="text-lg font-bold leading-tight">{String(secScore).padStart(2, "0")}</span>
+                  <span className={`text-[9px] uppercase tracking-wide font-medium ${isActive ? "text-primary-foreground/60" : "text-muted-foreground"}`}>Score</span>
                 </div>
               </div>
             </div>
