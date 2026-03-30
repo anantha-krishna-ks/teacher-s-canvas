@@ -151,15 +151,23 @@ function flattenFolders(folders: RepositoryFolder[], depth = 0): { folder: Repos
 }
 
 /* ── Create New Item Form ── */
-const CreateNewItemForm = ({ onAddItem }: { onAddItem: (item: SectionItem) => void }) => {
+const CreateNewItemForm = ({ onAddItem, activeFolderId, onSelectFolder }: { onAddItem: (item: SectionItem) => void; activeFolderId: string; onSelectFolder: (id: string) => void }) => {
   const [type, setType] = useState<ItemType>("Short Answer");
   const [question, setQuestion] = useState("");
   const [score, setScore] = useState("1");
   const [correctAnswer, setCorrectAnswer] = useState("");
   const [options, setOptions] = useState(["", "", "", ""]);
-  const [targetFolderId, setTargetFolderId] = useState<string>(REPOSITORY_FOLDERS[0]?.id ?? "");
 
-  const flatFolders = useMemo(() => flattenFolders(REPOSITORY_FOLDERS), []);
+  const selectedFolderName = useMemo(() => {
+    const find = (folders: RepositoryFolder[]): string | null => {
+      for (const f of folders) {
+        if (f.id === activeFolderId) return f.name;
+        if (f.children) { const r = find(f.children); if (r) return r; }
+      }
+      return null;
+    };
+    return find(REPOSITORY_FOLDERS) ?? "repository";
+  }, [activeFolderId]);
 
   const resetForm = () => {
     setQuestion("");
@@ -199,36 +207,20 @@ const CreateNewItemForm = ({ onAddItem }: { onAddItem: (item: SectionItem) => vo
       item.correctAnswer = correctAnswer.trim();
     }
     onAddItem(item);
-    const folderName = flatFolders.find(({ folder: f }) => f.id === targetFolderId)?.folder.name ?? "repository";
     resetForm();
-    toast.success(`Item created and saved to "${folderName}".`);
+    toast.success(`Item created and saved to "${selectedFolderName}".`);
   };
 
   return (
     <div className="flex-1 overflow-auto">
       <div className="max-w-2xl mx-auto py-8 px-6 space-y-6">
-        {/* Repository Folder */}
-        <div className="space-y-2">
-          <Label className="text-sm font-medium">Save to Repository</Label>
-          <Select value={targetFolderId} onValueChange={setTargetFolderId}>
-            <SelectTrigger className="h-10 text-sm">
-              <div className="flex items-center gap-2">
-                <Folder className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
-                <SelectValue placeholder="Select a folder" />
-              </div>
-            </SelectTrigger>
-            <SelectContent>
-              {flatFolders.map(({ folder: f, depth: d }) => (
-                <SelectItem key={f.id} value={f.id}>
-                  <span style={{ paddingLeft: `${d * 12}px` }} className="flex items-center gap-2">
-                    <Folder className="w-3 h-3 text-muted-foreground shrink-0" />
-                    {f.name}
-                  </span>
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <p className="text-xs text-muted-foreground">New question will be stored in this repository folder</p>
+        {/* Selected folder indicator */}
+        <div className="flex items-center gap-2 px-3.5 py-2.5 rounded-lg bg-primary/[0.06] border border-primary/15">
+          <Folder className="w-4 h-4 text-primary shrink-0" />
+          <span className="text-sm text-foreground">
+            Saving to: <span className="font-semibold text-primary">{selectedFolderName}</span>
+          </span>
+          <span className="text-xs text-muted-foreground ml-1">— select a folder from the sidebar</span>
         </div>
 
         {/* Type & Score row */}
@@ -356,6 +348,7 @@ const AddItemsModal = ({ open, onOpenChange, sectionLabel, onAddItems }: AddItem
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [searchQuery, setSearchQuery] = useState("");
   const [typeFilter, setTypeFilter] = useState<string>("all");
+  const [createFolderId, setCreateFolderId] = useState<string>(REPOSITORY_FOLDERS[0]?.id ?? "");
 
   const activeFolder = activeFolderId ? findFolder(REPOSITORY_FOLDERS, activeFolderId) : null;
 
@@ -569,7 +562,25 @@ const AddItemsModal = ({ open, onOpenChange, sectionLabel, onAddItems }: AddItem
             </div>
           </div>
         ) : (
-          <CreateNewItemForm onAddItem={handleCreateItem} />
+          <div className="flex flex-1 overflow-hidden">
+            {/* Sidebar - same as repository tab */}
+            <div className="w-56 border-r border-border flex flex-col bg-muted/20 shrink-0">
+              <div className="px-4 py-3 border-b border-border">
+                <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Save to Folder</span>
+              </div>
+              <ScrollArea className="flex-1 py-1.5 px-1.5">
+                {REPOSITORY_FOLDERS.map((folder) => (
+                  <FolderNode
+                    key={folder.id}
+                    folder={folder}
+                    activeFolderId={createFolderId}
+                    onSelect={setCreateFolderId}
+                  />
+                ))}
+              </ScrollArea>
+            </div>
+            <CreateNewItemForm onAddItem={handleCreateItem} activeFolderId={createFolderId} onSelectFolder={setCreateFolderId} />
+          </div>
         )}
 
         {/* Footer - only for repository tab */}
