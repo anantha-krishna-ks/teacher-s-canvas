@@ -151,7 +151,7 @@ function flattenFolders(folders: RepositoryFolder[], depth = 0): { folder: Repos
 }
 
 /* ── Create New Item Form ── */
-const CreateNewItemForm = ({ onAddItem }: { onAddItem: (item: SectionItem) => void }) => {
+const CreateNewItemForm = ({ onAddItem, activeFolderId, onSelectFolder }: { onAddItem: (item: SectionItem) => void; activeFolderId: string; onSelectFolder: (id: string) => void }) => {
   const [type, setType] = useState<ItemType>("Short Answer");
   const [question, setQuestion] = useState("");
   const [score, setScore] = useState("1");
