@@ -84,125 +84,119 @@ const CreateAssessment = () => {
           </TabsList>
 
           {/* Type of Assessment Tab */}
-          <TabsContent value="type" className="p-6 mt-0">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-5">
-              {/* Left Column */}
-              <div className="space-y-5">
-                <div className="space-y-1.5">
-                  <Label htmlFor="typeOfTest" className="text-sm font-medium text-foreground">
-                    Type of Test <span className="text-destructive">*</span>
-                  </Label>
-                  <Select value={typeOfTest} onValueChange={setTypeOfTest}>
-                    <SelectTrigger id="typeOfTest" className="bg-background">
-                      <SelectValue placeholder="Select type of test" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {TEST_TYPES.map((t) => (
-                        <SelectItem key={t} value={t}>{t}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-1.5">
-                  <Label htmlFor="class" className="text-sm font-medium text-foreground">
-                    Class <span className="text-destructive">*</span>
-                  </Label>
-                  <Select value={selectedClass} onValueChange={setSelectedClass}>
-                    <SelectTrigger id="class" className="bg-background">
-                      <SelectValue placeholder="Select class" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {CLASSES.map((c) => (
-                        <SelectItem key={c} value={c}>{c}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-1.5">
-                  <Label htmlFor="subject" className="text-sm font-medium text-foreground">
-                    Subject <span className="text-destructive">*</span>
-                  </Label>
-                  <Select value={subject} onValueChange={setSubject}>
-                    <SelectTrigger id="subject" className="bg-background">
-                      <SelectValue placeholder="Select subject" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {SUBJECTS.map((s) => (
-                        <SelectItem key={s} value={s}>{s}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-1.5">
-                  <Label htmlFor="subjectCode" className="text-sm font-medium text-foreground">
-                    Subject Code
-                  </Label>
-                  <Input
-                    id="subjectCode"
-                    value={subjectCode}
-                    onChange={(e) => setSubjectCode(e.target.value)}
-                    placeholder="e.g. MATH101"
-                    className="bg-background"
-                    maxLength={20}
-                  />
-                </div>
+          <TabsContent value="type" className="p-6 mt-0 space-y-6">
+            {/* Row 1: Test Type, Class, Subject */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="space-y-1.5">
+                <Label htmlFor="typeOfTest" className="text-sm font-medium text-foreground">
+                  Type of Test <span className="text-destructive">*</span>
+                </Label>
+                <Select value={typeOfTest} onValueChange={setTypeOfTest}>
+                  <SelectTrigger id="typeOfTest" className="bg-background">
+                    <SelectValue placeholder="Select type of test" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {TEST_TYPES.map((t) => (
+                      <SelectItem key={t} value={t}>{t}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
 
-              {/* Right Column */}
-              <div className="space-y-5">
-                <div className="space-y-1.5">
-                  <Label htmlFor="totalMarks" className="text-sm font-medium text-foreground">
-                    Total Marks
-                  </Label>
+              <div className="space-y-1.5">
+                <Label htmlFor="class" className="text-sm font-medium text-foreground">
+                  Class <span className="text-destructive">*</span>
+                </Label>
+                <Select value={selectedClass} onValueChange={setSelectedClass}>
+                  <SelectTrigger id="class" className="bg-background">
+                    <SelectValue placeholder="Select class" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {CLASSES.map((c) => (
+                      <SelectItem key={c} value={c}>{c}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-1.5">
+                <Label htmlFor="subject" className="text-sm font-medium text-foreground">
+                  Subject <span className="text-destructive">*</span>
+                </Label>
+                <Select value={subject} onValueChange={setSubject}>
+                  <SelectTrigger id="subject" className="bg-background">
+                    <SelectValue placeholder="Select subject" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {SUBJECTS.map((s) => (
+                      <SelectItem key={s} value={s}>{s}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            {/* Row 2: Subject Code, Total Marks, Duration */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="space-y-1.5">
+                <Label htmlFor="subjectCode" className="text-sm font-medium text-foreground">
+                  Subject Code
+                </Label>
+                <Input
+                  id="subjectCode"
+                  value={subjectCode}
+                  onChange={(e) => setSubjectCode(e.target.value)}
+                  placeholder="e.g. MATH101"
+                  className="bg-background"
+                  maxLength={20}
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <Label htmlFor="totalMarks" className="text-sm font-medium text-foreground">
+                  Total Marks
+                </Label>
+                <Input
+                  id="totalMarks"
+                  type="number"
+                  value={totalMarks}
+                  onChange={(e) => setTotalMarks(e.target.value)}
+                  placeholder="Enter total marks"
+                  className="bg-background"
+                  min={0}
+                  max={999}
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <Label className="text-sm font-medium text-foreground">Duration</Label>
+                <div className="flex items-center gap-2">
                   <Input
-                    id="totalMarks"
                     type="number"
-                    value={totalMarks}
-                    onChange={(e) => setTotalMarks(e.target.value)}
-                    placeholder="Enter total marks"
+                    value={durationHr}
+                    onChange={(e) => setDurationHr(e.target.value)}
+                    placeholder="0"
                     className="bg-background"
                     min={0}
-                    max={999}
+                    max={10}
                   />
-                </div>
-
-                <div className="space-y-1.5">
-                  <Label className="text-sm font-medium text-foreground">Duration</Label>
-                  <div className="flex items-center gap-3">
-                    <div className="flex items-center gap-2 flex-1">
-                      <Input
-                        type="number"
-                        value={durationHr}
-                        onChange={(e) => setDurationHr(e.target.value)}
-                        placeholder="0"
-                        className="bg-background w-20"
-                        min={0}
-                        max={10}
-                      />
-                      <span className="text-sm text-muted-foreground">hr</span>
-                    </div>
-                    <div className="flex items-center gap-2 flex-1">
-                      <Input
-                        type="number"
-                        value={durationMin}
-                        onChange={(e) => setDurationMin(e.target.value)}
-                        placeholder="0"
-                        className="bg-background w-20"
-                        min={0}
-                        max={59}
-                      />
-                      <span className="text-sm text-muted-foreground">min</span>
-                    </div>
-                  </div>
+                  <span className="text-sm text-muted-foreground shrink-0">hr</span>
+                  <Input
+                    type="number"
+                    value={durationMin}
+                    onChange={(e) => setDurationMin(e.target.value)}
+                    placeholder="0"
+                    className="bg-background"
+                    min={0}
+                    max={59}
+                  />
+                  <span className="text-sm text-muted-foreground shrink-0">min</span>
                 </div>
               </div>
             </div>
 
-            {/* Instructions - Full Width */}
-            <div className="mt-6 space-y-1.5">
+            {/* Row 3: Instructions */}
+            <div className="space-y-1.5">
               <Label htmlFor="instructions" className="text-sm font-medium text-foreground">
                 Instructions <span className="text-muted-foreground text-xs">(optional)</span>
               </Label>
@@ -211,13 +205,13 @@ const CreateAssessment = () => {
                 value={instructions}
                 onChange={(e) => setInstructions(e.target.value)}
                 placeholder="Enter any instructions for students..."
-                className="bg-background min-h-[120px] resize-y"
+                className="bg-background min-h-[100px] resize-y"
                 maxLength={2000}
               />
             </div>
 
             {/* Next Button */}
-            <div className="flex justify-end mt-8">
+            <div className="flex justify-end pt-2">
               <Button onClick={handleNext} className="px-8">
                 Next
               </Button>
