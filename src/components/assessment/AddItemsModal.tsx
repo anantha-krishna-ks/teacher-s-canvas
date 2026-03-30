@@ -199,7 +199,7 @@ const AddItemsModal = ({ open, onOpenChange, sectionLabel, onAddItems }: AddItem
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="max-w-[92vw] w-[1200px] h-[90vh] flex flex-col p-0 gap-0 rounded-xl overflow-hidden [&>button:last-child]:hidden">
+      <DialogContent className="max-w-[96vw] w-[1400px] h-[94vh] flex flex-col p-0 gap-0 rounded-xl overflow-hidden [&>button:last-child]:hidden">
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-3.5 border-b border-border bg-card shrink-0">
           <div className="flex items-center gap-3">
