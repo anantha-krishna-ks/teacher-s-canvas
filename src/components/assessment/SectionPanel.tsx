@@ -213,53 +213,119 @@ const SectionPanel = ({ sections, onChange }: SectionPanelProps) => {
 
   return (
     <div className="space-y-5">
-      {/* Section Cards Row */}
-      <div className="flex items-start gap-3 flex-wrap">
+      {/* Header with Add Button */}
+      <div className="flex items-center justify-between">
+        <span className="text-sm font-medium text-muted-foreground">
+          {sections.length} Section{sections.length !== 1 ? "s" : ""}
+        </span>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          className="h-8 text-xs gap-1.5"
+          onClick={handleAddSection}
+        >
+          <Plus className="w-3.5 h-3.5" />
+          Add Section
+        </Button>
+      </div>
+
+      {/* Section Cards Grid */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
         {sections.map((sec) => {
           const isActive = activeSectionId === sec.id;
+          const isEditing = editingId === sec.id;
           const secItems = sec.items.length;
           const secScore = sec.items.reduce((s, it) => s + it.score, 0);
           return (
-            <button
+            <div
               key={sec.id}
-              type="button"
               onClick={() => {
-                setActiveSectionId(sec.id);
-                setSelectedItems(new Set());
+                if (!isEditing) {
+                  setActiveSectionId(sec.id);
+                  setSelectedItems(new Set());
+                }
               }}
-              className={`relative flex flex-col rounded-xl border px-5 py-3 min-w-[140px] text-left transition-all
+              className={`relative group rounded-lg border cursor-pointer transition-all
                 ${isActive
                   ? "border-primary bg-primary/5 shadow-sm ring-1 ring-primary/20"
-                  : "border-border bg-card hover:border-muted-foreground/30 hover:shadow-sm"
+                  : "border-border bg-card hover:border-muted-foreground/30"
                 }`}
             >
-              <span className={`text-sm font-semibold ${isActive ? "text-primary" : "text-foreground"}`}>
-                Section {sec.label}
-              </span>
-              <div className="mt-2 flex flex-col gap-0.5">
-                <div className="flex items-center justify-between gap-4 text-xs text-muted-foreground">
-                  <span>Total Items</span>
-                  <span className="font-semibold text-foreground">{String(secItems).padStart(2, "0")}</span>
+              {/* Card Header */}
+              <div className="flex items-center justify-between px-3 pt-2.5 pb-1">
+                {isEditing ? (
+                  <div className="flex items-center gap-1 flex-1 mr-1">
+                    <Input
+                      ref={editInputRef}
+                      value={editingLabel}
+                      onChange={(e) => setEditingLabel(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") commitRename();
+                        if (e.key === "Escape") setEditingId(null);
+                      }}
+                      className="h-6 text-xs px-1.5 w-full"
+                    />
+                    <button type="button" onClick={commitRename} className="text-primary hover:text-primary/80">
+                      <Check className="w-3.5 h-3.5" />
+                    </button>
+                    <button type="button" onClick={() => setEditingId(null)} className="text-muted-foreground hover:text-foreground">
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                ) : (
+                  <span className={`text-xs font-semibold truncate ${isActive ? "text-primary" : "text-foreground"}`}>
+                    {sec.label}
+                  </span>
+                )}
+
+                {!isEditing && (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <button
+                        type="button"
+                        onClick={(e) => e.stopPropagation()}
+                        className="opacity-0 group-hover:opacity-100 transition-opacity p-0.5 rounded hover:bg-muted"
+                      >
+                        <MoreHorizontal className="w-3.5 h-3.5 text-muted-foreground" />
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-36">
+                      <DropdownMenuItem onClick={(e) => { e.stopPropagation(); handleRenameSection(sec.id); }}>
+                        <Pencil className="w-3.5 h-3.5 mr-2" />
+                        Edit Name
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={(e) => { e.stopPropagation(); handleDuplicateSection(sec.id); }}>
+                        <Copy className="w-3.5 h-3.5 mr-2" />
+                        Duplicate
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={(e) => { e.stopPropagation(); handleRemoveSection(sec.id); }}
+                        className="text-destructive focus:text-destructive"
+                        disabled={sections.length <= 1}
+                      >
+                        <Trash2 className="w-3.5 h-3.5 mr-2" />
+                        Delete
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                )}
+              </div>
+
+              {/* Card Stats */}
+              <div className="px-3 pb-2.5 pt-1 flex flex-col gap-0.5">
+                <div className="flex items-center justify-between text-[11px] text-muted-foreground">
+                  <span>Sections</span>
+                  <span className="font-medium text-foreground">{String(secItems).padStart(2, "0")}</span>
                 </div>
-                <div className="flex items-center justify-between gap-4 text-xs text-muted-foreground">
-                  <span>Total Score</span>
-                  <span className="font-semibold text-foreground">{String(secScore).padStart(2, "0")}</span>
+                <div className="flex items-center justify-between text-[11px] text-muted-foreground">
+                  <span>Items</span>
+                  <span className="font-medium text-foreground">{String(secScore).padStart(2, "0")}</span>
                 </div>
               </div>
-            </button>
+            </div>
           );
         })}
-
-        <Button
-          type="button"
-          variant="default"
-          size="sm"
-          className="h-10 px-5 text-sm gap-1.5 self-center"
-          onClick={handleAddSection}
-        >
-          <Plus className="w-4 h-4" />
-          Add Section
-        </Button>
       </div>
 
       {/* Active Section Content */}
