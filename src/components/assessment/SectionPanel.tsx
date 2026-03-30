@@ -355,7 +355,7 @@ const SectionPanel = ({ sections, onChange }: SectionPanelProps) => {
       {activeSection && (
         <div className="border border-border rounded-xl overflow-hidden">
           {/* Section Header */}
-          <div className="flex items-center justify-between px-4 py-3 bg-muted/30 border-b border-border">
+          <div className="flex items-center justify-between px-5 py-3 bg-muted/20 border-b border-border">
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-1.5">
                 <div className="w-1 h-5 rounded-full bg-primary" />
@@ -365,36 +365,125 @@ const SectionPanel = ({ sections, onChange }: SectionPanelProps) => {
               </div>
               <div className="flex items-center gap-3 text-xs text-muted-foreground">
                 <span>
-                  Total Items{" "}
-                  <span className="inline-flex items-center justify-center w-6 h-5 rounded bg-background border border-border font-medium text-foreground">
+                  Items{" "}
+                  <span className="inline-flex items-center justify-center min-w-[24px] h-5 rounded bg-background border border-border font-medium text-foreground px-1">
                     {String(totalItems).padStart(2, "0")}
                   </span>
                 </span>
                 <span className="text-border">|</span>
                 <span>
-                  Total Score{" "}
-                  <span className="inline-flex items-center justify-center w-6 h-5 rounded bg-background border border-border font-medium text-foreground">
+                  Score{" "}
+                  <span className="inline-flex items-center justify-center min-w-[24px] h-5 rounded bg-background border border-border font-medium text-foreground px-1">
                     {String(totalScore).padStart(2, "0")}
                   </span>
                 </span>
               </div>
             </div>
-            <div className="flex items-center gap-1">
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                className="h-7 w-7 text-muted-foreground"
-                onClick={() => toggleCollapse(activeSection.id)}
-              >
-                {collapsedIds.has(activeSection.id) ? (
-                  <ChevronDown className="w-4 h-4" />
-                ) : (
-                  <ChevronUp className="w-4 h-4" />
-                )}
-              </Button>
-            </div>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="h-7 w-7 text-muted-foreground"
+              onClick={() => toggleCollapse(activeSection.id)}
+            >
+              {collapsedIds.has(activeSection.id) ? (
+                <ChevronDown className="w-4 h-4" />
+              ) : (
+                <ChevronUp className="w-4 h-4" />
+              )}
+            </Button>
           </div>
+
+          {/* Toolbar */}
+          {!collapsedIds.has(activeSection.id) && (
+            <div className="flex items-center justify-between px-5 py-2 bg-card border-b border-border">
+              {/* Left: Section actions */}
+              <div className="flex items-center gap-1">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 text-xs gap-1.5 text-muted-foreground hover:text-foreground"
+                  onClick={handleAddSection}
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  New Section
+                </Button>
+                <div className="w-px h-4 bg-border mx-0.5" />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 text-xs gap-1.5 text-muted-foreground hover:text-foreground"
+                  onClick={() => handleRenameSection(activeSection.id)}
+                >
+                  <Pencil className="w-3.5 h-3.5" />
+                  Edit
+                </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 text-xs gap-1.5 text-muted-foreground hover:text-foreground"
+                  onClick={() => handleDuplicateSection(activeSection.id)}
+                >
+                  <Copy className="w-3.5 h-3.5" />
+                  Duplicate
+                </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 text-xs gap-1.5 text-destructive/70 hover:text-destructive hover:bg-destructive/5"
+                  onClick={() => handleRemoveSection(activeSection.id)}
+                  disabled={sections.length <= 1}
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  Delete
+                </Button>
+              </div>
+
+              {/* Right: Item actions */}
+              <div className="flex items-center gap-1">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 text-xs gap-1.5 text-muted-foreground hover:text-foreground"
+                  onClick={handleShuffle}
+                  disabled={totalItems < 2}
+                >
+                  <Shuffle className="w-3.5 h-3.5" />
+                  Shuffle
+                </Button>
+                {selectedItems.size > 0 && (
+                  <>
+                    <div className="w-px h-4 bg-border mx-0.5" />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="h-8 text-xs gap-1.5 text-destructive/70 hover:text-destructive hover:bg-destructive/5"
+                      onClick={handleDeleteSelected}
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                      Delete ({selectedItems.size})
+                    </Button>
+                  </>
+                )}
+                <div className="w-px h-4 bg-border mx-0.5" />
+                <Button
+                  type="button"
+                  size="sm"
+                  className="h-8 text-xs gap-1.5"
+                  onClick={() => setAddItemsOpen(true)}
+                >
+                  <Tag className="w-3.5 h-3.5" />
+                  Add Items
+                </Button>
+              </div>
+            </div>
+          )}
 
           {/* Collapsible Body */}
           {!collapsedIds.has(activeSection.id) && (
