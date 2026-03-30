@@ -206,6 +206,30 @@ const CreateNewItemForm = ({ onAddItem }: { onAddItem: (item: SectionItem) => vo
   return (
     <div className="flex-1 overflow-auto">
       <div className="max-w-2xl mx-auto py-8 px-6 space-y-6">
+        {/* Repository Folder */}
+        <div className="space-y-2">
+          <Label className="text-sm font-medium">Save to Repository</Label>
+          <Select value={targetFolderId} onValueChange={setTargetFolderId}>
+            <SelectTrigger className="h-10 text-sm">
+              <div className="flex items-center gap-2">
+                <Folder className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
+                <SelectValue placeholder="Select a folder" />
+              </div>
+            </SelectTrigger>
+            <SelectContent>
+              {flatFolders.map(({ folder: f, depth: d }) => (
+                <SelectItem key={f.id} value={f.id}>
+                  <span style={{ paddingLeft: `${d * 12}px` }} className="flex items-center gap-2">
+                    <Folder className="w-3 h-3 text-muted-foreground shrink-0" />
+                    {f.name}
+                  </span>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <p className="text-xs text-muted-foreground">New question will be stored in this repository folder</p>
+        </div>
+
         {/* Type & Score row */}
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
