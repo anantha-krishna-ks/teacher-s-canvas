@@ -256,92 +256,94 @@ const SectionPanel = ({ sections, onChange }: SectionPanelProps) => {
                   setSelectedItems(new Set());
                 }
               }}
-              className={`relative group w-[155px] rounded-lg cursor-pointer transition-all duration-150 border
+              className={`relative group w-[164px] rounded-xl cursor-pointer transition-all duration-200 overflow-hidden
                 ${isActive
-                  ? "border-primary/40 bg-primary/[0.06]"
-                  : "border-border bg-card hover:border-primary/20"
+                  ? "bg-card border border-primary/30 shadow-[0_1px_8px_-2px_hsl(var(--primary)/0.12)]"
+                  : "bg-card border border-transparent hover:border-border hover:shadow-[0_1px_4px_-1px_hsl(var(--foreground)/0.06)]"
                 }`}
             >
-              {/* Left accent bar */}
-              {isActive && (
-                <div className="absolute left-0 top-2.5 bottom-2.5 w-[3px] rounded-full bg-primary" />
-              )}
+              {/* Top colored strip */}
+              <div className={`h-[3px] w-full transition-colors duration-200 ${isActive ? "bg-primary" : "bg-muted"}`} />
 
-              {/* Card Top */}
-              <div className="px-3.5 pt-2.5 pb-1 flex items-start justify-between">
-                {isEditing ? (
-                  <div className="flex items-center gap-1 flex-1 mr-1">
-                    <Input
-                      ref={editInputRef}
-                      value={editingLabel}
-                      onChange={(e) => setEditingLabel(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") commitRename();
-                        if (e.key === "Escape") setEditingId(null);
-                      }}
-                      className="h-6 text-xs px-1.5 w-full"
-                    />
-                    <button type="button" onClick={commitRename} className="text-primary hover:text-primary/80">
-                      <Check className="w-3.5 h-3.5" />
-                    </button>
-                    <button type="button" onClick={() => setEditingId(null)} className="text-muted-foreground hover:text-foreground">
-                      <X className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                ) : (
-                  <div className="flex flex-col gap-0.5">
-                    <span className="text-[10px] text-muted-foreground font-medium">
-                      Section {String(idx + 1).padStart(2, "0")}
-                    </span>
-                    <span className={`text-[13px] font-semibold truncate max-w-[100px] ${isActive ? "text-primary" : "text-foreground"}`}>
-                      {sec.label}
-                    </span>
-                  </div>
-                )}
-
-                {!isEditing && (
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <button
-                        type="button"
-                        onClick={(e) => e.stopPropagation()}
-                        className="opacity-0 group-hover:opacity-100 transition-opacity p-0.5 rounded hover:bg-muted"
-                      >
-                        <MoreHorizontal className="w-3.5 h-3.5 text-muted-foreground" />
+              {/* Card Body */}
+              <div className="px-3.5 pt-2.5 pb-3">
+                {/* Header row */}
+                <div className="flex items-start justify-between mb-2.5">
+                  {isEditing ? (
+                    <div className="flex items-center gap-1 flex-1 mr-1">
+                      <Input
+                        ref={editInputRef}
+                        value={editingLabel}
+                        onChange={(e) => setEditingLabel(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") commitRename();
+                          if (e.key === "Escape") setEditingId(null);
+                        }}
+                        className="h-6 text-xs px-1.5 w-full"
+                      />
+                      <button type="button" onClick={commitRename} className="text-primary hover:text-primary/80">
+                        <Check className="w-3.5 h-3.5" />
                       </button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-36">
-                      <DropdownMenuItem onClick={(e) => { e.stopPropagation(); handleRenameSection(sec.id); }}>
-                        <Pencil className="w-3.5 h-3.5 mr-2" />
-                        Edit Name
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={(e) => { e.stopPropagation(); handleDuplicateSection(sec.id); }}>
-                        <Copy className="w-3.5 h-3.5 mr-2" />
-                        Duplicate
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={(e) => { e.stopPropagation(); handleRemoveSection(sec.id); }}
-                        className="text-destructive focus:text-destructive"
-                        disabled={sections.length <= 1}
-                      >
-                        <Trash2 className="w-3.5 h-3.5 mr-2" />
-                        Delete
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                )}
-              </div>
+                      <button type="button" onClick={() => setEditingId(null)} className="text-muted-foreground hover:text-foreground">
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-2">
+                      <div className={`w-7 h-7 rounded-lg flex items-center justify-center text-[11px] font-bold transition-colors ${isActive ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"}`}>
+                        {String(idx + 1).padStart(2, "0")}
+                      </div>
+                      <div className="flex flex-col">
+                        <span className={`text-[13px] font-semibold leading-tight truncate max-w-[80px] ${isActive ? "text-primary" : "text-foreground"}`}>
+                          {sec.label}
+                        </span>
+                      </div>
+                    </div>
+                  )}
 
-              {/* Card Stats */}
-              <div className="px-3.5 pb-2.5 pt-0.5 flex items-center gap-3 text-foreground">
-                <div className="flex flex-col">
-                  <span className="text-sm font-semibold leading-tight">{String(secItems).padStart(2, "0")}</span>
-                  <span className="text-[9px] text-muted-foreground font-medium">Items</span>
+                  {!isEditing && (
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <button
+                          type="button"
+                          onClick={(e) => e.stopPropagation()}
+                          className="opacity-0 group-hover:opacity-100 transition-opacity p-1 -mr-1 -mt-0.5 rounded-md hover:bg-muted"
+                        >
+                          <MoreHorizontal className="w-3.5 h-3.5 text-muted-foreground" />
+                        </button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-36">
+                        <DropdownMenuItem onClick={(e) => { e.stopPropagation(); handleRenameSection(sec.id); }}>
+                          <Pencil className="w-3.5 h-3.5 mr-2" />
+                          Edit Name
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={(e) => { e.stopPropagation(); handleDuplicateSection(sec.id); }}>
+                          <Copy className="w-3.5 h-3.5 mr-2" />
+                          Duplicate
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={(e) => { e.stopPropagation(); handleRemoveSection(sec.id); }}
+                          className="text-destructive focus:text-destructive"
+                          disabled={sections.length <= 1}
+                        >
+                          <Trash2 className="w-3.5 h-3.5 mr-2" />
+                          Delete
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  )}
                 </div>
-                <div className="w-px h-5 bg-border" />
-                <div className="flex flex-col">
-                  <span className="text-sm font-semibold leading-tight">{String(secScore).padStart(2, "0")}</span>
-                  <span className="text-[9px] text-muted-foreground font-medium">Score</span>
+
+                {/* Stats row */}
+                <div className="flex items-center gap-2">
+                  <div className="flex-1 rounded-lg bg-muted/50 px-2.5 py-1.5 text-center">
+                    <span className="text-sm font-semibold text-foreground leading-none">{String(secItems).padStart(2, "0")}</span>
+                    <p className="text-[9px] text-muted-foreground font-medium mt-0.5">Items</p>
+                  </div>
+                  <div className="flex-1 rounded-lg bg-muted/50 px-2.5 py-1.5 text-center">
+                    <span className="text-sm font-semibold text-foreground leading-none">{String(secScore).padStart(2, "0")}</span>
+                    <p className="text-[9px] text-muted-foreground font-medium mt-0.5">Score</p>
+                  </div>
                 </div>
               </div>
             </div>
