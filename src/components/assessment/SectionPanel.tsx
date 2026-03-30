@@ -357,17 +357,6 @@ const SectionPanel = ({ sections, onChange }: SectionPanelProps) => {
               </div>
             </div>
             <div className="flex items-center gap-1">
-              {sections.length > 1 && (
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  className="h-7 px-2 text-xs text-muted-foreground hover:text-destructive"
-                  onClick={() => handleRemoveSection(activeSection.id)}
-                >
-                  <Trash2 className="w-3.5 h-3.5" />
-                </Button>
-              )}
               <Button
                 type="button"
                 variant="ghost"
