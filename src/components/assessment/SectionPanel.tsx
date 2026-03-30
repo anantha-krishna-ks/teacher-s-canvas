@@ -132,6 +132,15 @@ const SectionPanel = ({ sections, onChange }: SectionPanelProps) => {
     [activeSection, updateSectionItems]
   );
 
+  const handleAddItemsFromRepo = useCallback(
+    (items: SectionItem[]) => {
+      if (!activeSection) return;
+      updateSectionItems(activeSection.id, [...activeSection.items, ...items]);
+      toast.success(`${items.length} item(s) added.`);
+    },
+    [activeSection, updateSectionItems]
+  );
+
   const handleUpdateItem = useCallback(
     (id: string, updates: Partial<SectionItem>) => {
       if (!activeSection) return;
