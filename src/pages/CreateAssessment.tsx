@@ -90,6 +90,9 @@ const CreateAssessment = () => {
             >
               <Layers className="w-4 h-4" />
               Sections
+              <span className="inline-flex items-center justify-center min-w-[20px] h-5 rounded-full bg-primary/10 text-primary text-[11px] font-semibold px-1.5">
+                {sections.length}
+              </span>
             </TabsTrigger>
           </TabsList>
 

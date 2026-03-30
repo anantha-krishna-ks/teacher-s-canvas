@@ -223,22 +223,6 @@ const SectionPanel = ({ sections, onChange }: SectionPanelProps) => {
 
   return (
     <div className="space-y-5">
-      {/* Header with Add Button */}
-      <div className="flex items-center justify-between">
-        <span className="text-sm font-medium text-muted-foreground">
-          {sections.length} Section{sections.length !== 1 ? "s" : ""}
-        </span>
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          className="h-8 text-xs gap-1.5"
-          onClick={handleAddSection}
-        >
-          <Plus className="w-3.5 h-3.5" />
-          Add Section
-        </Button>
-      </div>
 
       {/* Section Cards Grid */}
       <div className="flex flex-wrap gap-3">
