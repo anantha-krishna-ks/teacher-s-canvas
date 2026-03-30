@@ -1,9 +1,9 @@
 import { useState, useCallback, useRef } from "react";
-import { ChevronDown, ChevronUp, Shuffle, Trash2, Plus, MoreHorizontal, Pencil, Copy, X, Check } from "lucide-react";
+import { ChevronDown, ChevronUp, Shuffle, Trash2, Plus, MoreHorizontal, Pencil, Copy, X, Check, Tag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import SectionItemsTable from "./SectionItemsTable";
-import AddItemsDropdown from "./AddItemsDropdown";
+import AddItemsModal from "./AddItemsModal";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -42,6 +42,7 @@ const SectionPanel = ({ sections, onChange }: SectionPanelProps) => {
   const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingLabel, setEditingLabel] = useState("");
+  const [addItemsOpen, setAddItemsOpen] = useState(false);
   const editInputRef = useRef<HTMLInputElement>(null);
 
   const activeSection = sections.find((s) => s.id === activeSectionId) ?? null;
@@ -127,6 +128,15 @@ const SectionPanel = ({ sections, onChange }: SectionPanelProps) => {
       if (!activeSection) return;
       const newItem = createSectionItem(type);
       updateSectionItems(activeSection.id, [...activeSection.items, newItem]);
+    },
+    [activeSection, updateSectionItems]
+  );
+
+  const handleAddItemsFromRepo = useCallback(
+    (items: SectionItem[]) => {
+      if (!activeSection) return;
+      updateSectionItems(activeSection.id, [...activeSection.items, ...items]);
+      toast.success(`${items.length} item(s) added.`);
     },
     [activeSection, updateSectionItems]
   );
@@ -404,7 +414,15 @@ const SectionPanel = ({ sections, onChange }: SectionPanelProps) => {
                       Delete ({selectedItems.size})
                     </Button>
                   )}
-                  <AddItemsDropdown onAdd={handleAddItem} />
+                  <Button
+                    type="button"
+                    size="sm"
+                    className="h-8 text-xs gap-1.5"
+                    onClick={() => setAddItemsOpen(true)}
+                  >
+                    <Tag className="w-3.5 h-3.5" />
+                    Add Items
+                  </Button>
                 </div>
               </div>
 
@@ -421,6 +439,14 @@ const SectionPanel = ({ sections, onChange }: SectionPanelProps) => {
             </div>
           )}
         </div>
+      )}
+      {activeSection && (
+        <AddItemsModal
+          open={addItemsOpen}
+          onOpenChange={setAddItemsOpen}
+          sectionLabel={activeSection.label}
+          onAddItems={handleAddItemsFromRepo}
+        />
       )}
     </div>
   );
