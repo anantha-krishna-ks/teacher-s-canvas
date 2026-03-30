@@ -1,9 +1,9 @@
 import { useState, useCallback, useRef } from "react";
-import { ChevronDown, ChevronUp, Shuffle, Trash2, Plus, MoreHorizontal, Pencil, Copy, X, Check } from "lucide-react";
+import { ChevronDown, ChevronUp, Shuffle, Trash2, Plus, MoreHorizontal, Pencil, Copy, X, Check, Tag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import SectionItemsTable from "./SectionItemsTable";
-import AddItemsDropdown from "./AddItemsDropdown";
+import AddItemsModal from "./AddItemsModal";
 import {
   DropdownMenu,
   DropdownMenuContent,
