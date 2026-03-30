@@ -98,8 +98,8 @@ const CreateAssessment = () => {
                 <Label htmlFor="typeOfTest" className="text-sm font-medium text-foreground">
                   Type of Test <span className="text-destructive">*</span>
                 </Label>
-                <Select value={typeOfTest} onValueChange={setTypeOfTest}>
-                  <SelectTrigger id="typeOfTest" className="bg-background">
+                <Select value={typeOfTest} onValueChange={(v) => { setTypeOfTest(v); }}>
+                  <SelectTrigger id="typeOfTest" className={`bg-background ${errors.typeOfTest ? "border-destructive ring-1 ring-destructive/30" : ""}`}>
                     <SelectValue placeholder="Select type of test" />
                   </SelectTrigger>
                   <SelectContent>
@@ -108,14 +108,15 @@ const CreateAssessment = () => {
                     ))}
                   </SelectContent>
                 </Select>
+                {errors.typeOfTest && <p className="text-xs text-destructive">{errors.typeOfTest}</p>}
               </div>
 
               <div className="space-y-1.5">
                 <Label htmlFor="class" className="text-sm font-medium text-foreground">
                   Class <span className="text-destructive">*</span>
                 </Label>
-                <Select value={selectedClass} onValueChange={setSelectedClass}>
-                  <SelectTrigger id="class" className="bg-background">
+                <Select value={selectedClass} onValueChange={(v) => { setSelectedClass(v); }}>
+                  <SelectTrigger id="class" className={`bg-background ${errors.selectedClass ? "border-destructive ring-1 ring-destructive/30" : ""}`}>
                     <SelectValue placeholder="Select class" />
                   </SelectTrigger>
                   <SelectContent>
@@ -124,14 +125,15 @@ const CreateAssessment = () => {
                     ))}
                   </SelectContent>
                 </Select>
+                {errors.selectedClass && <p className="text-xs text-destructive">{errors.selectedClass}</p>}
               </div>
 
               <div className="space-y-1.5">
                 <Label htmlFor="subject" className="text-sm font-medium text-foreground">
                   Subject <span className="text-destructive">*</span>
                 </Label>
-                <Select value={subject} onValueChange={setSubject}>
-                  <SelectTrigger id="subject" className="bg-background">
+                <Select value={subject} onValueChange={(v) => { setSubject(v); }}>
+                  <SelectTrigger id="subject" className={`bg-background ${errors.subject ? "border-destructive ring-1 ring-destructive/30" : ""}`}>
                     <SelectValue placeholder="Select subject" />
                   </SelectTrigger>
                   <SelectContent>
@@ -140,6 +142,7 @@ const CreateAssessment = () => {
                     ))}
                   </SelectContent>
                 </Select>
+                {errors.subject && <p className="text-xs text-destructive">{errors.subject}</p>}
               </div>
             </div>
 
