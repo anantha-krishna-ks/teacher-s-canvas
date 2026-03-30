@@ -157,34 +157,52 @@ const SectionPanel = ({ sections, onChange }: SectionPanelProps) => {
   const totalScore = activeSection?.items.reduce((sum, it) => sum + it.score, 0) ?? 0;
 
   return (
-    <div className="space-y-4">
-      {/* Section Tabs */}
-      <div className="flex items-center gap-2 flex-wrap">
-        {sections.map((sec) => (
-          <button
-            key={sec.id}
-            type="button"
-            onClick={() => {
-              setActiveSectionId(sec.id);
-              setSelectedItems(new Set());
-            }}
-            className={`relative px-5 py-2 rounded-lg text-sm font-medium transition-all
-              ${activeSectionId === sec.id
-                ? "bg-primary text-primary-foreground shadow-sm"
-                : "bg-muted/60 text-muted-foreground hover:bg-muted hover:text-foreground"
-              }`}
-          >
-            Section {sec.label}
-          </button>
-        ))}
+    <div className="space-y-5">
+      {/* Section Cards Row */}
+      <div className="flex items-start gap-3 flex-wrap">
+        {sections.map((sec) => {
+          const isActive = activeSectionId === sec.id;
+          const secItems = sec.items.length;
+          const secScore = sec.items.reduce((s, it) => s + it.score, 0);
+          return (
+            <button
+              key={sec.id}
+              type="button"
+              onClick={() => {
+                setActiveSectionId(sec.id);
+                setSelectedItems(new Set());
+              }}
+              className={`relative flex flex-col rounded-xl border px-5 py-3 min-w-[140px] text-left transition-all
+                ${isActive
+                  ? "border-primary bg-primary/5 shadow-sm ring-1 ring-primary/20"
+                  : "border-border bg-card hover:border-muted-foreground/30 hover:shadow-sm"
+                }`}
+            >
+              <span className={`text-sm font-semibold ${isActive ? "text-primary" : "text-foreground"}`}>
+                Section {sec.label}
+              </span>
+              <div className="mt-2 flex flex-col gap-0.5">
+                <div className="flex items-center justify-between gap-4 text-xs text-muted-foreground">
+                  <span>Total Items</span>
+                  <span className="font-semibold text-foreground">{String(secItems).padStart(2, "0")}</span>
+                </div>
+                <div className="flex items-center justify-between gap-4 text-xs text-muted-foreground">
+                  <span>Total Score</span>
+                  <span className="font-semibold text-foreground">{String(secScore).padStart(2, "0")}</span>
+                </div>
+              </div>
+            </button>
+          );
+        })}
+
         <Button
           type="button"
-          variant="ghost"
+          variant="default"
           size="sm"
-          className="h-9 px-3 text-xs gap-1 text-muted-foreground hover:text-foreground"
+          className="h-10 px-5 text-sm gap-1.5 self-center"
           onClick={handleAddSection}
         >
-          <Plus className="w-3.5 h-3.5" />
+          <Plus className="w-4 h-4" />
           Add Section
         </Button>
       </div>
