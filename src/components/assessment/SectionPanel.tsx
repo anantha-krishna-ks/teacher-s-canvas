@@ -259,7 +259,7 @@ const SectionPanel = ({ sections, onChange }: SectionPanelProps) => {
               className={`relative group w-[164px] rounded-xl cursor-pointer transition-all duration-200 overflow-hidden
                 ${isActive
                   ? "bg-card border border-primary/30 shadow-[0_1px_8px_-2px_hsl(var(--primary)/0.12)]"
-                  : "bg-card border border-transparent hover:border-border hover:shadow-[0_1px_4px_-1px_hsl(var(--foreground)/0.06)]"
+                  : "bg-card border border-border shadow-sm hover:border-muted-foreground/40 hover:shadow-md"
                 }`}
             >
               {/* Top colored strip */}
