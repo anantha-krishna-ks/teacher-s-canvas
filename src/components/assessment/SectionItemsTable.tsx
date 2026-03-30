@@ -36,8 +36,21 @@ const SectionItemsTable = ({
 
   if (items.length === 0) {
     return (
-      <div className="py-10 text-center text-sm text-muted-foreground">
-        No items yet. Click <span className="font-medium text-foreground">Add Items</span> to get started.
+      <div className="py-12 flex flex-col items-center justify-center gap-3">
+        <img
+          src={emptyIllustration}
+          alt="No items"
+          width={140}
+          height={140}
+          loading="lazy"
+          className="opacity-80"
+        />
+        <div className="text-center">
+          <p className="text-sm font-medium text-foreground">No items yet</p>
+          <p className="text-xs text-muted-foreground mt-0.5">
+            Click <span className="font-medium text-primary">Add Items</span> from the toolbar to get started.
+          </p>
+        </div>
       </div>
     );
   }
