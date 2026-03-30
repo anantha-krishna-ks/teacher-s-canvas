@@ -1,6 +1,6 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Plus, Trash2, ArrowRight, GripVertical, Shuffle, X, Lock, Unlock } from "lucide-react";
+import { Plus, Trash2, ArrowRight, GripVertical, X } from "lucide-react";
 
 export interface MatchItem {
   id: string;
@@ -32,14 +32,6 @@ const createPair = (): MatchPair => ({
   right: "",
 });
 
-const shuffleArray = <T,>(arr: T[]): T[] => {
-  const shuffled = [...arr];
-  for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-  }
-  return shuffled;
-};
 
 /* ─── Auto-resize Textarea ───────────────────────────────────────────── */
 
@@ -83,7 +75,6 @@ interface DraggableInputListProps {
   placeholder: string;
   onTextChange: (index: number, value: string) => void;
   onReorder: (from: number, to: number) => void;
-  onShuffle: () => void;
   label: string;
 }
 
@@ -95,7 +86,6 @@ const DraggableInputList = ({
   placeholder,
   onTextChange,
   onReorder,
-  onShuffle,
   label,
 }: DraggableInputListProps) => {
   const [dragIdx, setDragIdx] = useState<number | null>(null);
@@ -111,22 +101,9 @@ const DraggableInputList = ({
 
   return (
     <div className="space-y-2 flex-1 min-w-0">
-      <div className="flex items-center justify-between">
-        <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-          {label}
-        </span>
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          className="h-6 px-2 text-[10px] gap-1 text-muted-foreground hover:text-foreground"
-          onClick={onShuffle}
-          title={`Shuffle ${label.toLowerCase()}`}
-        >
-          <Shuffle className="w-3 h-3" />
-          Shuffle
-        </Button>
-      </div>
+      <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+        {label}
+      </span>
       <div className="space-y-1.5">
         {items.map((item, i) => {
           const badge =
@@ -175,18 +152,6 @@ const MatchTheFollowingEditor = ({ pairs, onChange }: MatchTheFollowingEditorPro
     rows.map((r) => ({ id: r.id, text: r.right }))
   );
 
-  // Track which pair IDs are locked (item ↔ match stay synced)
-  const [lockedIds, setLockedIds] = useState<Set<string>>(new Set());
-
-  const toggleLock = (id: string) => {
-    setLockedIds((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
-    });
-  };
-
   const syncAll = useCallback(
     (newRows: MatchPair[], newMatchOrder?: { id: string; text: string }[]) => {
       setRows(newRows);
@@ -218,18 +183,6 @@ const MatchTheFollowingEditor = ({ pairs, onChange }: MatchTheFollowingEditorPro
     const reordered = [...rows];
     const [moved] = reordered.splice(from, 1);
     reordered.splice(to, 0, moved);
-
-    // If the moved item is locked, also move its match to the same position
-    if (lockedIds.has(moved.id)) {
-      const matchIdx = matchOrder.findIndex((m) => m.id === moved.id);
-      if (matchIdx !== -1) {
-        const reorderedMatch = [...matchOrder];
-        const [movedMatch] = reorderedMatch.splice(matchIdx, 1);
-        reorderedMatch.splice(to, 0, movedMatch);
-        syncAll(reordered, reorderedMatch);
-        return;
-      }
-    }
     syncAll(reordered);
   };
 
@@ -237,80 +190,7 @@ const MatchTheFollowingEditor = ({ pairs, onChange }: MatchTheFollowingEditorPro
     const reordered = [...matchOrder];
     const [moved] = reordered.splice(from, 1);
     reordered.splice(to, 0, moved);
-
-    // If the moved match is locked, also move its item to the same position
-    if (lockedIds.has(moved.id)) {
-      const itemIdx = rows.findIndex((r) => r.id === moved.id);
-      if (itemIdx !== -1) {
-        const reorderedRows = [...rows];
-        const [movedRow] = reorderedRows.splice(itemIdx, 1);
-        reorderedRows.splice(to, 0, movedRow);
-        syncAll(reorderedRows, reordered);
-        return;
-      }
-    }
     setMatchOrder(reordered);
-  };
-
-  const handleShuffleItems = () => {
-    const lockedItems = rows.filter((r) => lockedIds.has(r.id));
-    const unlockedItems = rows.filter((r) => !lockedIds.has(r.id));
-    const shuffledUnlocked = shuffleArray(unlockedItems);
-
-    // Rebuild: place locked items at their match-column positions, fill rest with shuffled
-    const result: MatchPair[] = [...rows];
-    let uIdx = 0;
-
-    if (lockedItems.length > 0) {
-      // For locked items, sync their position to where they are in matchOrder
-      const lockedPositions = new Map<string, number>();
-      matchOrder.forEach((m, i) => {
-        if (lockedIds.has(m.id)) lockedPositions.set(m.id, i);
-      });
-
-      const newRows: (MatchPair | null)[] = new Array(rows.length).fill(null);
-      lockedPositions.forEach((pos, id) => {
-        const item = rows.find((r) => r.id === id);
-        if (item && pos < newRows.length) newRows[pos] = item;
-      });
-      for (let i = 0; i < newRows.length; i++) {
-        if (!newRows[i]) {
-          newRows[i] = shuffledUnlocked[uIdx++];
-        }
-      }
-      syncAll(newRows.filter(Boolean) as MatchPair[]);
-    } else {
-      syncAll(shuffleArray(rows));
-    }
-  };
-
-  const handleShuffleMatches = () => {
-    const lockedMatches = matchOrder.filter((m) => lockedIds.has(m.id));
-    const unlockedMatches = matchOrder.filter((m) => !lockedIds.has(m.id));
-    const shuffledUnlocked = shuffleArray(unlockedMatches);
-
-    if (lockedMatches.length > 0) {
-      // For locked matches, sync their position to where their item is
-      const lockedPositions = new Map<string, number>();
-      rows.forEach((r, i) => {
-        if (lockedIds.has(r.id)) lockedPositions.set(r.id, i);
-      });
-
-      const newMatch: ({ id: string; text: string } | null)[] = new Array(matchOrder.length).fill(null);
-      lockedPositions.forEach((pos, id) => {
-        const match = matchOrder.find((m) => m.id === id);
-        if (match && pos < newMatch.length) newMatch[pos] = match;
-      });
-      let uIdx = 0;
-      for (let i = 0; i < newMatch.length; i++) {
-        if (!newMatch[i]) {
-          newMatch[i] = shuffledUnlocked[uIdx++];
-        }
-      }
-      setMatchOrder(newMatch.filter(Boolean) as { id: string; text: string }[]);
-    } else {
-      setMatchOrder(shuffleArray(matchOrder));
-    }
   };
 
   const handleAdd = () => {
@@ -325,11 +205,6 @@ const MatchTheFollowingEditor = ({ pairs, onChange }: MatchTheFollowingEditorPro
     const removedId = rows[index].id;
     const newRows = rows.filter((_, i) => i !== index);
     const newMatch = matchOrder.filter((m) => m.id !== removedId);
-    setLockedIds((prev) => {
-      const next = new Set(prev);
-      next.delete(removedId);
-      return next;
-    });
     syncAll(newRows, newMatch);
   };
 
@@ -338,11 +213,6 @@ const MatchTheFollowingEditor = ({ pairs, onChange }: MatchTheFollowingEditorPro
     const removedId = matchOrder[index].id;
     const newMatch = matchOrder.filter((_, i) => i !== index);
     const newRows = rows.filter((r) => r.id !== removedId);
-    setLockedIds((prev) => {
-      const next = new Set(prev);
-      next.delete(removedId);
-      return next;
-    });
     syncAll(newRows, newMatch);
   };
 
@@ -355,35 +225,15 @@ const MatchTheFollowingEditor = ({ pairs, onChange }: MatchTheFollowingEditorPro
           placeholder="Item"
           onTextChange={handleLeftChange}
           onReorder={handleReorderItems}
-          onShuffle={handleShuffleItems}
           label="Items"
         />
 
-        {/* Lock / Arrow column */}
         <div className="flex flex-col pt-8 gap-[0.45rem]">
-          {rows.map((r) => {
-            const isLocked = lockedIds.has(r.id);
-            return (
-              <div key={r.id} className="h-[2.375rem] flex items-center justify-center">
-                <button
-                  type="button"
-                  onClick={() => toggleLock(r.id)}
-                  className={`p-1 rounded-md transition-colors ${
-                    isLocked
-                      ? "text-primary bg-primary/10 hover:bg-primary/20"
-                      : "text-muted-foreground/30 hover:text-muted-foreground/60 hover:bg-muted/50"
-                  }`}
-                  title={isLocked ? "Unlock pair (unsync)" : "Lock pair (keep synced)"}
-                >
-                  {isLocked ? (
-                    <Lock className="w-3.5 h-3.5" />
-                  ) : (
-                    <Unlock className="w-3.5 h-3.5" />
-                  )}
-                </button>
-              </div>
-            );
-          })}
+          {rows.map((_, i) => (
+            <div key={i} className="h-[2.375rem] flex items-center justify-center">
+              <ArrowRight className="w-4 h-4 text-muted-foreground/30" />
+            </div>
+          ))}
         </div>
 
         <DraggableInputList
@@ -392,7 +242,6 @@ const MatchTheFollowingEditor = ({ pairs, onChange }: MatchTheFollowingEditorPro
           placeholder="Match"
           onTextChange={handleRightChange}
           onReorder={handleReorderMatches}
-          onShuffle={handleShuffleMatches}
           label="Matches"
         />
 
@@ -431,8 +280,7 @@ const MatchTheFollowingEditor = ({ pairs, onChange }: MatchTheFollowingEditorPro
       </div>
 
       <p className="text-xs text-muted-foreground text-center">
-        {rows.length} {rows.length === 1 ? "pair" : "pairs"} · Drag to reorder · 
-        <Lock className="w-3 h-3 inline mx-0.5 -mt-0.5" /> to sync pairs
+        {rows.length} {rows.length === 1 ? "pair" : "pairs"} · Drag to reorder
       </p>
     </div>
   );
