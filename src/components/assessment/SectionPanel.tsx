@@ -440,6 +440,14 @@ const SectionPanel = ({ sections, onChange }: SectionPanelProps) => {
           )}
         </div>
       )}
+      {activeSection && (
+        <AddItemsModal
+          open={addItemsOpen}
+          onOpenChange={setAddItemsOpen}
+          sectionLabel={activeSection.label}
+          onAddItems={handleAddItemsFromRepo}
+        />
+      )}
     </div>
   );
 };
