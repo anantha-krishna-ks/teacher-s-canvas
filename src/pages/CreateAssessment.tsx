@@ -1,6 +1,8 @@
 import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronLeft, FileText, Layers } from "lucide-react";
+import SectionPanel from "@/components/assessment/SectionPanel";
+import { createSection, type Section } from "@/constants/assessmentSectionData";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -32,6 +34,7 @@ const CreateAssessment = () => {
   const [durationHr, setDurationHr] = useState("");
   const [durationMin, setDurationMin] = useState("");
   const [instructions, setInstructions] = useState("");
+  const [sections, setSections] = useState<Section[]>([createSection("A")]);
 
   const errors = attempted
     ? {
@@ -229,23 +232,11 @@ const CreateAssessment = () => {
           </TabsContent>
 
           {/* Sections Tab */}
-          <TabsContent value="sections" className="p-6 mt-0">
-            <div className="flex flex-col items-center justify-center py-16 text-center space-y-3">
-              <Layers className="w-10 h-10 text-muted-foreground/50" />
-              <h3 className="text-base font-medium text-foreground">
-                Define Assessment Sections
-              </h3>
-              <p className="text-sm text-muted-foreground max-w-md">
-                Add sections to organize your assessment into parts (e.g. Section A — MCQs, Section B — Short Answers).
-              </p>
-              <Button variant="outline" className="mt-4 gap-2">
-                <Layers className="w-4 h-4" />
-                Add Section
-              </Button>
-            </div>
+          <TabsContent value="sections" className="p-6 mt-0 space-y-6">
+            <SectionPanel sections={sections} onChange={setSections} />
 
             {/* Back / Submit */}
-            <div className="flex justify-between mt-4">
+            <div className="flex justify-between pt-2">
               <Button variant="outline" onClick={() => setActiveTab("type")}>
                 Back
               </Button>
