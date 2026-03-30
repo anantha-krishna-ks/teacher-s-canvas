@@ -276,7 +276,7 @@ const AddItemsModal = ({ open, onOpenChange, sectionLabel, onAddItems }: AddItem
             {/* Table */}
             <ScrollArea className="flex-1">
               {/* Table header */}
-              <div className="grid grid-cols-[36px_40px_1fr_64px_120px] items-center px-4 py-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground border-b border-border bg-muted/30 sticky top-0 z-10">
+              <div className="grid grid-cols-[40px_44px_1fr_72px_130px] items-center px-5 py-2.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground border-b border-border bg-muted/30 sticky top-0 z-10">
                 <div className="flex justify-center">
                   <Checkbox checked={allSelected} onCheckedChange={toggleAll} />
                 </div>
