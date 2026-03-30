@@ -140,6 +140,16 @@ const QuestionPreview = ({ q }: { q: RepositoryQuestion }) => (
 
 type ModalTab = "repository" | "create";
 
+/* ── Flat folder list helper ── */
+function flattenFolders(folders: RepositoryFolder[], depth = 0): { folder: RepositoryFolder; depth: number }[] {
+  const result: { folder: RepositoryFolder; depth: number }[] = [];
+  for (const f of folders) {
+    result.push({ folder: f, depth });
+    if (f.children) result.push(...flattenFolders(f.children, depth + 1));
+  }
+  return result;
+}
+
 /* ── Create New Item Form ── */
 const CreateNewItemForm = ({ onAddItem }: { onAddItem: (item: SectionItem) => void }) => {
   const [type, setType] = useState<ItemType>("Short Answer");
@@ -147,6 +157,9 @@ const CreateNewItemForm = ({ onAddItem }: { onAddItem: (item: SectionItem) => vo
   const [score, setScore] = useState("1");
   const [correctAnswer, setCorrectAnswer] = useState("");
   const [options, setOptions] = useState(["", "", "", ""]);
+  const [targetFolderId, setTargetFolderId] = useState<string>(REPOSITORY_FOLDERS[0]?.id ?? "");
+
+  const flatFolders = useMemo(() => flattenFolders(REPOSITORY_FOLDERS), []);
 
   const resetForm = () => {
     setQuestion("");
