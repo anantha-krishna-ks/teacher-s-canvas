@@ -562,7 +562,25 @@ const AddItemsModal = ({ open, onOpenChange, sectionLabel, onAddItems }: AddItem
             </div>
           </div>
         ) : (
-          <CreateNewItemForm onAddItem={handleCreateItem} />
+          <div className="flex flex-1 overflow-hidden">
+            {/* Sidebar - same as repository tab */}
+            <div className="w-56 border-r border-border flex flex-col bg-muted/20 shrink-0">
+              <div className="px-4 py-3 border-b border-border">
+                <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Save to Folder</span>
+              </div>
+              <ScrollArea className="flex-1 py-1.5 px-1.5">
+                {REPOSITORY_FOLDERS.map((folder) => (
+                  <FolderNode
+                    key={folder.id}
+                    folder={folder}
+                    activeFolderId={createFolderId}
+                    onSelect={setCreateFolderId}
+                  />
+                ))}
+              </ScrollArea>
+            </div>
+            <CreateNewItemForm onAddItem={handleCreateItem} activeFolderId={createFolderId} onSelectFolder={setCreateFolderId} />
+          </div>
         )}
 
         {/* Footer - only for repository tab */}
