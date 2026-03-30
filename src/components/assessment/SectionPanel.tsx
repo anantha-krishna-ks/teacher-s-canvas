@@ -487,47 +487,7 @@ const SectionPanel = ({ sections, onChange }: SectionPanelProps) => {
 
           {/* Collapsible Body */}
           {!collapsedIds.has(activeSection.id) && (
-            <div className="p-4 space-y-3">
-              {/* Action Bar */}
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    className="h-8 text-xs gap-1.5"
-                    onClick={handleShuffle}
-                    disabled={totalItems < 2}
-                  >
-                    <Shuffle className="w-3.5 h-3.5" />
-                    Shuffle Items
-                  </Button>
-                </div>
-                <div className="flex items-center gap-2">
-                  {selectedItems.size > 0 && (
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      className="h-8 text-xs gap-1.5 border-destructive/30 text-destructive hover:bg-destructive/10"
-                      onClick={handleDeleteSelected}
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                      Delete ({selectedItems.size})
-                    </Button>
-                  )}
-                  <Button
-                    type="button"
-                    size="sm"
-                    className="h-8 text-xs gap-1.5"
-                    onClick={() => setAddItemsOpen(true)}
-                  >
-                    <Tag className="w-3.5 h-3.5" />
-                    Add Items
-                  </Button>
-                </div>
-              </div>
-
+            <div className="p-4">
               {/* Items Table */}
               <SectionItemsTable
                 items={activeSection.items}
