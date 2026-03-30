@@ -299,12 +299,12 @@ const MatchTheFollowingEditor = ({ pairs, onChange }: MatchTheFollowingEditorPro
         </div>
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center justify-center">
         <Button
           type="button"
           variant="default"
           size="sm"
-          className="flex-1 h-10 text-sm gap-2 font-medium"
+          className="h-10 text-sm gap-2 font-medium px-8"
           onClick={handleAdd}
         >
           <Plus className="w-4 h-4" />
