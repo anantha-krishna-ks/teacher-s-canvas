@@ -201,19 +201,19 @@ const AddItemsModal = ({ open, onOpenChange, sectionLabel, onAddItems }: AddItem
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="max-w-[96vw] w-[1400px] h-[94vh] flex flex-col p-0 gap-0 rounded-xl overflow-hidden [&>button:last-child]:hidden">
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-3.5 border-b border-border bg-card shrink-0">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-card shrink-0">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-              <FileText className="w-4 h-4 text-primary" />
+            <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center">
+              <FileText className="w-4.5 h-4.5 text-primary" />
             </div>
             <div>
-              <DialogTitle className="text-sm font-semibold text-foreground">Add Items to Section</DialogTitle>
-              <p className="text-[11px] text-muted-foreground mt-0.5">
+              <DialogTitle className="text-base font-semibold text-foreground">Add Items to Section</DialogTitle>
+              <p className="text-xs text-muted-foreground mt-0.5">
                 Browse and select questions from your repository
               </p>
             </div>
           </div>
-          <Badge variant="outline" className="text-[11px] font-medium h-6">
+          <Badge variant="outline" className="text-xs font-medium h-7 px-3">
             Section {sectionLabel}
           </Badge>
         </div>
