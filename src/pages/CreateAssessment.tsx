@@ -22,6 +22,7 @@ const SUBJECTS = ["Mathematics", "Science", "English", "Social Studies", "Hindi"
 const CreateAssessment = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("type");
+  const [attempted, setAttempted] = useState(false);
 
   const [typeOfTest, setTypeOfTest] = useState("");
   const [selectedClass, setSelectedClass] = useState("");
@@ -32,13 +33,19 @@ const CreateAssessment = () => {
   const [durationMin, setDurationMin] = useState("");
   const [instructions, setInstructions] = useState("");
 
+  const errors = attempted
+    ? {
+        typeOfTest: !typeOfTest ? "Please select a test type" : "",
+        selectedClass: !selectedClass ? "Please select a class" : "",
+        subject: !subject ? "Please select a subject" : "",
+      }
+    : { typeOfTest: "", selectedClass: "", subject: "" };
+
   const handleBack = useCallback(() => navigate("/dashboard/assessment"), [navigate]);
 
   const handleNext = useCallback(() => {
-    if (!typeOfTest || !selectedClass || !subject) {
-      toast.error("Please fill in all required fields (Type of Test, Class, Subject).");
-      return;
-    }
+    setAttempted(true);
+    if (!typeOfTest || !selectedClass || !subject) return;
     setActiveTab("sections");
   }, [typeOfTest, selectedClass, subject]);
 
