@@ -22,6 +22,7 @@ const SUBJECTS = ["Mathematics", "Science", "English", "Social Studies", "Hindi"
 const CreateAssessment = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("type");
+  const [attempted, setAttempted] = useState(false);
 
   const [typeOfTest, setTypeOfTest] = useState("");
   const [selectedClass, setSelectedClass] = useState("");
@@ -32,13 +33,19 @@ const CreateAssessment = () => {
   const [durationMin, setDurationMin] = useState("");
   const [instructions, setInstructions] = useState("");
 
+  const errors = attempted
+    ? {
+        typeOfTest: !typeOfTest ? "Please select a test type" : "",
+        selectedClass: !selectedClass ? "Please select a class" : "",
+        subject: !subject ? "Please select a subject" : "",
+      }
+    : { typeOfTest: "", selectedClass: "", subject: "" };
+
   const handleBack = useCallback(() => navigate("/dashboard/assessment"), [navigate]);
 
   const handleNext = useCallback(() => {
-    if (!typeOfTest || !selectedClass || !subject) {
-      toast.error("Please fill in all required fields (Type of Test, Class, Subject).");
-      return;
-    }
+    setAttempted(true);
+    if (!typeOfTest || !selectedClass || !subject) return;
     setActiveTab("sections");
   }, [typeOfTest, selectedClass, subject]);
 
@@ -91,8 +98,8 @@ const CreateAssessment = () => {
                 <Label htmlFor="typeOfTest" className="text-sm font-medium text-foreground">
                   Type of Test <span className="text-destructive">*</span>
                 </Label>
-                <Select value={typeOfTest} onValueChange={setTypeOfTest}>
-                  <SelectTrigger id="typeOfTest" className="bg-background">
+                <Select value={typeOfTest} onValueChange={(v) => { setTypeOfTest(v); }}>
+                  <SelectTrigger id="typeOfTest" className={`bg-background ${errors.typeOfTest ? "border-destructive ring-1 ring-destructive/30" : ""}`}>
                     <SelectValue placeholder="Select type of test" />
                   </SelectTrigger>
                   <SelectContent>
@@ -101,14 +108,15 @@ const CreateAssessment = () => {
                     ))}
                   </SelectContent>
                 </Select>
+                {errors.typeOfTest && <p className="text-xs text-destructive">{errors.typeOfTest}</p>}
               </div>
 
               <div className="space-y-1.5">
                 <Label htmlFor="class" className="text-sm font-medium text-foreground">
                   Class <span className="text-destructive">*</span>
                 </Label>
-                <Select value={selectedClass} onValueChange={setSelectedClass}>
-                  <SelectTrigger id="class" className="bg-background">
+                <Select value={selectedClass} onValueChange={(v) => { setSelectedClass(v); }}>
+                  <SelectTrigger id="class" className={`bg-background ${errors.selectedClass ? "border-destructive ring-1 ring-destructive/30" : ""}`}>
                     <SelectValue placeholder="Select class" />
                   </SelectTrigger>
                   <SelectContent>
@@ -117,14 +125,15 @@ const CreateAssessment = () => {
                     ))}
                   </SelectContent>
                 </Select>
+                {errors.selectedClass && <p className="text-xs text-destructive">{errors.selectedClass}</p>}
               </div>
 
               <div className="space-y-1.5">
                 <Label htmlFor="subject" className="text-sm font-medium text-foreground">
                   Subject <span className="text-destructive">*</span>
                 </Label>
-                <Select value={subject} onValueChange={setSubject}>
-                  <SelectTrigger id="subject" className="bg-background">
+                <Select value={subject} onValueChange={(v) => { setSubject(v); }}>
+                  <SelectTrigger id="subject" className={`bg-background ${errors.subject ? "border-destructive ring-1 ring-destructive/30" : ""}`}>
                     <SelectValue placeholder="Select subject" />
                   </SelectTrigger>
                   <SelectContent>
@@ -133,6 +142,7 @@ const CreateAssessment = () => {
                     ))}
                   </SelectContent>
                 </Select>
+                {errors.subject && <p className="text-xs text-destructive">{errors.subject}</p>}
               </div>
             </div>
 
