@@ -140,6 +140,16 @@ const QuestionPreview = ({ q }: { q: RepositoryQuestion }) => (
 
 type ModalTab = "repository" | "create";
 
+/* ── Flat folder list helper ── */
+function flattenFolders(folders: RepositoryFolder[], depth = 0): { folder: RepositoryFolder; depth: number }[] {
+  const result: { folder: RepositoryFolder; depth: number }[] = [];
+  for (const f of folders) {
+    result.push({ folder: f, depth });
+    if (f.children) result.push(...flattenFolders(f.children, depth + 1));
+  }
+  return result;
+}
+
 /* ── Create New Item Form ── */
 const CreateNewItemForm = ({ onAddItem }: { onAddItem: (item: SectionItem) => void }) => {
   const [type, setType] = useState<ItemType>("Short Answer");
@@ -147,6 +157,9 @@ const CreateNewItemForm = ({ onAddItem }: { onAddItem: (item: SectionItem) => vo
   const [score, setScore] = useState("1");
   const [correctAnswer, setCorrectAnswer] = useState("");
   const [options, setOptions] = useState(["", "", "", ""]);
+  const [targetFolderId, setTargetFolderId] = useState<string>(REPOSITORY_FOLDERS[0]?.id ?? "");
+
+  const flatFolders = useMemo(() => flattenFolders(REPOSITORY_FOLDERS), []);
 
   const resetForm = () => {
     setQuestion("");
@@ -186,13 +199,38 @@ const CreateNewItemForm = ({ onAddItem }: { onAddItem: (item: SectionItem) => vo
       item.correctAnswer = correctAnswer.trim();
     }
     onAddItem(item);
+    const folderName = flatFolders.find(({ folder: f }) => f.id === targetFolderId)?.folder.name ?? "repository";
     resetForm();
-    toast.success("Item created and added.");
+    toast.success(`Item created and saved to "${folderName}".`);
   };
 
   return (
     <div className="flex-1 overflow-auto">
       <div className="max-w-2xl mx-auto py-8 px-6 space-y-6">
+        {/* Repository Folder */}
+        <div className="space-y-2">
+          <Label className="text-sm font-medium">Save to Repository</Label>
+          <Select value={targetFolderId} onValueChange={setTargetFolderId}>
+            <SelectTrigger className="h-10 text-sm">
+              <div className="flex items-center gap-2">
+                <Folder className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
+                <SelectValue placeholder="Select a folder" />
+              </div>
+            </SelectTrigger>
+            <SelectContent>
+              {flatFolders.map(({ folder: f, depth: d }) => (
+                <SelectItem key={f.id} value={f.id}>
+                  <span style={{ paddingLeft: `${d * 12}px` }} className="flex items-center gap-2">
+                    <Folder className="w-3 h-3 text-muted-foreground shrink-0" />
+                    {f.name}
+                  </span>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <p className="text-xs text-muted-foreground">New question will be stored in this repository folder</p>
+        </div>
+
         {/* Type & Score row */}
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
