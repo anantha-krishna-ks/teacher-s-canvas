@@ -1,5 +1,6 @@
 import { useState } from "react";
-import emptyIllustration from "@/assets/empty-section-items.png";
+import Lottie from "lottie-react";
+import emptyAnimation from "@/assets/empty-section-lottie.json";
 import { GripVertical, Trash2 } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
@@ -37,14 +38,12 @@ const SectionItemsTable = ({
 
   if (items.length === 0) {
     return (
-      <div className="py-12 flex flex-col items-center justify-center gap-3">
-        <img
-          src={emptyIllustration}
-          alt="No items"
-          width={140}
-          height={140}
-          loading="lazy"
-          className="opacity-80"
+      <div className="py-10 flex flex-col items-center justify-center gap-2">
+        <Lottie
+          animationData={emptyAnimation}
+          loop
+          autoplay
+          style={{ width: 180, height: 130 }}
         />
         <div className="text-center">
           <p className="text-sm font-medium text-foreground">No items yet</p>
