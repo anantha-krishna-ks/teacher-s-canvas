@@ -348,6 +348,7 @@ const AddItemsModal = ({ open, onOpenChange, sectionLabel, onAddItems }: AddItem
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [searchQuery, setSearchQuery] = useState("");
   const [typeFilter, setTypeFilter] = useState<string>("all");
+  const [createFolderId, setCreateFolderId] = useState<string>(REPOSITORY_FOLDERS[0]?.id ?? "");
 
   const activeFolder = activeFolderId ? findFolder(REPOSITORY_FOLDERS, activeFolderId) : null;
 
