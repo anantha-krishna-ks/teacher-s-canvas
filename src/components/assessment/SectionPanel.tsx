@@ -405,7 +405,15 @@ const SectionPanel = ({ sections, onChange }: SectionPanelProps) => {
                       Delete ({selectedItems.size})
                     </Button>
                   )}
-                  <AddItemsDropdown onAdd={handleAddItem} />
+                  <Button
+                    type="button"
+                    size="sm"
+                    className="h-8 text-xs gap-1.5"
+                    onClick={() => setAddItemsOpen(true)}
+                  >
+                    <Tag className="w-3.5 h-3.5" />
+                    Add Items
+                  </Button>
                 </div>
               </div>
 
