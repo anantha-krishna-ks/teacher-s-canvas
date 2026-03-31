@@ -239,7 +239,7 @@ const QuizPreview = () => {
   }, [toast]);
 
   return (
-    <div className="max-w-4xl mx-auto space-y-5 animate-fade-in pb-24">
+    <div className="max-w-6xl mx-auto space-y-5 animate-fade-in pb-24">
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
