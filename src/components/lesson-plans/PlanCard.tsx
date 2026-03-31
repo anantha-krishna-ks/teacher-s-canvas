@@ -47,7 +47,7 @@ const PlanCard = ({ plan }: PlanCardProps) => {
                     {plan.chapter}
                   </p>
                 </TooltipTrigger>
-                <TooltipContent side="bottom" className="max-w-[220px] text-xs">
+                <TooltipContent side="bottom" className="max-w-[240px] rounded-lg bg-foreground text-background px-3 py-2 text-xs font-medium shadow-lg border-0">
                   {plan.chapter}
                 </TooltipContent>
               </Tooltip>
