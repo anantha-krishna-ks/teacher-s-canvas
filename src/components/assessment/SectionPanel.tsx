@@ -525,6 +525,8 @@ const SectionPanel = ({ sections, onChange }: SectionPanelProps) => {
                 selectedIds={selectedItems}
                 onToggleSelect={toggleSelect}
                 onToggleAll={toggleAll}
+                onAddSubItem={handleAddSubItem}
+                onAddOrItem={handleAddOrItem}
               />
             </div>
           )}
