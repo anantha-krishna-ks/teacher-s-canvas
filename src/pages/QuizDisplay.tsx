@@ -4,8 +4,9 @@ import { ChevronLeft, ChevronRight, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { generateMockQuiz, type QuizQuestionItem } from "@/utils/generateMockQuiz";
+import { generateMockQuiz } from "@/utils/generateMockQuiz";
 import { cn } from "@/lib/utils";
+import { useToast } from "@/hooks/use-toast";
 
 const difficultyColor: Record<string, string> = {
   Easy: "bg-green-50 text-green-700 border-green-200",
