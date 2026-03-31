@@ -314,13 +314,13 @@ const CreatePresentation = () => {
       <fieldset className="bg-card border border-border rounded-xl p-6 space-y-6">
         <legend className="sr-only">Concepts Tagging</legend>
         <div className="flex items-center gap-2 text-sm font-medium text-foreground">
-          <Tag className="w-4 h-4 text-primary" aria-hidden="true" />
+          <Layers className="w-4 h-4 text-primary" aria-hidden="true" />
           Concepts Tagging
         </div>
 
         {!chapter ? (
           <p className="text-sm text-muted-foreground italic">
-            Select a chapter to see suggested concepts
+            Select a chapter to see available concepts
           </p>
         ) : (
           <div className="space-y-4">
