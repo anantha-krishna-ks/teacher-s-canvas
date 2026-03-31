@@ -14,6 +14,8 @@ import Presentations from "./pages/Presentations";
 import CreatePresentation from "./pages/CreatePresentation";
 import Worksheets from "./pages/Worksheets";
 import Quizzes from "./pages/Quizzes";
+import CreateQuiz from "./pages/CreateQuiz";
+import QuizPreview from "./pages/QuizPreview";
 import Assessment from "./pages/Assessment";
 import QuestionRepository from "./pages/QuestionRepository";
 import CreateAssessment from "./pages/CreateAssessment";
