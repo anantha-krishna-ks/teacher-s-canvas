@@ -164,7 +164,20 @@ const ContentListingPage = ({
             </SelectContent>
           </Select>
 
-          {hasActiveFilters && (
+          {showChapterFilter && chapters.length > 0 && (
+            <Select value={chapterFilter} onValueChange={setChapterFilter}>
+              <SelectTrigger className="w-[200px] h-9 text-sm">
+                <SelectValue placeholder="All Chapters" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value={ALL}>All Chapters</SelectItem>
+                {chapters.map((c) => (
+                  <SelectItem key={c} value={c}>{c}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
+
             <Button variant="ghost" size="sm" className="text-xs text-muted-foreground hover:text-foreground" onClick={handleClearFilters}>
               Clear filters
             </Button>
