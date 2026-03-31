@@ -314,22 +314,23 @@ const CreatePresentation = () => {
       <fieldset className="bg-card border border-border rounded-xl p-6 space-y-6">
         <legend className="sr-only">Concepts Tagging</legend>
         <div className="flex items-center gap-2 text-sm font-medium text-foreground">
-          <Tag className="w-4 h-4 text-primary" aria-hidden="true" />
+          <Layers className="w-4 h-4 text-primary" aria-hidden="true" />
           Concepts Tagging
         </div>
 
         {!chapter ? (
           <p className="text-sm text-muted-foreground italic">
-            Select a chapter to see suggested concepts
+            Select a chapter to see available concepts
           </p>
         ) : (
           <div className="space-y-4">
-            {/* Suggested concepts */}
+            <Label>Concepts</Label>
+            {/* Available concepts */}
             {suggestedConcepts.length > 0 && (
               <div className="border border-primary/20 bg-primary/5 rounded-lg p-4">
                 <div className="flex items-center gap-2 mb-3 text-sm font-medium text-primary">
                   <Sparkles className="w-4 h-4" aria-hidden="true" />
-                  Suggested Concepts
+                  Available Concepts:
                 </div>
                 <div
                   className="flex flex-wrap gap-2"
