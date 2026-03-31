@@ -167,7 +167,7 @@ const CreatePresentation = () => {
   }, [subject, chapter, toast]);
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6 animate-fade-in">
+    <div className="max-w-6xl mx-auto space-y-4 animate-fade-in">
       {/* Breadcrumb */}
       <Breadcrumb>
         <BreadcrumbList>
@@ -211,7 +211,7 @@ const CreatePresentation = () => {
       </div>
 
       {/* Section 1: Class & Subject */}
-      <fieldset className="bg-card border border-border rounded-xl p-6 space-y-6">
+      <fieldset className="bg-card border border-border rounded-xl p-5 space-y-4">
         <legend className="sr-only">Class and Subject</legend>
         <div className="flex items-center gap-2 text-sm font-medium text-foreground">
           <GraduationCap className="w-4 h-4 text-primary" aria-hidden="true" />
@@ -284,7 +284,7 @@ const CreatePresentation = () => {
       </fieldset>
 
       {/* Section 2: Concepts Tagging */}
-      <fieldset className="bg-card border border-border rounded-xl p-6 space-y-6">
+      <fieldset className="bg-card border border-border rounded-xl p-5 space-y-4">
         <legend className="sr-only">Concepts Tagging</legend>
         <div className="flex items-center gap-2 text-sm font-medium text-foreground">
           <Layers className="w-4 h-4 text-primary" aria-hidden="true" />
@@ -403,7 +403,7 @@ const CreatePresentation = () => {
       </fieldset>
 
       {/* Section 3: Additional Settings */}
-      <fieldset className="bg-card border border-border rounded-xl p-6 space-y-5">
+      <fieldset className="bg-card border border-border rounded-xl p-5 space-y-4">
         <legend className="sr-only">Additional Settings</legend>
         <div className="flex items-center gap-2 text-sm font-medium text-foreground">
           <BookOpen className="w-4 h-4 text-primary" aria-hidden="true" />
