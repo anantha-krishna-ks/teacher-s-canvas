@@ -11,6 +11,7 @@ import LessonPlans from "./pages/LessonPlans";
 import CreateLessonPlan from "./pages/CreateLessonPlan";
 import ClassPlans from "./pages/ClassPlans";
 import Presentations from "./pages/Presentations";
+import CreatePresentation from "./pages/CreatePresentation";
 import Worksheets from "./pages/Worksheets";
 import Quizzes from "./pages/Quizzes";
 import Assessment from "./pages/Assessment";
