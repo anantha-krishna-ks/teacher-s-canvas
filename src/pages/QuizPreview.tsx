@@ -432,9 +432,9 @@ const QuizPreview = () => {
 
       {/* Bottom actions */}
       <div className="flex items-center justify-center gap-3 mt-8 pb-4">
-        <Button variant="outline" className="gap-2" onClick={handleBackToList}>
-          <BookOpen className="w-4 h-4" />
-          Discard
+        <Button variant="outline" className="gap-2" onClick={() => navigate(`/dashboard/quizzes/display?${searchParams.toString()}`)}>
+          <Eye className="w-4 h-4" />
+          Display
         </Button>
         <Button variant="outline" className="gap-2" onClick={handleExport}>
           <Download className="w-4 h-4" />
