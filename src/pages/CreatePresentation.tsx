@@ -403,7 +403,7 @@ const CreatePresentation = () => {
       </fieldset>
 
       {/* Section 3: Additional Settings */}
-      <fieldset className="bg-card border border-border rounded-xl p-6 space-y-5">
+      <fieldset className="bg-card border border-border rounded-xl p-5 space-y-4">
         <legend className="sr-only">Additional Settings</legend>
         <div className="flex items-center gap-2 text-sm font-medium text-foreground">
           <BookOpen className="w-4 h-4 text-primary" aria-hidden="true" />
