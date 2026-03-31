@@ -34,6 +34,7 @@ interface ContentListingPageProps {
   };
   extraActions?: ExtraAction[];
   showFilters?: boolean;
+  showChapterFilter?: boolean;
 }
 
 const ALL = "__all__";
@@ -50,10 +51,12 @@ const ContentListingPage = ({
   sectionLabels,
   extraActions,
   showFilters = false,
+  showChapterFilter = false,
 }: ContentListingPageProps) => {
   const navigate = useNavigate();
   const [gradeFilter, setGradeFilter] = useState(ALL);
   const [subjectFilter, setSubjectFilter] = useState(ALL);
+  const [chapterFilter, setChapterFilter] = useState(ALL);
 
   const handleNavigateBack = useCallback(() => navigate(backPath), [navigate, backPath]);
   const handleCreateNew = useCallback(() => navigate(createPath), [navigate, createPath]);
@@ -66,6 +69,7 @@ const ContentListingPage = ({
 
   const grades = useMemo(() => [...new Set(allPlans.map((p) => p.grade))].sort((a, b) => Number(a) - Number(b)), [allPlans]);
   const subjects = useMemo(() => [...new Set(allPlans.map((p) => p.subject))].sort(), [allPlans]);
+  const chapters = useMemo(() => [...new Set(allPlans.map((p) => p.chapter).filter(Boolean) as string[])].sort(), [allPlans]);
 
   const filterPlans = useCallback(
     (plans: LessonPlanCard[]) => {
@@ -73,10 +77,11 @@ const ContentListingPage = ({
       return plans.filter((p) => {
         if (gradeFilter !== ALL && p.grade !== gradeFilter) return false;
         if (subjectFilter !== ALL && p.subject !== subjectFilter) return false;
+        if (showChapterFilter && chapterFilter !== ALL && p.chapter !== chapterFilter) return false;
         return true;
       });
     },
-    [showFilters, gradeFilter, subjectFilter],
+    [showFilters, gradeFilter, subjectFilter, showChapterFilter, chapterFilter],
   );
 
   const filteredRecommended = useMemo(() => (recommended ? filterPlans(recommended) : undefined), [recommended, filterPlans]);
@@ -86,9 +91,10 @@ const ContentListingPage = ({
   const handleClearFilters = useCallback(() => {
     setGradeFilter(ALL);
     setSubjectFilter(ALL);
+    setChapterFilter(ALL);
   }, []);
 
-  const hasActiveFilters = gradeFilter !== ALL || subjectFilter !== ALL;
+  const hasActiveFilters = gradeFilter !== ALL || subjectFilter !== ALL || chapterFilter !== ALL;
 
   const recommendedTitle = sectionLabels?.recommended || `Recommended ${title}`;
   const inProgressTitle = sectionLabels?.inProgress || `${title} In Progress`;
@@ -157,6 +163,20 @@ const ContentListingPage = ({
               ))}
             </SelectContent>
           </Select>
+
+          {showChapterFilter && chapters.length > 0 && (
+            <Select value={chapterFilter} onValueChange={setChapterFilter}>
+              <SelectTrigger className="w-[200px] h-9 text-sm">
+                <SelectValue placeholder="All Chapters" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value={ALL}>All Chapters</SelectItem>
+                {chapters.map((c) => (
+                  <SelectItem key={c} value={c}>{c}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
 
           {hasActiveFilters && (
             <Button variant="ghost" size="sm" className="text-xs text-muted-foreground hover:text-foreground" onClick={handleClearFilters}>

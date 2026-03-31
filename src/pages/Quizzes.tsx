@@ -14,6 +14,8 @@ const Quizzes = () => (
     recommended={RECOMMENDED_QUIZZES}
     inProgress={IN_PROGRESS_QUIZZES}
     saved={SAVED_QUIZZES}
+    showFilters
+    showChapterFilter
   />
 );
 
