@@ -69,6 +69,7 @@ const ContentListingPage = ({
 
   const grades = useMemo(() => [...new Set(allPlans.map((p) => p.grade))].sort((a, b) => Number(a) - Number(b)), [allPlans]);
   const subjects = useMemo(() => [...new Set(allPlans.map((p) => p.subject))].sort(), [allPlans]);
+  const chapters = useMemo(() => [...new Set(allPlans.map((p) => p.chapter).filter(Boolean) as string[])].sort(), [allPlans]);
 
   const filterPlans = useCallback(
     (plans: LessonPlanCard[]) => {
@@ -76,10 +77,11 @@ const ContentListingPage = ({
       return plans.filter((p) => {
         if (gradeFilter !== ALL && p.grade !== gradeFilter) return false;
         if (subjectFilter !== ALL && p.subject !== subjectFilter) return false;
+        if (showChapterFilter && chapterFilter !== ALL && p.chapter !== chapterFilter) return false;
         return true;
       });
     },
-    [showFilters, gradeFilter, subjectFilter],
+    [showFilters, gradeFilter, subjectFilter, showChapterFilter, chapterFilter],
   );
 
   const filteredRecommended = useMemo(() => (recommended ? filterPlans(recommended) : undefined), [recommended, filterPlans]);
@@ -89,6 +91,7 @@ const ContentListingPage = ({
   const handleClearFilters = useCallback(() => {
     setGradeFilter(ALL);
     setSubjectFilter(ALL);
+    setChapterFilter(ALL);
   }, []);
 
   const hasActiveFilters = gradeFilter !== ALL || subjectFilter !== ALL;
