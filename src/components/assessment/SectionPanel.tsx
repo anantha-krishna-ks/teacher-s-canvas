@@ -19,10 +19,17 @@ import {
   deepRemoveItem,
   addSubItem,
   addOrItem,
+  linkAsOr,
+  makeSubItemsOf,
   type Section,
   type SectionItem,
   type ItemType,
 } from "@/constants/assessmentSectionData";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 interface SectionPanelProps {
   sections: Section[];
