@@ -284,7 +284,7 @@ const CreatePresentation = () => {
       </fieldset>
 
       {/* Section 2: Concepts Tagging */}
-      <fieldset className="bg-card border border-border rounded-xl p-6 space-y-6">
+      <fieldset className="bg-card border border-border rounded-xl p-5 space-y-4">
         <legend className="sr-only">Concepts Tagging</legend>
         <div className="flex items-center gap-2 text-sm font-medium text-foreground">
           <Layers className="w-4 h-4 text-primary" aria-hidden="true" />
