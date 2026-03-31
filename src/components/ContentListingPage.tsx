@@ -94,6 +94,7 @@ const ContentListingPage = ({
             <ScrollableSection title={recommendedTitle} icon={Star} plans={recommended} count={recommended.length} />
           </div>
         )}
+        {inProgress.length > 0 && (
         <div className="bg-card border border-border rounded-xl p-5">
           <ScrollableSection title={inProgressTitle} icon={Clock} plans={inProgress} count={inProgress.length} />
         </div>
