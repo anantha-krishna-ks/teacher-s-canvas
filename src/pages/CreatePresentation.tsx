@@ -14,6 +14,8 @@ import {
   Loader2,
   FileText,
   Tag,
+  ArrowLeft,
+  CheckCircle2,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
