@@ -285,9 +285,12 @@ const SectionPanel = ({ sections, onChange }: SectionPanelProps) => {
     return activeSection.items.filter((it) => !selectedItems.has(it.id) && !it.orItem);
   }, [activeSection, selectedItems]);
 
-  const canLinkOr = selectedItems.size === 2 && activeSection?.items.filter(
-    (it) => selectedItems.has(it.id) && !it.orItem
-  ).length === 2;
+  const canLinkOr = selectedItems.size === 2 && (() => {
+    const ids = Array.from(selectedItems);
+    const topLevelIds = activeSection?.items.map((it) => it.id) ?? [];
+    return ids.every((id) => topLevelIds.includes(id)) &&
+      ids.every((id) => !activeSection?.items.find((it) => it.id === id)?.orItem);
+  })();
 
   const canMakeSub = selectedItems.size >= 1 && eligibleParents.length > 0;
 
