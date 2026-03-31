@@ -460,25 +460,46 @@ const CreatePresentation = () => {
           </Button>
         </div>
 
-        {/* Post-generation download */}
+        {/* Post-generation result card */}
         <AnimatePresence>
           {isGenerated && (
             <motion.div
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 12 }}
-              className="flex flex-col items-center gap-2"
+              className="w-full bg-card border border-border rounded-xl p-6"
             >
-              <Button
-                onClick={handleDownload}
-                className="gap-2 bg-primary hover:bg-primary/90 text-primary-foreground"
-              >
-                <Download className="w-4 h-4" aria-hidden="true" />
-                Download Generated PPT
-              </Button>
-              <p className="text-xs text-muted-foreground">
-                {subject} — {chapter}
-              </p>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                  <Presentation className="w-5 h-5 text-primary" aria-hidden="true" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-semibold text-foreground">Presentation Ready</h3>
+                  <p className="text-xs text-muted-foreground">
+                    {subject} — {chapter}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between rounded-lg border border-border bg-muted/30 px-4 py-3">
+                <div className="flex items-center gap-3">
+                  <FileText className="w-5 h-5 text-muted-foreground" aria-hidden="true" />
+                  <div>
+                    <p className="text-sm font-medium text-foreground">
+                      {subject.toLowerCase().replace(/\s+/g, "_")}_{chapter.toLowerCase().replace(/\s+/g, "_")}_presentation.pptx
+                    </p>
+                    <p className="text-xs text-muted-foreground">Generated just now</p>
+                  </div>
+                </div>
+                <Button
+                  onClick={handleDownload}
+                  size="sm"
+                  className="gap-2"
+                >
+                  <Download className="w-4 h-4" aria-hidden="true" />
+                  Download PPT
+                </Button>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
