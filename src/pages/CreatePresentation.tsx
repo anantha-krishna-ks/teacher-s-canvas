@@ -67,7 +67,7 @@ const CreatePresentation = () => {
     [subject]
   );
   const suggestedConcepts = useMemo(
-    () => (chapter ? CONCEPT_SUGGESTIONS[chapter] || [] : []),
+    () => (chapter ? CONCEPTS_BY_CHAPTER[chapter] || [] : []),
     [chapter]
   );
 
