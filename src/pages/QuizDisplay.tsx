@@ -166,15 +166,21 @@ const QuizDisplay = () => {
           ))}
         </div>
 
-        <Button
-          variant="ghost"
-          className="gap-1.5 text-muted-foreground"
-          onClick={handleNext}
-          disabled={currentIndex === total - 1}
-        >
-          Next
-          <ChevronRight className="w-4 h-4" />
-        </Button>
+        {isLast ? (
+          <Button className="gap-1.5" onClick={handleFinish}>
+            <CheckCircle className="w-4 h-4" />
+            Finish
+          </Button>
+        ) : (
+          <Button
+            variant="ghost"
+            className="gap-1.5 text-muted-foreground"
+            onClick={handleNext}
+          >
+            Next
+            <ChevronRight className="w-4 h-4" />
+          </Button>
+        )}
       </div>
     </div>
   );
