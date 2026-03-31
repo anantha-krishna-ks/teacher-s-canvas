@@ -33,7 +33,7 @@ const PlanCard = ({ plan }: PlanCardProps) => {
       </div>
 
       {/* Content */}
-      <div className="p-3.5 flex flex-col justify-between h-[120px]">
+      <div className={`p-3.5 flex flex-col justify-between ${plan.chapter ? 'h-[120px]' : 'h-[80px]'}`}>
         <div className="space-y-1.5">
           <div className="flex items-center justify-between">
             <h4 className="text-sm font-semibold text-foreground truncate">{plan.subject}</h4>
