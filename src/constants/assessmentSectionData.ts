@@ -17,6 +17,8 @@ export interface SectionItem {
   correctAnswer?: string;
   score: number;
   type: ItemType;
+  subItems?: SectionItem[];
+  orItem?: SectionItem;
 }
 
 export interface Section {
@@ -24,6 +26,89 @@ export interface Section {
   label: string;
   items: SectionItem[];
 }
+
+/** Deep-update a SectionItem anywhere in the tree (including subItems and orItems) */
+export const deepUpdateItem = (
+  items: SectionItem[],
+  id: string,
+  updates: Partial<SectionItem>
+): SectionItem[] =>
+  items.map((item) => {
+    if (item.id === id) return { ...item, ...updates };
+    const next = { ...item };
+    if (next.subItems) next.subItems = deepUpdateItem(next.subItems, id, updates);
+    if (next.orItem && next.orItem.id === id) next.orItem = { ...next.orItem, ...updates };
+    else if (next.orItem?.subItems) {
+      next.orItem = { ...next.orItem, subItems: deepUpdateItem(next.orItem.subItems, id, updates) };
+    }
+    return next;
+  });
+
+/** Deep-remove a SectionItem anywhere in the tree */
+export const deepRemoveItem = (items: SectionItem[], id: string): SectionItem[] =>
+  items
+    .filter((item) => item.id !== id)
+    .map((item) => {
+      const next = { ...item };
+      if (next.subItems) next.subItems = deepRemoveItem(next.subItems, id);
+      if (next.orItem) {
+        if (next.orItem.id === id) {
+          next.orItem = undefined;
+        } else if (next.orItem.subItems) {
+          next.orItem = { ...next.orItem, subItems: deepRemoveItem(next.orItem.subItems, id) };
+        }
+      }
+      return next;
+    });
+
+/** Add a sub-question to a parent item */
+export const addSubItem = (items: SectionItem[], parentId: string, type: ItemType): SectionItem[] =>
+  items.map((item) => {
+    if (item.id === parentId) {
+      const sub = createSectionItem(type);
+      return { ...item, subItems: [...(item.subItems ?? []), sub] };
+    }
+    const next = { ...item };
+    if (next.subItems) next.subItems = addSubItem(next.subItems, parentId, type);
+    if (next.orItem) {
+      if (next.orItem.id === parentId) {
+        const sub = createSectionItem(type);
+        next.orItem = { ...next.orItem, subItems: [...(next.orItem.subItems ?? []), sub] };
+      } else if (next.orItem.subItems) {
+        next.orItem = { ...next.orItem, subItems: addSubItem(next.orItem.subItems, parentId, type) };
+      }
+    }
+    return next;
+  });
+
+/** Add an OR alternative to an item */
+export const addOrItem = (items: SectionItem[], targetId: string, type: ItemType): SectionItem[] =>
+  items.map((item) => {
+    if (item.id === targetId) {
+      if (item.orItem) return item; // already has OR
+      return { ...item, orItem: createSectionItem(type) };
+    }
+    const next = { ...item };
+    if (next.subItems) next.subItems = addOrItem(next.subItems, targetId, type);
+    if (next.orItem?.subItems) {
+      next.orItem = { ...next.orItem, subItems: addOrItem(next.orItem.subItems, targetId, type) };
+    }
+    return next;
+  });
+
+/** Count all items recursively (for scoring totals) */
+export const countAllItems = (items: SectionItem[]): number => {
+  let count = 0;
+  for (const item of items) {
+    count++;
+    if (item.subItems) count += countAllItems(item.subItems);
+    if (item.orItem) {
+      count++;
+      if (item.orItem.subItems) count += countAllItems(item.orItem.subItems);
+    }
+  }
+  return count;
+};
 
 export const createSection = (label: string): Section => ({
   id: crypto.randomUUID(),
