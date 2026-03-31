@@ -539,22 +539,6 @@ const CreatePresentation = () => {
                 <ArrowLeft className="w-4 h-4" aria-hidden="true" />
                 Back to Presentations
               </Button>
-              <Button
-                className="gap-2"
-                onClick={() => {
-                  setGrade("");
-                  setSubject("");
-                  setChapter("");
-                  setConceptTags([]);
-                  setNewConcept("");
-                  setInstructions("");
-                  setGenerateAiImages(false);
-                  setIsGenerated(false);
-                }}
-              >
-                <Plus className="w-4 h-4" aria-hidden="true" />
-                Create Another
-              </Button>
             </div>
           </motion.div>
         )}
