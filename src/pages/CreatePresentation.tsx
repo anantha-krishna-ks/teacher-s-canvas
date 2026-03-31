@@ -41,38 +41,8 @@ import {
   GRADES,
   SUBJECTS_BY_GRADE,
   CHAPTERS_BY_SUBJECT,
+  CONCEPTS_BY_CHAPTER,
 } from "@/constants/lessonPlanData";
-
-const CONCEPT_SUGGESTIONS: Record<string, string[]> = {
-  "Chapter 1: Matter in Our Surroundings": [
-    "States of Matter",
-    "Change of State",
-    "Evaporation",
-    "Latent Heat",
-    "Boiling Point",
-  ],
-  "Chapter 2: Is Matter Around Us Pure": [
-    "Mixtures",
-    "Solutions",
-    "Suspensions",
-    "Colloids",
-    "Separation Techniques",
-  ],
-  "Chapter 1: Number Systems": [
-    "Natural Numbers",
-    "Rational Numbers",
-    "Irrational Numbers",
-    "Real Numbers",
-    "Number Line",
-  ],
-  "Chapter 2: Polynomials": [
-    "Degree of Polynomial",
-    "Zeroes of Polynomial",
-    "Remainder Theorem",
-    "Factor Theorem",
-    "Algebraic Identities",
-  ],
-};
 
 const CreatePresentation = () => {
   const navigate = useNavigate();
