@@ -124,7 +124,7 @@ const CreateLessonPlan = () => {
   const isFormValid = grade && subject && chapter && selectedConcepts.length > 0;
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6 animate-fade-in">
+    <div className="max-w-6xl mx-auto space-y-6 animate-fade-in">
       {/* Breadcrumb */}
       <Breadcrumb>
         <BreadcrumbList>
