@@ -98,6 +98,7 @@ const ContentListingPage = ({
         <div className="bg-card border border-border rounded-xl p-5">
           <ScrollableSection title={inProgressTitle} icon={Clock} plans={inProgress} count={inProgress.length} />
         </div>
+        )}
         <div className="bg-card border border-border rounded-xl p-5">
           <ScrollableSection title={savedTitle} icon={BookOpen} plans={saved} count={saved.length} />
         </div>
