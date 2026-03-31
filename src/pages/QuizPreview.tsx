@@ -7,6 +7,14 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
+} from "@/components/ui/dialog";
+import {
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+} from "@/components/ui/select";
 import {
   Breadcrumb, BreadcrumbItem, BreadcrumbLink,
   BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator,
@@ -18,7 +26,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { NavLink } from "@/components/NavLink";
 import { useToast } from "@/hooks/use-toast";
-import { generateMockQuiz, type QuizQuestionItem } from "@/utils/generateMockQuiz";
+import { generateMockQuiz, type QuizQuestionItem, type DifficultyLevel, type BloomLevel } from "@/utils/generateMockQuiz";
 
 const difficultyColor: Record<string, string> = {
   Easy: "bg-green-50 text-green-700 border-green-200",
@@ -33,163 +41,239 @@ const bloomColor: Record<string, string> = {
   Analysis: "bg-teal-50 text-teal-700 border-teal-200",
 };
 
+const DIFFICULTIES: DifficultyLevel[] = ["Easy", "Medium", "Hard"];
+const BLOOM_LEVELS: BloomLevel[] = ["Knowledge", "Understanding", "Application", "Analysis"];
+
+/* ───── Read-only Question Card ───── */
 interface QuestionCardProps {
   item: QuizQuestionItem;
   onEdit: (item: QuizQuestionItem) => void;
   onDelete: (id: string) => void;
-  isEditing: boolean;
-  onSaveEdit: (item: QuizQuestionItem) => void;
-  onCancelEdit: () => void;
 }
 
-const QuestionCard = ({ item, onEdit, onDelete, isEditing, onSaveEdit, onCancelEdit }: QuestionCardProps) => {
-  const [editData, setEditData] = useState(item);
-
-  const handleOptionTextChange = useCallback((idx: number, text: string) => {
-    setEditData((prev) => ({
-      ...prev,
-      options: prev.options.map((o, i) => (i === idx ? { ...o, text } : o)),
-    }));
-  }, []);
-
-  const handleCorrectToggle = useCallback((idx: number) => {
-    setEditData((prev) => ({
-      ...prev,
-      options: prev.options.map((o, i) => ({ ...o, isCorrect: i === idx })),
-      correctAnswer: prev.options[idx].text,
-    }));
-  }, []);
-
-  const handleSave = useCallback(() => {
-    const correct = editData.options.find((o) => o.isCorrect);
-    onSaveEdit({ ...editData, correctAnswer: correct?.text || editData.correctAnswer });
-  }, [editData, onSaveEdit]);
-
-  if (isEditing) {
-    return (
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <span className="text-base font-bold text-foreground">Q{item.number} — Editing</span>
-          <div className="flex items-center gap-1">
-            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={onCancelEdit}>
-              <X className="w-4 h-4" />
-            </Button>
-            <Button variant="ghost" size="icon" className="h-8 w-8 text-green-600 hover:text-green-700" onClick={handleSave}>
-              <Check className="w-4 h-4" />
-            </Button>
-          </div>
-        </div>
-        <Input
-          value={editData.question}
-          onChange={(e) => setEditData((p) => ({ ...p, question: e.target.value }))}
-          className="text-sm font-medium"
-        />
-        <div className="space-y-2 pl-1">
-          <p className="text-xs font-semibold text-muted-foreground">Options (click radio to set correct):</p>
-          {editData.options.map((opt, idx) => (
-            <div key={opt.label} className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={() => handleCorrectToggle(idx)}
-                className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors ${
-                  opt.isCorrect ? "border-green-500 bg-green-500" : "border-muted-foreground/40"
-                }`}
-              >
-                {opt.isCorrect && <Check className="w-3 h-3 text-white" />}
-              </button>
-              <span className="text-sm font-medium text-muted-foreground w-5">{opt.label}.</span>
-              <Input
-                value={opt.text}
-                onChange={(e) => handleOptionTextChange(idx, e.target.value)}
-                className="flex-1 h-8 text-sm"
-              />
-            </div>
-          ))}
-        </div>
-        <Input
-          value={editData.explanation}
-          onChange={(e) => setEditData((p) => ({ ...p, explanation: e.target.value }))}
-          placeholder="Explanation"
-          className="text-sm"
-        />
+const QuestionCard = ({ item, onEdit, onDelete }: QuestionCardProps) => (
+  <div className="space-y-4">
+    {/* Header row */}
+    <div className="flex items-center justify-between">
+      <div className="flex items-center gap-2 flex-wrap">
+        <span className="text-base font-bold text-foreground">Q{item.number}</span>
+        <Badge variant="outline" className={`text-xs font-medium rounded-full px-2.5 py-0.5 ${difficultyColor[item.difficulty]}`}>
+          {item.difficulty}
+        </Badge>
+        <Badge variant="outline" className="text-xs font-medium rounded-full px-2.5 py-0.5 bg-muted/50 text-muted-foreground">
+          {item.type}
+        </Badge>
+        <Badge variant="outline" className={`text-xs font-medium rounded-full px-2.5 py-0.5 ${bloomColor[item.bloomLevel]}`}>
+          {item.bloomLevel}
+        </Badge>
       </div>
-    );
-  }
-
-  return (
-    <div className="space-y-4">
-      {/* Header row with badges + actions */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2 flex-wrap">
-          <span className="text-base font-bold text-foreground">Q{item.number}</span>
-          <Badge variant="outline" className={`text-xs font-medium rounded-full px-2.5 py-0.5 ${difficultyColor[item.difficulty]}`}>
-            {item.difficulty}
-          </Badge>
-          <Badge variant="outline" className="text-xs font-medium rounded-full px-2.5 py-0.5 bg-muted/50 text-muted-foreground">
-            {item.type}
-          </Badge>
-          <Badge variant="outline" className={`text-xs font-medium rounded-full px-2.5 py-0.5 ${bloomColor[item.bloomLevel]}`}>
-            {item.bloomLevel}
-          </Badge>
-        </div>
-        <div className="flex items-center gap-0.5">
-          <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground" onClick={() => onEdit(item)}>
-            <Pencil className="w-4 h-4" />
-          </Button>
-          <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive" onClick={() => onDelete(item.id)}>
-            <Trash2 className="w-4 h-4" />
-          </Button>
-        </div>
-      </div>
-
-      {/* Question text */}
-      <div className="bg-muted/40 rounded-lg px-4 py-3 border border-border/50">
-        <p className="text-sm font-medium text-foreground">{item.question}</p>
-      </div>
-
-      {/* Options */}
-      <div className="space-y-0 pl-2">
-        <p className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5 mb-2">
-          <span className="w-1.5 h-1.5 rounded-full bg-foreground inline-block" />
-          Options:
-        </p>
-        {item.options.map((opt) => (
-          <div
-            key={opt.label}
-            className={`flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors ${
-              opt.isCorrect
-                ? "bg-green-50 border border-green-200"
-                : ""
-            }`}
-          >
-            <span className={`font-medium ${opt.isCorrect ? "text-green-700" : "text-muted-foreground"}`}>{opt.label}.</span>
-            <span className={opt.isCorrect ? "text-green-800 font-medium" : "text-foreground/80"}>{opt.text}</span>
-            {opt.isCorrect && <CheckCircle2 className="w-4 h-4 text-green-600 ml-1 shrink-0" />}
-          </div>
-        ))}
-      </div>
-
-      {/* Correct Answer */}
-      <div className="bg-green-50/80 border border-green-200 rounded-lg px-4 py-3">
-        <p className="text-xs font-semibold text-green-700 flex items-center gap-1.5 mb-1">
-          <CheckCircle2 className="w-3.5 h-3.5" />
-          Correct Answer:
-        </p>
-        <p className="text-sm text-foreground font-medium">{item.correctAnswer}</p>
-      </div>
-
-      {/* Explanation */}
-      <div className="bg-blue-50/80 border border-blue-200 rounded-lg px-4 py-3">
-        <p className="text-xs font-semibold text-blue-700 flex items-center gap-1.5 mb-1">
-          <BookOpenText className="w-3.5 h-3.5" />
-          Explanation:
-        </p>
-        <p className="text-sm text-foreground/90">{item.explanation}</p>
+      <div className="flex items-center gap-0.5">
+        <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground" onClick={() => onEdit(item)}>
+          <Pencil className="w-4 h-4" />
+        </Button>
+        <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive" onClick={() => onDelete(item.id)}>
+          <Trash2 className="w-4 h-4" />
+        </Button>
       </div>
     </div>
+
+    {/* Question text */}
+    <div className="bg-muted/40 rounded-lg px-4 py-3 border border-border/50">
+      <p className="text-sm font-medium text-foreground">{item.question}</p>
+    </div>
+
+    {/* Options */}
+    <div className="space-y-0 pl-2">
+      <p className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5 mb-2">
+        <span className="w-1.5 h-1.5 rounded-full bg-foreground inline-block" />
+        Options:
+      </p>
+      {item.options.map((opt) => (
+        <div
+          key={opt.label}
+          className={`flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors ${
+            opt.isCorrect ? "bg-green-50 border border-green-200" : ""
+          }`}
+        >
+          <span className={`font-medium ${opt.isCorrect ? "text-green-700" : "text-muted-foreground"}`}>{opt.label}.</span>
+          <span className={opt.isCorrect ? "text-green-800 font-medium" : "text-foreground/80"}>{opt.text}</span>
+          {opt.isCorrect && <CheckCircle2 className="w-4 h-4 text-green-600 ml-1 shrink-0" />}
+        </div>
+      ))}
+    </div>
+
+    {/* Correct Answer */}
+    <div className="bg-green-50/80 border border-green-200 rounded-lg px-4 py-3">
+      <p className="text-xs font-semibold text-green-700 flex items-center gap-1.5 mb-1">
+        <CheckCircle2 className="w-3.5 h-3.5" />
+        Correct Answer:
+      </p>
+      <p className="text-sm text-foreground font-medium">{item.correctAnswer}</p>
+    </div>
+
+    {/* Explanation */}
+    <div className="bg-blue-50/80 border border-blue-200 rounded-lg px-4 py-3">
+      <p className="text-xs font-semibold text-blue-700 flex items-center gap-1.5 mb-1">
+        <BookOpenText className="w-3.5 h-3.5" />
+        Explanation:
+      </p>
+      <p className="text-sm text-foreground/90">{item.explanation}</p>
+    </div>
+  </div>
+);
+
+/* ───── Edit Question Modal ───── */
+interface EditQuestionModalProps {
+  item: QuizQuestionItem | null;
+  open: boolean;
+  onClose: () => void;
+  onSave: (item: QuizQuestionItem) => void;
+}
+
+const EditQuestionModal = ({ item, open, onClose, onSave }: EditQuestionModalProps) => {
+  const [editData, setEditData] = useState<QuizQuestionItem | null>(null);
+
+  // Sync when item changes
+  const currentId = item?.id;
+  const [prevId, setPrevId] = useState<string | null>(null);
+  if (currentId !== prevId) {
+    setPrevId(currentId ?? null);
+    if (item) setEditData({ ...item });
+  }
+
+  if (!editData) return null;
+
+  const handleOptionTextChange = (idx: number, text: string) => {
+    setEditData((prev) =>
+      prev ? { ...prev, options: prev.options.map((o, i) => (i === idx ? { ...o, text } : o)) } : prev
+    );
+  };
+
+  const handleCorrectToggle = (idx: number) => {
+    setEditData((prev) =>
+      prev
+        ? {
+            ...prev,
+            options: prev.options.map((o, i) => ({ ...o, isCorrect: i === idx })),
+            correctAnswer: prev.options[idx].text,
+          }
+        : prev
+    );
+  };
+
+  const handleSave = () => {
+    if (!editData) return;
+    const correct = editData.options.find((o) => o.isCorrect);
+    onSave({ ...editData, correctAnswer: correct?.text || editData.correctAnswer });
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
+      <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <Pencil className="w-4 h-4 text-primary" />
+            Edit Question {editData.number}
+          </DialogTitle>
+        </DialogHeader>
+
+        <div className="space-y-5 py-2">
+          {/* Question text */}
+          <div className="space-y-2">
+            <Label htmlFor="edit-question">Question</Label>
+            <Textarea
+              id="edit-question"
+              value={editData.question}
+              onChange={(e) => setEditData((p) => p ? { ...p, question: e.target.value } : p)}
+              rows={3}
+            />
+          </div>
+
+          {/* Difficulty & Bloom */}
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Difficulty</Label>
+              <Select
+                value={editData.difficulty}
+                onValueChange={(v) => setEditData((p) => p ? { ...p, difficulty: v as DifficultyLevel } : p)}
+              >
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {DIFFICULTIES.map((d) => (
+                    <SelectItem key={d} value={d}>{d}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label>Bloom's Level</Label>
+              <Select
+                value={editData.bloomLevel}
+                onValueChange={(v) => setEditData((p) => p ? { ...p, bloomLevel: v as BloomLevel } : p)}
+              >
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {BLOOM_LEVELS.map((b) => (
+                    <SelectItem key={b} value={b}>{b}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          {/* Options */}
+          <div className="space-y-3">
+            <Label>Options (select the correct answer)</Label>
+            {editData.options.map((opt, idx) => (
+              <div key={opt.label} className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => handleCorrectToggle(idx)}
+                  className={`w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors ${
+                    opt.isCorrect ? "border-green-500 bg-green-500" : "border-muted-foreground/40 hover:border-primary"
+                  }`}
+                  aria-label={`Mark option ${opt.label} as correct`}
+                >
+                  {opt.isCorrect && <Check className="w-3.5 h-3.5 text-white" />}
+                </button>
+                <span className="text-sm font-semibold text-muted-foreground w-6">{opt.label}.</span>
+                <Input
+                  value={opt.text}
+                  onChange={(e) => handleOptionTextChange(idx, e.target.value)}
+                  className="flex-1"
+                />
+              </div>
+            ))}
+          </div>
+
+          {/* Explanation */}
+          <div className="space-y-2">
+            <Label htmlFor="edit-explanation">Explanation</Label>
+            <Textarea
+              id="edit-explanation"
+              value={editData.explanation}
+              onChange={(e) => setEditData((p) => p ? { ...p, explanation: e.target.value } : p)}
+              rows={3}
+            />
+          </div>
+        </div>
+
+        <DialogFooter className="gap-2 sm:gap-0">
+          <Button variant="outline" onClick={onClose}>
+            <X className="w-4 h-4 mr-1" />
+            Cancel
+          </Button>
+          <Button onClick={handleSave}>
+            <Check className="w-4 h-4 mr-1" />
+            Save Changes
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 };
 
+/* ───── Main Page ───── */
 const QuizPreview = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -205,15 +289,15 @@ const QuizPreview = () => {
   }, [searchParams]);
 
   const [questions, setQuestions] = useState<QuizQuestionItem[]>(initialQuiz.questions);
-  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingItem, setEditingItem] = useState<QuizQuestionItem | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
 
-  const handleEdit = useCallback((item: QuizQuestionItem) => setEditingId(item.id), []);
-  const handleCancelEdit = useCallback(() => setEditingId(null), []);
+  const handleEdit = useCallback((item: QuizQuestionItem) => setEditingItem(item), []);
+  const handleCloseEdit = useCallback(() => setEditingItem(null), []);
 
   const handleSaveEdit = useCallback((updated: QuizQuestionItem) => {
     setQuestions((prev) => prev.map((q) => (q.id === updated.id ? updated : q)));
-    setEditingId(null);
+    setEditingItem(null);
     toast({ title: "Question Updated", description: `Q${updated.number} has been updated.` });
   }, [toast]);
 
@@ -295,18 +379,11 @@ const QuizPreview = () => {
         Questions ({questions.length})
       </div>
 
-      {/* Questions — each in its own bordered card */}
+      {/* Questions */}
       <div className="space-y-4">
         {questions.map((q) => (
           <div key={q.id} className="bg-card border border-border rounded-xl p-6">
-            <QuestionCard
-              item={q}
-              onEdit={handleEdit}
-              onDelete={(id) => setDeleteId(id)}
-              isEditing={editingId === q.id}
-              onSaveEdit={handleSaveEdit}
-              onCancelEdit={handleCancelEdit}
-            />
+            <QuestionCard item={q} onEdit={handleEdit} onDelete={(id) => setDeleteId(id)} />
           </div>
         ))}
         {questions.length === 0 && (
@@ -315,6 +392,14 @@ const QuizPreview = () => {
           </div>
         )}
       </div>
+
+      {/* Edit Modal */}
+      <EditQuestionModal
+        item={editingItem}
+        open={!!editingItem}
+        onClose={handleCloseEdit}
+        onSave={handleSaveEdit}
+      />
 
       {/* Delete confirmation */}
       <AlertDialog open={!!deleteId} onOpenChange={(open) => !open && setDeleteId(null)}>
