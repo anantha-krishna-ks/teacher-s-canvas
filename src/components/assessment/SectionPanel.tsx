@@ -203,6 +203,32 @@ const SectionPanel = ({ sections, onChange }: SectionPanelProps) => {
     [activeSection, updateSectionItems]
   );
 
+  const handleLinkAsOr = useCallback(() => {
+    if (!activeSection || selectedItems.size !== 2) return;
+    const [primaryId, secondaryId] = Array.from(selectedItems);
+    updateSectionItems(
+      activeSection.id,
+      linkAsOr(activeSection.items, primaryId, secondaryId)
+    );
+    setSelectedItems(new Set());
+    toast.success("Questions linked as OR pair.");
+  }, [activeSection, selectedItems, updateSectionItems]);
+
+  const handleMakeSubItemOf = useCallback(
+    (parentId: string) => {
+      if (!activeSection || selectedItems.size === 0) return;
+      const childIds = Array.from(selectedItems).filter((id) => id !== parentId);
+      if (childIds.length === 0) return;
+      updateSectionItems(
+        activeSection.id,
+        makeSubItemsOf(activeSection.items, childIds, parentId)
+      );
+      setSelectedItems(new Set());
+      toast.success(`${childIds.length} item(s) made sub-question(s).`);
+    },
+    [activeSection, selectedItems, updateSectionItems]
+  );
+
   const handleReorder = useCallback(
     (from: number, to: number) => {
       if (!activeSection) return;
