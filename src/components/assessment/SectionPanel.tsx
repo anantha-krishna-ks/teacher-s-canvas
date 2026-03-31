@@ -279,6 +279,18 @@ const SectionPanel = ({ sections, onChange }: SectionPanelProps) => {
     setSelectedItems(allSelected ? new Set() : new Set(allIds));
   };
 
+  // Items eligible as parent for "Make Sub-Question of..." (top-level items not in selection)
+  const eligibleParents = useMemo(() => {
+    if (!activeSection) return [];
+    return activeSection.items.filter((it) => !selectedItems.has(it.id) && !it.orItem);
+  }, [activeSection, selectedItems]);
+
+  const canLinkOr = selectedItems.size === 2 && activeSection?.items.filter(
+    (it) => selectedItems.has(it.id) && !it.orItem
+  ).length === 2;
+
+  const canMakeSub = selectedItems.size >= 1 && eligibleParents.length > 0;
+
   const totalItems = activeSection?.items.length ?? 0;
   const totalScore = activeSection?.items.reduce((sum, it) => sum + it.score, 0) ?? 0;
 
