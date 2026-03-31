@@ -456,75 +456,109 @@ const CreatePresentation = () => {
         </div>
       </fieldset>
 
-      {/* Actions */}
-      <div className="flex flex-col items-center gap-4 pt-2 pb-6">
-        <div className="flex items-center gap-3 w-full justify-between">
-          <Button variant="outline" onClick={handleCancel}>
-            Cancel
-          </Button>
-          <Button
-            disabled={!isFormValid || isGenerating}
-            className="gap-2"
-            onClick={handleGenerate}
+      {/* Actions — pre-generation */}
+      <AnimatePresence mode="wait">
+        {!isGenerated ? (
+          <motion.div
+            key="form-actions"
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0, y: -8 }}
+            className="flex items-center gap-3 w-full justify-between pt-2 pb-6"
           >
-            {isGenerating ? (
-              <>
-                <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" />
-                Generating...
-              </>
-            ) : (
-              <>
-                <Presentation className="w-4 h-4" aria-hidden="true" />
-                Generate Presentation
-              </>
-            )}
-          </Button>
-        </div>
-
-        {/* Post-generation result card */}
-        <AnimatePresence>
-          {isGenerated && (
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 12 }}
-              className="w-full bg-card border border-border rounded-xl p-6"
+            <Button variant="outline" onClick={handleCancel}>
+              Cancel
+            </Button>
+            <Button
+              disabled={!isFormValid || isGenerating}
+              className="gap-2"
+              onClick={handleGenerate}
             >
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                  <Presentation className="w-5 h-5 text-primary" aria-hidden="true" />
+              {isGenerating ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" />
+                  Generating...
+                </>
+              ) : (
+                <>
+                  <Presentation className="w-4 h-4" aria-hidden="true" />
+                  Generate Presentation
+                </>
+              )}
+            </Button>
+          </motion.div>
+        ) : (
+          <motion.div
+            key="result"
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35 }}
+            className="pb-6 space-y-5"
+          >
+            {/* Result card */}
+            <div className="bg-card border border-border rounded-xl overflow-hidden">
+              {/* Success banner */}
+              <div className="flex items-center gap-3 px-6 py-4 border-b border-border bg-muted/20">
+                <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                  <CheckCircle2 className="w-5 h-5 text-primary" aria-hidden="true" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-semibold text-foreground">Presentation Ready</h3>
+                  <h3 className="text-sm font-semibold text-foreground">Presentation Generated Successfully</h3>
                   <p className="text-xs text-muted-foreground">
-                    {subject} — {chapter}
+                    {subject} — {chapter} • Saved automatically
                   </p>
                 </div>
               </div>
 
-              <div className="flex items-center justify-between rounded-lg border border-border bg-muted/30 px-4 py-3">
-                <div className="flex items-center gap-3">
-                  <FileText className="w-5 h-5 text-muted-foreground" aria-hidden="true" />
-                  <div>
-                    <p className="text-sm font-medium text-foreground">
+              {/* File row */}
+              <div className="flex items-center justify-between px-6 py-4">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="w-9 h-9 rounded-lg border border-border bg-muted/30 flex items-center justify-center shrink-0">
+                    <FileText className="w-4 h-4 text-muted-foreground" aria-hidden="true" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium text-foreground truncate">
                       {subject.toLowerCase().replace(/\s+/g, "_")}_{chapter.toLowerCase().replace(/\s+/g, "_")}_presentation.pptx
                     </p>
                     <p className="text-xs text-muted-foreground">Generated just now</p>
                   </div>
                 </div>
-                <Button
-                  onClick={handleDownload}
-                  size="sm"
-                  className="gap-2"
-                >
+                <Button onClick={handleDownload} size="sm" className="gap-2 shrink-0 ml-4">
                   <Download className="w-4 h-4" aria-hidden="true" />
                   Download PPT
                 </Button>
               </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
+            </div>
+
+            {/* Post-generation navigation */}
+            <div className="flex items-center justify-between">
+              <Button
+                variant="outline"
+                className="gap-2"
+                onClick={() => navigate("/dashboard/presentations")}
+              >
+                <ArrowLeft className="w-4 h-4" aria-hidden="true" />
+                Back to Presentations
+              </Button>
+              <Button
+                className="gap-2"
+                onClick={() => {
+                  setGrade("");
+                  setSubject("");
+                  setChapter("");
+                  setConceptTags([]);
+                  setNewConcept("");
+                  setInstructions("");
+                  setGenerateAiImages(false);
+                  setIsGenerated(false);
+                }}
+              >
+                <Plus className="w-4 h-4" aria-hidden="true" />
+                Create Another
+              </Button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
