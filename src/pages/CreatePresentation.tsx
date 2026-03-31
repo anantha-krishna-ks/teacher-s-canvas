@@ -329,7 +329,7 @@ const CreatePresentation = () => {
               <div className="border border-primary/20 bg-primary/5 rounded-lg p-4">
                 <div className="flex items-center gap-2 mb-3 text-sm font-medium text-primary">
                   <Sparkles className="w-4 h-4" aria-hidden="true" />
-                  Suggested Concepts
+                  Available Concepts:
                 </div>
                 <div
                   className="flex flex-wrap gap-2"
