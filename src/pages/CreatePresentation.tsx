@@ -12,6 +12,7 @@ import {
   Presentation,
   Download,
   Loader2,
+  FileText,
   Tag,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
