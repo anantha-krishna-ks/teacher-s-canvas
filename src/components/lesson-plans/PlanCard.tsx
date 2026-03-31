@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { FileText } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
 import type { LessonPlanCard } from "@/constants/lessonPlansPageData";
 import { SUBJECT_IMAGES } from "@/constants/lessonPlansPageData";
 
@@ -39,9 +40,18 @@ const PlanCard = ({ plan }: PlanCardProps) => {
             <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-5 shrink-0">{plan.code}</Badge>
           </div>
           {plan.chapter && (
-            <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed" title={plan.chapter}>
-              {plan.chapter}
-            </p>
+            <TooltipProvider delayDuration={300}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <p className="text-xs text-muted-foreground truncate leading-relaxed cursor-default">
+                    {plan.chapter}
+                  </p>
+                </TooltipTrigger>
+                <TooltipContent side="bottom" className="max-w-[220px] text-xs">
+                  {plan.chapter}
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           )}
         </div>
         <div className="flex items-center justify-between text-xs text-muted-foreground mt-auto">
