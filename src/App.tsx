@@ -11,6 +11,7 @@ import LessonPlans from "./pages/LessonPlans";
 import CreateLessonPlan from "./pages/CreateLessonPlan";
 import ClassPlans from "./pages/ClassPlans";
 import Presentations from "./pages/Presentations";
+import CreatePresentation from "./pages/CreatePresentation";
 import Worksheets from "./pages/Worksheets";
 import Quizzes from "./pages/Quizzes";
 import Assessment from "./pages/Assessment";
@@ -36,6 +37,7 @@ const App = () => (
             <Route path="lesson-plans/create" element={<CreateLessonPlan />} />
             <Route path="class-plans" element={<ClassPlans />} />
             <Route path="presentations" element={<Presentations />} />
+            <Route path="presentations/create" element={<CreatePresentation />} />
             <Route path="worksheets" element={<Worksheets />} />
             <Route path="quizzes" element={<Quizzes />} />
             <Route path="assessment" element={<Assessment />} />
