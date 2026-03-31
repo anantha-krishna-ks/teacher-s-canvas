@@ -24,6 +24,7 @@ export interface LessonPlanCard {
   questionsCount: number;
   countLabel?: string; // e.g. "Slides", "Sessions", "Questions" — defaults to "Questions"
   chapter?: string;
+  name?: string; // Display name — shown as primary label on card when present
   status?: "in-progress" | "saved" | "recommended";
 }
 

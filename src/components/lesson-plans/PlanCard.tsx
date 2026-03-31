@@ -33,25 +33,46 @@ const PlanCard = ({ plan }: PlanCardProps) => {
       </div>
 
       {/* Content */}
-      <div className={`p-3.5 flex flex-col justify-between ${plan.chapter ? 'h-[120px]' : 'h-[80px]'}`}>
+      <div className={`p-3.5 flex flex-col justify-between ${(plan.chapter && !plan.name) ? 'h-[120px]' : 'h-[100px]'}`}>
         <div className="space-y-1.5">
-          <div className="flex items-center justify-between">
-            <h4 className="text-sm font-semibold text-foreground truncate">{plan.subject}</h4>
-            <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-5 shrink-0">{plan.code}</Badge>
-          </div>
-          {plan.chapter && (
-            <TooltipProvider delayDuration={300}>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <p className="text-xs text-muted-foreground truncate leading-relaxed cursor-default">
-                    {plan.chapter}
-                  </p>
-                </TooltipTrigger>
-                <TooltipContent side="bottom" className="max-w-[240px] rounded-lg bg-foreground text-background px-3 py-2 text-xs font-medium shadow-lg border-0">
-                  {plan.chapter}
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+          {plan.name ? (
+            <>
+              <TooltipProvider delayDuration={300}>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <h4 className="text-sm font-semibold text-foreground truncate">{plan.name}</h4>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom" className="max-w-[240px] rounded-lg bg-foreground text-background px-3 py-2 text-xs font-medium shadow-lg border-0">
+                    {plan.name}
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+              <div className="flex items-center gap-1.5">
+                <span className="text-xs text-muted-foreground truncate">{plan.subject}</span>
+                <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-5 shrink-0">{plan.code}</Badge>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="flex items-center justify-between">
+                <h4 className="text-sm font-semibold text-foreground truncate">{plan.subject}</h4>
+                <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-5 shrink-0">{plan.code}</Badge>
+              </div>
+              {plan.chapter && (
+                <TooltipProvider delayDuration={300}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <p className="text-xs text-muted-foreground truncate leading-relaxed cursor-default">
+                        {plan.chapter}
+                      </p>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom" className="max-w-[240px] rounded-lg bg-foreground text-background px-3 py-2 text-xs font-medium shadow-lg border-0">
+                      {plan.chapter}
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              )}
+            </>
           )}
         </div>
         <div className="flex items-center justify-between text-xs text-muted-foreground mt-auto">
