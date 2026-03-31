@@ -430,22 +430,20 @@ const QuizPreview = () => {
         </AlertDialogContent>
       </AlertDialog>
 
-      {/* Bottom action bar - rendered as sticky at end of content */}
-      <div className="sticky bottom-0 -mx-3 md:-mx-4 lg:-mx-6 bg-card border-t border-border py-3 px-6 z-40 mt-4">
-        <div className="max-w-6xl mx-auto flex items-center justify-center gap-3">
-          <Button variant="outline" className="gap-2" onClick={handleBackToList}>
-            <BookOpen className="w-4 h-4" />
-            Discard
-          </Button>
-          <Button variant="outline" className="gap-2" onClick={handleExport}>
-            <Download className="w-4 h-4" />
-            Export
-          </Button>
-          <Button className="gap-2" onClick={handleSave}>
-            <Save className="w-4 h-4" />
-            Save
-          </Button>
-        </div>
+      {/* Bottom actions */}
+      <div className="flex items-center justify-center gap-3 mt-8 pb-4">
+        <Button variant="outline" className="gap-2" onClick={handleBackToList}>
+          <BookOpen className="w-4 h-4" />
+          Discard
+        </Button>
+        <Button variant="outline" className="gap-2" onClick={handleExport}>
+          <Download className="w-4 h-4" />
+          Export
+        </Button>
+        <Button className="gap-2" onClick={handleSave}>
+          <Save className="w-4 h-4" />
+          Save
+        </Button>
       </div>
     </div>
   );
