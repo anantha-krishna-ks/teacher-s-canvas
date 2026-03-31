@@ -34,6 +34,7 @@ interface ContentListingPageProps {
   };
   extraActions?: ExtraAction[];
   showFilters?: boolean;
+  showChapterFilter?: boolean;
 }
 
 const ALL = "__all__";
@@ -50,10 +51,12 @@ const ContentListingPage = ({
   sectionLabels,
   extraActions,
   showFilters = false,
+  showChapterFilter = false,
 }: ContentListingPageProps) => {
   const navigate = useNavigate();
   const [gradeFilter, setGradeFilter] = useState(ALL);
   const [subjectFilter, setSubjectFilter] = useState(ALL);
+  const [chapterFilter, setChapterFilter] = useState(ALL);
 
   const handleNavigateBack = useCallback(() => navigate(backPath), [navigate, backPath]);
   const handleCreateNew = useCallback(() => navigate(createPath), [navigate, createPath]);
