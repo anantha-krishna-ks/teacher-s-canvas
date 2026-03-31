@@ -23,6 +23,7 @@ export interface LessonPlanCard {
   grade: string;
   questionsCount: number;
   countLabel?: string; // e.g. "Slides", "Sessions", "Questions" — defaults to "Questions"
+  chapter?: string;
   status?: "in-progress" | "saved" | "recommended";
 }
 
