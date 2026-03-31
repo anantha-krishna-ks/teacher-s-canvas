@@ -52,72 +52,86 @@ interface QuestionCardProps {
 }
 
 const QuestionCard = ({ item, onEdit, onDelete }: QuestionCardProps) => (
-  <div className="space-y-4">
-    {/* Header row */}
-    <div className="flex items-center justify-between">
-      <div className="flex items-center gap-2 flex-wrap">
-        <span className="text-base font-bold text-foreground">Q{item.number}</span>
+  <div className="space-y-5">
+    {/* Header row with badges + actions */}
+    <div className="flex items-center justify-between pb-3 border-b border-border/60">
+      <div className="flex items-center gap-2.5 flex-wrap">
+        <span className="text-lg font-bold text-foreground tracking-tight">Q{item.number}</span>
+        <div className="w-px h-5 bg-border" />
         <Badge variant="outline" className={`text-xs font-medium rounded-full px-2.5 py-0.5 ${difficultyColor[item.difficulty]}`}>
           {item.difficulty}
         </Badge>
-        <Badge variant="outline" className="text-xs font-medium rounded-full px-2.5 py-0.5 bg-muted/50 text-muted-foreground">
+        <Badge variant="outline" className="text-xs font-medium rounded-full px-2.5 py-0.5 bg-muted/50 text-muted-foreground border-border">
           {item.type}
         </Badge>
         <Badge variant="outline" className={`text-xs font-medium rounded-full px-2.5 py-0.5 ${bloomColor[item.bloomLevel]}`}>
           {item.bloomLevel}
         </Badge>
       </div>
-      <div className="flex items-center gap-0.5">
-        <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground" onClick={() => onEdit(item)}>
+      <div className="flex items-center gap-1">
+        <Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg text-muted-foreground hover:text-primary hover:bg-primary/5" onClick={() => onEdit(item)}>
           <Pencil className="w-4 h-4" />
         </Button>
-        <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive" onClick={() => onDelete(item.id)}>
+        <Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/5" onClick={() => onDelete(item.id)}>
           <Trash2 className="w-4 h-4" />
         </Button>
       </div>
     </div>
 
     {/* Question text */}
-    <div className="bg-muted/40 rounded-lg px-4 py-3 border border-border/50">
-      <p className="text-sm font-medium text-foreground">{item.question}</p>
+    <div className="bg-muted/30 rounded-lg px-5 py-3.5 border border-border/40">
+      <p className="text-sm font-semibold text-foreground leading-relaxed">{item.question}</p>
     </div>
 
     {/* Options */}
-    <div className="space-y-0 pl-2">
-      <p className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5 mb-2">
-        <span className="w-1.5 h-1.5 rounded-full bg-foreground inline-block" />
-        Options:
+    <div className="space-y-1.5">
+      <p className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5 mb-2.5 uppercase tracking-wider">
+        <span className="w-1.5 h-1.5 rounded-full bg-foreground/60 inline-block" />
+        Options
       </p>
-      {item.options.map((opt) => (
-        <div
-          key={opt.label}
-          className={`flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors ${
-            opt.isCorrect ? "bg-green-50 border border-green-200" : ""
-          }`}
-        >
-          <span className={`font-medium ${opt.isCorrect ? "text-green-700" : "text-muted-foreground"}`}>{opt.label}.</span>
-          <span className={opt.isCorrect ? "text-green-800 font-medium" : "text-foreground/80"}>{opt.text}</span>
-          {opt.isCorrect && <CheckCircle2 className="w-4 h-4 text-green-600 ml-1 shrink-0" />}
-        </div>
-      ))}
+      <div className="grid gap-1.5">
+        {item.options.map((opt) => (
+          <div
+            key={opt.label}
+            className={`flex items-center gap-2.5 rounded-lg px-4 py-2.5 text-sm transition-all ${
+              opt.isCorrect
+                ? "bg-green-50 border border-green-200/80 shadow-sm shadow-green-100"
+                : "border border-transparent hover:bg-muted/20"
+            }`}
+          >
+            <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${
+              opt.isCorrect
+                ? "bg-green-100 text-green-700 border border-green-300"
+                : "bg-muted/60 text-muted-foreground border border-border/60"
+            }`}>
+              {opt.label}
+            </span>
+            <span className={`flex-1 ${opt.isCorrect ? "text-green-800 font-medium" : "text-foreground/80"}`}>{opt.text}</span>
+            {opt.isCorrect && <CheckCircle2 className="w-4 h-4 text-green-600 shrink-0" />}
+          </div>
+        ))}
+      </div>
     </div>
 
-    {/* Correct Answer */}
-    <div className="bg-green-50/80 border border-green-200 rounded-lg px-4 py-3">
-      <p className="text-xs font-semibold text-green-700 flex items-center gap-1.5 mb-1">
-        <CheckCircle2 className="w-3.5 h-3.5" />
-        Correct Answer:
-      </p>
-      <p className="text-sm text-foreground font-medium">{item.correctAnswer}</p>
-    </div>
+    {/* Correct Answer & Explanation side by side on larger screens */}
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+      {/* Correct Answer */}
+      <div className="bg-green-50/60 border border-green-200/70 rounded-lg px-4 py-3">
+        <p className="text-xs font-semibold text-green-700 flex items-center gap-1.5 mb-1.5 uppercase tracking-wider">
+          <CheckCircle2 className="w-3.5 h-3.5" />
+          Correct Answer
+        </p>
+        <p className="text-sm text-foreground font-medium">{item.correctAnswer}</p>
+      </div>
 
-    {/* Explanation */}
-    <div className="bg-blue-50/80 border border-blue-200 rounded-lg px-4 py-3">
-      <p className="text-xs font-semibold text-blue-700 flex items-center gap-1.5 mb-1">
-        <BookOpenText className="w-3.5 h-3.5" />
-        Explanation:
-      </p>
-      <p className="text-sm text-foreground/90">{item.explanation}</p>
+      {/* Explanation */}
+      <div className="bg-blue-50/60 border border-blue-200/70 rounded-lg px-4 py-3">
+        <p className="text-xs font-semibold text-blue-700 flex items-center gap-1.5 mb-1.5 uppercase tracking-wider">
+          <BookOpenText className="w-3.5 h-3.5" />
+          Explanation
+        </p>
+        <p className="text-sm text-foreground/90 leading-relaxed">{item.explanation}</p>
+      </div>
     </div>
   </div>
 );
