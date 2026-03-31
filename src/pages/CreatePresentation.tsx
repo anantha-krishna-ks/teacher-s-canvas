@@ -167,7 +167,7 @@ const CreatePresentation = () => {
   }, [subject, chapter, toast]);
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6 animate-fade-in">
+    <div className="max-w-6xl mx-auto space-y-4 animate-fade-in">
       {/* Breadcrumb */}
       <Breadcrumb>
         <BreadcrumbList>
