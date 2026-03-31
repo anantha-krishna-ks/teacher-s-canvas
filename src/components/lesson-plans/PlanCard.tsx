@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { FileText } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
 import type { LessonPlanCard } from "@/constants/lessonPlansPageData";
 import { SUBJECT_IMAGES } from "@/constants/lessonPlansPageData";
 
