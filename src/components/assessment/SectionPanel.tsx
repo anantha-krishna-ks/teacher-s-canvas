@@ -150,7 +150,7 @@ const SectionPanel = ({ sections, onChange }: SectionPanelProps) => {
       if (!activeSection) return;
       updateSectionItems(
         activeSection.id,
-        activeSection.items.map((it) => (it.id === id ? { ...it, ...updates } : it))
+        deepUpdateItem(activeSection.items, id, updates)
       );
     },
     [activeSection, updateSectionItems]
@@ -161,13 +161,37 @@ const SectionPanel = ({ sections, onChange }: SectionPanelProps) => {
       if (!activeSection) return;
       updateSectionItems(
         activeSection.id,
-        activeSection.items.filter((it) => it.id !== id)
+        deepRemoveItem(activeSection.items, id)
       );
       setSelectedItems((prev) => {
         const next = new Set(prev);
         next.delete(id);
         return next;
       });
+    },
+    [activeSection, updateSectionItems]
+  );
+
+  const handleAddSubItem = useCallback(
+    (parentId: string, type: ItemType) => {
+      if (!activeSection) return;
+      updateSectionItems(
+        activeSection.id,
+        addSubItem(activeSection.items, parentId, type)
+      );
+      toast.success("Sub-question added.");
+    },
+    [activeSection, updateSectionItems]
+  );
+
+  const handleAddOrItem = useCallback(
+    (targetId: string, type: ItemType) => {
+      if (!activeSection) return;
+      updateSectionItems(
+        activeSection.id,
+        addOrItem(activeSection.items, targetId, type)
+      );
+      toast.success("OR alternative added.");
     },
     [activeSection, updateSectionItems]
   );
