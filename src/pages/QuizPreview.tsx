@@ -1,7 +1,7 @@
 import { useState, useMemo, useCallback, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import {
-  ChevronLeft, Sparkles, BookOpen, Download, Save,
+  ChevronLeft, Sparkles, BookOpen, Download, Save, Eye,
   CheckCircle2, BookOpenText, LayoutList, Pencil, Trash2, X, Check,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
