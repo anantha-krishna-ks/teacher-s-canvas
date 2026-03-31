@@ -400,39 +400,57 @@ const CreatePresentation = () => {
         )}
       </fieldset>
 
-      {/* Section 3: Additional Instructions */}
-      <fieldset className="bg-card border border-border rounded-xl p-6 space-y-4">
-        <legend className="sr-only">Additional Instructions</legend>
+      {/* Section 3: Additional Settings */}
+      <fieldset className="bg-card border border-border rounded-xl p-6 space-y-5">
+        <legend className="sr-only">Additional Settings</legend>
         <div className="flex items-center gap-2 text-sm font-medium text-foreground">
           <BookOpen className="w-4 h-4 text-primary" aria-hidden="true" />
-          Additional Instructions
-          <span className="text-muted-foreground font-normal">(optional)</span>
+          Additional Settings
         </div>
-        <Textarea
-          placeholder="e.g., Focus on visual diagrams for complex concepts, include interactive elements, emphasize key learning objectives..."
-          value={instructions}
-          onChange={(e) => setInstructions(e.target.value)}
-          rows={4}
-          aria-label="Additional instructions for presentation"
-        />
-        <p className="text-xs text-muted-foreground">
-          These instructions will guide the AI in creating a customized
-          presentation that meets your specific needs.
-        </p>
-        <div className="flex items-center gap-2 pt-1">
-          <Checkbox
-            id="ai-images"
-            checked={generateAiImages}
-            onCheckedChange={(checked) =>
-              setGenerateAiImages(checked === true)
-            }
-          />
-          <Label
-            htmlFor="ai-images"
-            className="text-sm font-normal cursor-pointer"
-          >
-            Generate AI Images for Slides
+
+        {/* Instructions */}
+        <div className="space-y-2">
+          <Label htmlFor="instructions" className="text-sm">
+            Instructions
+            <span className="text-muted-foreground font-normal ml-1">(optional)</span>
           </Label>
+          <Textarea
+            id="instructions"
+            placeholder="e.g., Focus on visual diagrams for complex concepts, include interactive elements, emphasize key learning objectives..."
+            value={instructions}
+            onChange={(e) => setInstructions(e.target.value)}
+            rows={3}
+            className="resize-none"
+            aria-label="Additional instructions for presentation"
+          />
+          <p className="text-xs text-muted-foreground">
+            These instructions will guide the AI in creating a customized presentation.
+          </p>
+        </div>
+
+        {/* Preferences */}
+        <div className="space-y-3">
+          <Label className="text-sm">Preferences</Label>
+          <label
+            htmlFor="ai-images"
+            className="flex items-center gap-3 cursor-pointer select-none rounded-lg border border-border bg-muted/20 px-4 py-3.5 hover:border-primary/30 transition-colors"
+          >
+            <Checkbox
+              id="ai-images"
+              checked={generateAiImages}
+              onCheckedChange={(checked) =>
+                setGenerateAiImages(checked === true)
+              }
+            />
+            <div className="space-y-0.5">
+              <span className="text-sm font-medium text-foreground">
+                Generate AI Images for Slides
+              </span>
+              <p className="text-xs text-muted-foreground">
+                Automatically create relevant visuals for each slide using AI
+              </p>
+            </div>
+          </label>
         </div>
       </fieldset>
 
