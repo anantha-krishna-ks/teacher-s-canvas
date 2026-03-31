@@ -24,6 +24,7 @@ const bloomColor: Record<string, string> = {
 const QuizDisplay = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const { toast } = useToast();
 
   const quiz = useMemo(() => {
     const name = searchParams.get("name") || "Untitled Quiz";
@@ -42,6 +43,7 @@ const QuizDisplay = () => {
 
   const current = questions[currentIndex];
   const progress = ((currentIndex + 1) / total) * 100;
+  const isLast = currentIndex === total - 1;
 
   const handlePrev = () => setCurrentIndex((i) => Math.max(0, i - 1));
   const handleNext = () => setCurrentIndex((i) => Math.min(total - 1, i + 1));
@@ -49,6 +51,11 @@ const QuizDisplay = () => {
 
   const handleSelect = (optionLabel: string) => {
     setSelectedOption((prev) => ({ ...prev, [currentIndex]: optionLabel }));
+  };
+
+  const handleFinish = () => {
+    toast({ title: "Quiz completed!", description: "Your responses have been saved." });
+    navigate("/dashboard/quizzes");
   };
 
   return (
