@@ -110,6 +110,41 @@ export const countAllItems = (items: SectionItem[]): number => {
   return count;
 };
 
+/** Find a top-level item by id */
+const findTopLevelItem = (items: SectionItem[], id: string): SectionItem | null =>
+  items.find((it) => it.id === id) ?? null;
+
+/** Link two existing top-level items as OR pair (second becomes orItem of first) */
+export const linkAsOr = (items: SectionItem[], primaryId: string, secondaryId: string): SectionItem[] => {
+  const secondary = findTopLevelItem(items, secondaryId);
+  if (!secondary) return items;
+  // Remove secondary from top level
+  const filtered = items.filter((it) => it.id !== secondaryId);
+  // Attach as orItem of primary
+  return filtered.map((item) => {
+    if (item.id === primaryId) {
+      if (item.orItem) return item; // already has OR
+      return { ...item, orItem: { ...secondary } };
+    }
+    return item;
+  });
+};
+
+/** Move selected top-level items as sub-items of a parent */
+export const makeSubItemsOf = (items: SectionItem[], childIds: string[], parentId: string): SectionItem[] => {
+  const children = items.filter((it) => childIds.includes(it.id));
+  if (children.length === 0) return items;
+  // Remove children from top level
+  const filtered = items.filter((it) => !childIds.includes(it.id));
+  // Add as subItems of parent
+  return filtered.map((item) => {
+    if (item.id === parentId) {
+      return { ...item, subItems: [...(item.subItems ?? []), ...children] };
+    }
+    return item;
+  });
+};
+
 export const createSection = (label: string): Section => ({
   id: crypto.randomUUID(),
   label,
