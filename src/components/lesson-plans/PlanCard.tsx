@@ -37,6 +37,11 @@ const PlanCard = ({ plan }: PlanCardProps) => {
           <h4 className="text-sm font-semibold text-foreground truncate">{plan.subject}</h4>
           <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-5 shrink-0">{plan.code}</Badge>
         </div>
+        {plan.chapter && (
+          <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed" title={plan.chapter}>
+            {plan.chapter}
+          </p>
+        )}
         <div className="flex items-center justify-between text-xs text-muted-foreground">
           <span>Grade {plan.grade}</span>
           <span>{plan.questionsCount} {plan.countLabel || "Questions"}</span>

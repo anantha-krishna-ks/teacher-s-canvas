@@ -1,7 +1,6 @@
 import ContentListingPage from "@/components/ContentListingPage";
 import {
   RECOMMENDED_PRESENTATIONS,
-  IN_PROGRESS_PRESENTATIONS,
   SAVED_PRESENTATIONS,
 } from "@/constants/presentationsData";
 
@@ -12,8 +11,9 @@ const Presentations = () => (
     createLabel="Create Presentation"
     createPath="/dashboard/presentations/create"
     recommended={RECOMMENDED_PRESENTATIONS}
-    inProgress={IN_PROGRESS_PRESENTATIONS}
+    inProgress={[]}
     saved={SAVED_PRESENTATIONS}
+    sectionLabels={{ inProgress: "" }}
   />
 );
 
