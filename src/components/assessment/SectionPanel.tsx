@@ -532,6 +532,52 @@ const SectionPanel = ({ sections, onChange }: SectionPanelProps) => {
                 {selectedItems.size > 0 && (
                   <>
                     <div className="w-px h-4 bg-border mx-0.5" />
+                    {/* Link as OR: exactly 2 selected */}
+                    {canLinkOr && (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="h-8 text-xs gap-1.5 text-primary hover:text-primary hover:bg-primary/5"
+                        onClick={handleLinkAsOr}
+                      >
+                        <Split className="w-3.5 h-3.5" />
+                        Link as OR
+                      </Button>
+                    )}
+                    {/* Make Sub-Question of... */}
+                    {canMakeSub && (
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            className="h-8 text-xs gap-1.5 text-primary hover:text-primary hover:bg-primary/5"
+                          >
+                            <GitBranch className="w-3.5 h-3.5" />
+                            Make Sub-Q of…
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent align="end" className="w-56 p-1">
+                          <p className="text-[11px] text-muted-foreground font-medium px-2 py-1.5 uppercase tracking-wider">
+                            Select Parent Question
+                          </p>
+                          {eligibleParents.map((p, idx) => (
+                            <button
+                              key={p.id}
+                              type="button"
+                              onClick={() => handleMakeSubItemOf(p.id)}
+                              className="w-full text-left px-2 py-1.5 text-sm rounded-md hover:bg-muted transition-colors truncate"
+                            >
+                              <span className="font-medium text-foreground">{idx + 1}.</span>{" "}
+                              <span className="text-muted-foreground">{p.question || "(empty question)"}</span>
+                            </button>
+                          ))}
+                        </PopoverContent>
+                      </Popover>
+                    )}
+                    <div className="w-px h-4 bg-border mx-0.5" />
                     <Button
                       type="button"
                       variant="ghost"
