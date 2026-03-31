@@ -32,17 +32,19 @@ const PlanCard = ({ plan }: PlanCardProps) => {
       </div>
 
       {/* Content */}
-      <div className="p-3.5 space-y-2">
-        <div className="flex items-center justify-between">
-          <h4 className="text-sm font-semibold text-foreground truncate">{plan.subject}</h4>
-          <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-5 shrink-0">{plan.code}</Badge>
+      <div className="p-3.5 flex flex-col justify-between h-[120px]">
+        <div className="space-y-1.5">
+          <div className="flex items-center justify-between">
+            <h4 className="text-sm font-semibold text-foreground truncate">{plan.subject}</h4>
+            <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-5 shrink-0">{plan.code}</Badge>
+          </div>
+          {plan.chapter && (
+            <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed" title={plan.chapter}>
+              {plan.chapter}
+            </p>
+          )}
         </div>
-        {plan.chapter && (
-          <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed" title={plan.chapter}>
-            {plan.chapter}
-          </p>
-        )}
-        <div className="flex items-center justify-between text-xs text-muted-foreground">
+        <div className="flex items-center justify-between text-xs text-muted-foreground mt-auto">
           <span>Grade {plan.grade}</span>
           <span>{plan.questionsCount} {plan.countLabel || "Questions"}</span>
         </div>
