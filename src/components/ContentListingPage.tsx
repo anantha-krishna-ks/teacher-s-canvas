@@ -94,7 +94,7 @@ const ContentListingPage = ({
     setChapterFilter(ALL);
   }, []);
 
-  const hasActiveFilters = gradeFilter !== ALL || subjectFilter !== ALL;
+  const hasActiveFilters = gradeFilter !== ALL || subjectFilter !== ALL || chapterFilter !== ALL;
 
   const recommendedTitle = sectionLabels?.recommended || `Recommended ${title}`;
   const inProgressTitle = sectionLabels?.inProgress || `${title} In Progress`;
