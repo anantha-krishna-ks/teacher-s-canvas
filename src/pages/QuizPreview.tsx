@@ -1,7 +1,7 @@
 import { useState, useMemo, useCallback, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import {
-  ChevronLeft, Sparkles, BookOpen, Download, Save,
+  ChevronLeft, Sparkles, BookOpen, Download, Save, Eye,
   CheckCircle2, BookOpenText, LayoutList, Pencil, Trash2, X, Check,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -432,9 +432,9 @@ const QuizPreview = () => {
 
       {/* Bottom actions */}
       <div className="flex items-center justify-center gap-3 mt-8 pb-4">
-        <Button variant="outline" className="gap-2" onClick={handleBackToList}>
-          <BookOpen className="w-4 h-4" />
-          Discard
+        <Button variant="outline" className="gap-2" onClick={() => navigate(`/dashboard/quizzes/display?${searchParams.toString()}`)}>
+          <Eye className="w-4 h-4" />
+          Display
         </Button>
         <Button variant="outline" className="gap-2" onClick={handleExport}>
           <Download className="w-4 h-4" />

@@ -16,6 +16,7 @@ import Worksheets from "./pages/Worksheets";
 import Quizzes from "./pages/Quizzes";
 import CreateQuiz from "./pages/CreateQuiz";
 import QuizPreview from "./pages/QuizPreview";
+import QuizDisplay from "./pages/QuizDisplay";
 import Assessment from "./pages/Assessment";
 import QuestionRepository from "./pages/QuestionRepository";
 import CreateAssessment from "./pages/CreateAssessment";
@@ -44,6 +45,7 @@ const App = () => (
             <Route path="quizzes" element={<Quizzes />} />
             <Route path="quizzes/create" element={<CreateQuiz />} />
             <Route path="quizzes/preview" element={<QuizPreview />} />
+            <Route path="quizzes/display" element={<QuizDisplay />} />
             <Route path="assessment" element={<Assessment />} />
             <Route path="assessment/create" element={<CreateAssessment />} />
             <Route path="assessment/question-repository" element={<QuestionRepository />} />
