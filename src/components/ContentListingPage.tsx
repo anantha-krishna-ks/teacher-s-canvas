@@ -178,6 +178,7 @@ const ContentListingPage = ({
             </Select>
           )}
 
+          {hasActiveFilters && (
             <Button variant="ghost" size="sm" className="text-xs text-muted-foreground hover:text-foreground" onClick={handleClearFilters}>
               Clear filters
             </Button>
