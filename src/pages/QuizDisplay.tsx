@@ -1,11 +1,12 @@
 import { useState, useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { generateMockQuiz, type QuizQuestionItem } from "@/utils/generateMockQuiz";
+import { generateMockQuiz } from "@/utils/generateMockQuiz";
 import { cn } from "@/lib/utils";
+import { useToast } from "@/hooks/use-toast";
 
 const difficultyColor: Record<string, string> = {
   Easy: "bg-green-50 text-green-700 border-green-200",
@@ -23,6 +24,7 @@ const bloomColor: Record<string, string> = {
 const QuizDisplay = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const { toast } = useToast();
 
   const quiz = useMemo(() => {
     const name = searchParams.get("name") || "Untitled Quiz";
@@ -41,6 +43,7 @@ const QuizDisplay = () => {
 
   const current = questions[currentIndex];
   const progress = ((currentIndex + 1) / total) * 100;
+  const isLast = currentIndex === total - 1;
 
   const handlePrev = () => setCurrentIndex((i) => Math.max(0, i - 1));
   const handleNext = () => setCurrentIndex((i) => Math.min(total - 1, i + 1));
@@ -48,6 +51,11 @@ const QuizDisplay = () => {
 
   const handleSelect = (optionLabel: string) => {
     setSelectedOption((prev) => ({ ...prev, [currentIndex]: optionLabel }));
+  };
+
+  const handleFinish = () => {
+    toast({ title: "Quiz completed!", description: "Your responses have been saved." });
+    navigate("/dashboard/quizzes");
   };
 
   return (
@@ -158,15 +166,21 @@ const QuizDisplay = () => {
           ))}
         </div>
 
-        <Button
-          variant="ghost"
-          className="gap-1.5 text-muted-foreground"
-          onClick={handleNext}
-          disabled={currentIndex === total - 1}
-        >
-          Next
-          <ChevronRight className="w-4 h-4" />
-        </Button>
+        {isLast ? (
+          <Button className="gap-1.5" onClick={handleFinish}>
+            <CheckCircle className="w-4 h-4" />
+            Finish
+          </Button>
+        ) : (
+          <Button
+            variant="ghost"
+            className="gap-1.5 text-muted-foreground"
+            onClick={handleNext}
+          >
+            Next
+            <ChevronRight className="w-4 h-4" />
+          </Button>
+        )}
       </div>
     </div>
   );
