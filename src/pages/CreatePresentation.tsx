@@ -211,7 +211,7 @@ const CreatePresentation = () => {
       </div>
 
       {/* Section 1: Class & Subject */}
-      <fieldset className="bg-card border border-border rounded-xl p-6 space-y-6">
+      <fieldset className="bg-card border border-border rounded-xl p-5 space-y-4">
         <legend className="sr-only">Class and Subject</legend>
         <div className="flex items-center gap-2 text-sm font-medium text-foreground">
           <GraduationCap className="w-4 h-4 text-primary" aria-hidden="true" />
