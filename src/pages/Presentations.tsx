@@ -14,6 +14,7 @@ const Presentations = () => (
     inProgress={[]}
     saved={SAVED_PRESENTATIONS}
     sectionLabels={{ inProgress: "" }}
+    showFilters
   />
 );
 
