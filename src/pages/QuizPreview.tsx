@@ -61,9 +61,6 @@ const QuestionCard = ({ item, onEdit, onDelete }: QuestionCardProps) => (
         <Badge variant="outline" className={`text-xs font-medium rounded-full px-2.5 py-0.5 ${difficultyColor[item.difficulty]}`}>
           {item.difficulty}
         </Badge>
-        <Badge variant="outline" className="text-xs font-medium rounded-full px-2.5 py-0.5 bg-muted/50 text-muted-foreground border-border">
-          {item.type}
-        </Badge>
         <Badge variant="outline" className={`text-xs font-medium rounded-full px-2.5 py-0.5 ${bloomColor[item.bloomLevel]}`}>
           {item.bloomLevel}
         </Badge>
