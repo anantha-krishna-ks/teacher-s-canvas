@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import {
   ChevronLeft, Sparkles, BookOpen, Download, Save,
@@ -133,13 +133,13 @@ interface EditQuestionModalProps {
 const EditQuestionModal = ({ item, open, onClose, onSave }: EditQuestionModalProps) => {
   const [editData, setEditData] = useState<QuizQuestionItem | null>(null);
 
-  // Sync when item changes
-  const currentId = item?.id;
-  const [prevId, setPrevId] = useState<string | null>(null);
-  if (currentId !== prevId) {
-    setPrevId(currentId ?? null);
-    if (item) setEditData({ ...item });
-  }
+  useEffect(() => {
+    if (item) {
+      setEditData({ ...item });
+    } else {
+      setEditData(null);
+    }
+  }, [item]);
 
   if (!editData) return null;
 
