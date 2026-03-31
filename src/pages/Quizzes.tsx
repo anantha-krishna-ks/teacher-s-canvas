@@ -1,7 +1,6 @@
 import ContentListingPage from "@/components/ContentListingPage";
 import {
   RECOMMENDED_QUIZZES,
-  IN_PROGRESS_QUIZZES,
   SAVED_QUIZZES,
 } from "@/constants/quizzesData";
 
@@ -12,7 +11,7 @@ const Quizzes = () => (
     createLabel="Create Quiz"
     createPath="/dashboard/quizzes/create"
     recommended={RECOMMENDED_QUIZZES}
-    inProgress={IN_PROGRESS_QUIZZES}
+    inProgress={[]}
     saved={SAVED_QUIZZES}
     showFilters
     showChapterFilter
