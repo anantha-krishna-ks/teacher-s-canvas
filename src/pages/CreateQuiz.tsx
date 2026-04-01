@@ -50,44 +50,16 @@ const CreateQuiz = () => {
     setGrade(val);
     setSubject("");
     setChapter("");
-    setSelectedConcepts([]);
   }, []);
 
   const handleSubjectChange = useCallback((val: string) => {
     setSubject(val);
     setChapter("");
-    setSelectedConcepts([]);
   }, []);
 
   const handleChapterChange = useCallback((val: string) => {
     setChapter(val);
-    setSelectedConcepts([]);
   }, []);
-
-  const toggleConcept = useCallback((concept: string) => {
-    setSelectedConcepts((prev) =>
-      prev.includes(concept) ? prev.filter((c) => c !== concept) : [...prev, concept]
-    );
-  }, []);
-
-  const addCustomConcept = useCallback(() => {
-    const trimmed = newConcept.trim();
-    if (trimmed && !selectedConcepts.includes(trimmed)) {
-      setSelectedConcepts((prev) => [...prev, trimmed]);
-      setNewConcept("");
-    }
-  }, [newConcept, selectedConcepts]);
-
-  const removeConcept = useCallback((concept: string) => {
-    setSelectedConcepts((prev) => prev.filter((c) => c !== concept));
-  }, []);
-
-  const handleNewConceptKeyDown = useCallback(
-    (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === "Enter") addCustomConcept();
-    },
-    [addCustomConcept]
-  );
 
   const isFormValid = quizName.trim() && grade && subject && selectedConcepts.length > 0 && questionCount;
 
