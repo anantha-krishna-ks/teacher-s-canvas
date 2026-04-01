@@ -61,7 +61,7 @@ const CreateQuiz = () => {
     setChapter(val);
   }, []);
 
-  const isFormValid = quizName.trim() && grade && subject && selectedConcepts.length > 0 && questionCount;
+  const isFormValid = quizName.trim() && grade && subject && questionCount;
 
   const handleGenerate = useCallback(() => {
     const params = new URLSearchParams({
