@@ -23,7 +23,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { NavLink } from "@/components/NavLink";
-import { GRADES, SUBJECTS_BY_GRADE, CHAPTERS_BY_SUBJECT, CONCEPTS_BY_CHAPTER } from "@/constants/lessonPlanData";
+import { GRADES, SUBJECTS_BY_GRADE, CHAPTERS_BY_SUBJECT } from "@/constants/lessonPlanData";
 
 const QUESTION_COUNT_OPTIONS = [
   { value: "5", label: "Create quiz with 5 questions" },

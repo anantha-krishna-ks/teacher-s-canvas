@@ -40,7 +40,6 @@ import {
   GRADES,
   SUBJECTS_BY_GRADE,
   CHAPTERS_BY_SUBJECT,
-  CONCEPTS_BY_CHAPTER,
 } from "@/constants/lessonPlanData";
 
 const CreatePresentation = () => {
