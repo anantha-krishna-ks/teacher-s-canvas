@@ -68,11 +68,10 @@ const CreateQuiz = () => {
       name: quizName,
       grade,
       subject,
-      concepts: selectedConcepts.join("||"),
       count: questionCount,
     });
     navigate(`/dashboard/quizzes/preview?${params.toString()}`);
-  }, [navigate, quizName, grade, subject, selectedConcepts, questionCount]);
+  }, [navigate, quizName, grade, subject, questionCount]);
 
   const handleCancel = useCallback(() => navigate("/dashboard/quizzes"), [navigate]);
   const handleNavigateBack = useCallback(() => navigate("/dashboard/quizzes"), [navigate]);

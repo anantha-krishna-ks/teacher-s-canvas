@@ -99,8 +99,7 @@ const CreatePresentation = () => {
     [navigate]
   );
 
-  const isFormValid =
-    grade && subject && chapter && conceptTags.length > 0;
+  const isFormValid = grade && subject && chapter;
 
   const handleGenerate = useCallback(() => {
     if (!isFormValid) return;
