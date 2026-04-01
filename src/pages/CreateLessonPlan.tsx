@@ -43,6 +43,7 @@ const CreateLessonPlan = () => {
   const [durationMin, setDurationMin] = useState("");
   const [periods, setPeriods] = useState("");
   const [instructions, setInstructions] = useState("");
+  const [referenceFiles, setReferenceFiles] = useState<UploadedFile[]>([]);
   const [currentStep, setCurrentStep] = useState(0);
 
   const subjects = useMemo(() => (grade ? SUBJECTS_BY_GRADE[grade] || [] : []), [grade]);
