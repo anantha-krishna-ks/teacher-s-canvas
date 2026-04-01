@@ -406,6 +406,13 @@ const CreatePresentation = () => {
         )}
       </fieldset>
 
+      {/* Section 2b: Lesson Plans Tagging */}
+      <LessonPlanTagging
+        subject={subject}
+        selectedIds={selectedLessonPlans}
+        onSelectionChange={setSelectedLessonPlans}
+      />
+
       {/* Upload Reference Document */}
       <UploadReferenceDocument files={referenceFiles} onFilesChange={setReferenceFiles} />
 
