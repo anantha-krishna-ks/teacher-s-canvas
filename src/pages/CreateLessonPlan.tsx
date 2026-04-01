@@ -389,7 +389,10 @@ const CreateLessonPlan = () => {
             </div>
           </fieldset>
 
-          {/* Row 3: Additional Instructions */}
+          {/* Row 3: Upload Reference Document */}
+          <UploadReferenceDocument files={referenceFiles} onFilesChange={setReferenceFiles} />
+
+          {/* Row 4: Additional Instructions */}
           <fieldset className="bg-card border border-border rounded-xl p-6 space-y-4">
             <legend className="sr-only">Additional Instructions</legend>
             <div className="flex items-center gap-2 text-sm font-medium text-foreground">

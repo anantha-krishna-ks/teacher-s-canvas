@@ -303,6 +303,9 @@ const CreateQuiz = () => {
           </div>
         </fieldset>
 
+        {/* Upload Reference Document */}
+        <UploadReferenceDocument files={referenceFiles} onFilesChange={setReferenceFiles} />
+
         {/* Actions */}
         <div className="flex items-center justify-between pt-2">
           <Button variant="outline" onClick={handleCancel}>Cancel</Button>

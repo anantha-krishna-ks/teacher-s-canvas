@@ -403,6 +403,9 @@ const CreatePresentation = () => {
         )}
       </fieldset>
 
+      {/* Upload Reference Document */}
+      <UploadReferenceDocument files={referenceFiles} onFilesChange={setReferenceFiles} />
+
       {/* Section 3: Additional Settings */}
       <fieldset className="bg-card border border-border rounded-xl p-5 space-y-4">
         <legend className="sr-only">Additional Settings</legend>
