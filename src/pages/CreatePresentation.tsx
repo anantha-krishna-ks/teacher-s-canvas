@@ -57,7 +57,6 @@ const CreatePresentation = () => {
   const [subject, setSubject] = useState("");
   const [chapter, setChapter] = useState("");
   const [selectedLessonPlans, setSelectedLessonPlans] = useState<string[]>([]);
-  const [selectedLessonPlans, setSelectedLessonPlans] = useState<string[]>([]);
   const [referenceFiles, setReferenceFiles] = useState<UploadedFile[]>([]);
   const [instructions, setInstructions] = useState("");
   const [generateAiImages, setGenerateAiImages] = useState(false);
