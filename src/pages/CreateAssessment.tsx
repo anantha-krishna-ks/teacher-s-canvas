@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronLeft, FileText, Layers } from "lucide-react";
+import LessonPlanTagging from "@/components/LessonPlanTagging";
 import SectionPanel from "@/components/assessment/SectionPanel";
 import { createSection, type Section } from "@/constants/assessmentSectionData";
 import { Button } from "@/components/ui/button";
