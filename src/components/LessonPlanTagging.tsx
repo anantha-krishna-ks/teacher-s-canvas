@@ -39,7 +39,6 @@ const LessonPlanTagging = ({ subject, selectedIds, onSelectionChange }: LessonPl
       <div className="flex items-center gap-2 text-sm font-medium text-foreground">
         <BookOpen className="w-4 h-4 text-primary" aria-hidden="true" />
         Lesson Plans
-        <span className="text-muted-foreground font-normal">(optional)</span>
       </div>
 
       {!subject ? (
