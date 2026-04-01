@@ -56,8 +56,7 @@ const CreatePresentation = () => {
   const [grade, setGrade] = useState("");
   const [subject, setSubject] = useState("");
   const [chapter, setChapter] = useState("");
-  const [conceptTags, setConceptTags] = useState<string[]>([]);
-  const [newConcept, setNewConcept] = useState("");
+  const [selectedLessonPlans, setSelectedLessonPlans] = useState<string[]>([]);
   const [selectedLessonPlans, setSelectedLessonPlans] = useState<string[]>([]);
   const [referenceFiles, setReferenceFiles] = useState<UploadedFile[]>([]);
   const [instructions, setInstructions] = useState("");
