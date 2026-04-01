@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { ChevronLeft, Plus, X, Sparkles, BookOpen, Layers, FileText, GraduationCap, Check } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import GeneratedLessonPlan from "@/components/GeneratedLessonPlan";
+import UploadReferenceDocument, { type UploadedFile } from "@/components/UploadReferenceDocument";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
