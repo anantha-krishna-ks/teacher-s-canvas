@@ -39,6 +39,7 @@ const CreateQuiz = () => {
   const [chapter, setChapter] = useState("");
   const [selectedConcepts, setSelectedConcepts] = useState<string[]>([]);
   const [newConcept, setNewConcept] = useState("");
+  const [referenceFiles, setReferenceFiles] = useState<UploadedFile[]>([]);
   const [questionCount, setQuestionCount] = useState("");
 
   const subjects = useMemo(() => (grade ? SUBJECTS_BY_GRADE[grade] || [] : []), [grade]);
