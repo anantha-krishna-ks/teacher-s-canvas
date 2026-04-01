@@ -3,18 +3,12 @@ import UploadReferenceDocument, { type UploadedFile } from "@/components/UploadR
 import { useNavigate } from "react-router-dom";
 import {
   ChevronLeft,
-  Plus,
-  X,
-  Sparkles,
   BookOpen,
-  Layers,
   GraduationCap,
-  Check,
   Presentation,
   Download,
   Loader2,
   FileText,
-  Tag,
   ArrowLeft,
   CheckCircle2,
 } from "lucide-react";
