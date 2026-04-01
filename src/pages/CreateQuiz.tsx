@@ -39,7 +39,6 @@ const CreateQuiz = () => {
   const [subject, setSubject] = useState("");
   const [chapter, setChapter] = useState("");
   const [selectedLessonPlans, setSelectedLessonPlans] = useState<string[]>([]);
-  const [selectedLessonPlans, setSelectedLessonPlans] = useState<string[]>([]);
   const [referenceFiles, setReferenceFiles] = useState<UploadedFile[]>([]);
   const [questionCount, setQuestionCount] = useState("");
 
