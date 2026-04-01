@@ -76,55 +76,19 @@ const CreatePresentation = () => {
     setGrade(val);
     setSubject("");
     setChapter("");
-    setConceptTags([]);
     setIsGenerated(false);
   }, []);
 
   const handleSubjectChange = useCallback((val: string) => {
     setSubject(val);
     setChapter("");
-    setConceptTags([]);
     setIsGenerated(false);
   }, []);
 
   const handleChapterChange = useCallback((val: string) => {
     setChapter(val);
-    setConceptTags([]);
     setIsGenerated(false);
   }, []);
-
-  const toggleConcept = useCallback((concept: string) => {
-    setConceptTags((prev) =>
-      prev.includes(concept)
-        ? prev.filter((c) => c !== concept)
-        : [...prev, concept]
-    );
-    setIsGenerated(false);
-  }, []);
-
-  const addCustomConcept = useCallback(() => {
-    const trimmed = newConcept.trim();
-    if (trimmed && !conceptTags.includes(trimmed)) {
-      setConceptTags((prev) => [...prev, trimmed]);
-      setNewConcept("");
-      setIsGenerated(false);
-    }
-  }, [newConcept, conceptTags]);
-
-  const removeConcept = useCallback((concept: string) => {
-    setConceptTags((prev) => prev.filter((c) => c !== concept));
-    setIsGenerated(false);
-  }, []);
-
-  const handleNewConceptKeyDown = useCallback(
-    (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === "Enter") {
-        e.preventDefault();
-        addCustomConcept();
-      }
-    },
-    [addCustomConcept]
-  );
 
   const handleCancel = useCallback(
     () => navigate("/dashboard/presentations"),
