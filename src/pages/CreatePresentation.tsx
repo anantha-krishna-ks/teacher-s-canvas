@@ -41,6 +41,7 @@ import {
 import { NavLink } from "@/components/NavLink";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
+import LessonPlanTagging from "@/components/LessonPlanTagging";
 import {
   GRADES,
   SUBJECTS_BY_GRADE,
@@ -57,6 +58,7 @@ const CreatePresentation = () => {
   const [chapter, setChapter] = useState("");
   const [conceptTags, setConceptTags] = useState<string[]>([]);
   const [newConcept, setNewConcept] = useState("");
+  const [selectedLessonPlans, setSelectedLessonPlans] = useState<string[]>([]);
   const [referenceFiles, setReferenceFiles] = useState<UploadedFile[]>([]);
   const [instructions, setInstructions] = useState("");
   const [generateAiImages, setGenerateAiImages] = useState(false);
@@ -403,6 +405,13 @@ const CreatePresentation = () => {
           </div>
         )}
       </fieldset>
+
+      {/* Section 2b: Lesson Plans Tagging */}
+      <LessonPlanTagging
+        subject={subject}
+        selectedIds={selectedLessonPlans}
+        onSelectionChange={setSelectedLessonPlans}
+      />
 
       {/* Upload Reference Document */}
       <UploadReferenceDocument files={referenceFiles} onFilesChange={setReferenceFiles} />

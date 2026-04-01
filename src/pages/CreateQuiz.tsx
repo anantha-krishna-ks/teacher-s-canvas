@@ -1,5 +1,6 @@
 import { useState, useMemo, useCallback } from "react";
 import UploadReferenceDocument, { type UploadedFile } from "@/components/UploadReferenceDocument";
+import LessonPlanTagging from "@/components/LessonPlanTagging";
 import { useNavigate } from "react-router-dom";
 import { ChevronLeft, Plus, X, Sparkles, GraduationCap, Layers, Check } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -39,6 +40,7 @@ const CreateQuiz = () => {
   const [chapter, setChapter] = useState("");
   const [selectedConcepts, setSelectedConcepts] = useState<string[]>([]);
   const [newConcept, setNewConcept] = useState("");
+  const [selectedLessonPlans, setSelectedLessonPlans] = useState<string[]>([]);
   const [referenceFiles, setReferenceFiles] = useState<UploadedFile[]>([]);
   const [questionCount, setQuestionCount] = useState("");
 
@@ -303,6 +305,13 @@ const CreateQuiz = () => {
             )}
           </div>
         </fieldset>
+
+        {/* Lesson Plans Tagging */}
+        <LessonPlanTagging
+          subject={subject}
+          selectedIds={selectedLessonPlans}
+          onSelectionChange={setSelectedLessonPlans}
+        />
 
         {/* Upload Reference Document */}
         <UploadReferenceDocument files={referenceFiles} onFilesChange={setReferenceFiles} />

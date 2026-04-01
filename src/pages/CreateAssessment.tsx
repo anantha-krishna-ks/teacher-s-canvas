@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronLeft, FileText, Layers } from "lucide-react";
+import LessonPlanTagging from "@/components/LessonPlanTagging";
 import SectionPanel from "@/components/assessment/SectionPanel";
 import { createSection, type Section } from "@/constants/assessmentSectionData";
 import { Button } from "@/components/ui/button";
@@ -35,6 +36,7 @@ const CreateAssessment = () => {
   const [durationMin, setDurationMin] = useState("");
   const [instructions, setInstructions] = useState("");
   const [sections, setSections] = useState<Section[]>([createSection("A")]);
+  const [selectedLessonPlans, setSelectedLessonPlans] = useState<string[]>([]);
 
   const errors = attempted
     ? {
@@ -222,6 +224,13 @@ const CreateAssessment = () => {
                 maxLength={2000}
               />
             </div>
+
+            {/* Lesson Plans Tagging */}
+            <LessonPlanTagging
+              subject={subject}
+              selectedIds={selectedLessonPlans}
+              onSelectionChange={setSelectedLessonPlans}
+            />
 
             {/* Next Button */}
             <div className="flex justify-end pt-2">
