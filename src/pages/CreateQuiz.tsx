@@ -1,4 +1,5 @@
 import { useState, useMemo, useCallback } from "react";
+import UploadReferenceDocument, { type UploadedFile } from "@/components/UploadReferenceDocument";
 import { useNavigate } from "react-router-dom";
 import { ChevronLeft, Plus, X, Sparkles, GraduationCap, Layers, Check } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
