@@ -1,5 +1,9 @@
 import { useState, useMemo, useCallback } from "react";
-import { Search, ChevronDown, ChevronRight, Folder, FolderOpen, Plus, FileText, PlusCircle } from "lucide-react";
+import {
+  Search, ChevronDown, ChevronRight, Folder, FolderOpen, Plus, FileText, PlusCircle,
+  Bold, Italic, Underline, Subscript, Superscript, AlignLeft, AlignCenter, AlignRight,
+  AlignJustify, RemoveFormatting, ImagePlus,
+} from "lucide-react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,6 +26,12 @@ import {
 } from "@/constants/questionRepositoryData";
 import { ITEM_TYPES, type SectionItem, type ItemType } from "@/constants/assessmentSectionData";
 import { toast } from "sonner";
+import MCQOptionsEditor from "@/components/question-repository/MCQOptionsEditor";
+import FillInBlankEditor from "@/components/question-repository/FillInBlankEditor";
+import MatchTheFollowingEditor from "@/components/question-repository/MatchTheFollowingEditor";
+import type { MatchPair } from "@/components/question-repository/MatchTheFollowingEditor";
+import ImageUploadEditor from "@/components/question-repository/ImageUploadEditor";
+import { cn } from "@/lib/utils";
 
 interface AddItemsModalProps {
   open: boolean;
