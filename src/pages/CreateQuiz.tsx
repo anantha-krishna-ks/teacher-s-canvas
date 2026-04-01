@@ -44,7 +44,7 @@ const CreateQuiz = () => {
 
   const subjects = useMemo(() => (grade ? SUBJECTS_BY_GRADE[grade] || [] : []), [grade]);
   const chapters = useMemo(() => (subject ? CHAPTERS_BY_SUBJECT[subject] || [] : []), [subject]);
-  const concepts = useMemo(() => (chapter ? CONCEPTS_BY_CHAPTER[chapter] || [] : []), [chapter]);
+  
 
   const handleGradeChange = useCallback((val: string) => {
     setGrade(val);
