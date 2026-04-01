@@ -71,10 +71,6 @@ const CreatePresentation = () => {
     () => (subject ? CHAPTERS_BY_SUBJECT[subject] || [] : []),
     [subject]
   );
-  const suggestedConcepts = useMemo(
-    () => (chapter ? CONCEPTS_BY_CHAPTER[chapter] || [] : []),
-    [chapter]
-  );
 
   const handleGradeChange = useCallback((val: string) => {
     setGrade(val);
