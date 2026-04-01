@@ -36,6 +36,7 @@ const CreateAssessment = () => {
   const [durationMin, setDurationMin] = useState("");
   const [instructions, setInstructions] = useState("");
   const [sections, setSections] = useState<Section[]>([createSection("A")]);
+  const [selectedLessonPlans, setSelectedLessonPlans] = useState<string[]>([]);
 
   const errors = attempted
     ? {
