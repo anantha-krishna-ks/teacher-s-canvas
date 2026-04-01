@@ -3,18 +3,12 @@ import UploadReferenceDocument, { type UploadedFile } from "@/components/UploadR
 import { useNavigate } from "react-router-dom";
 import {
   ChevronLeft,
-  Plus,
-  X,
-  Sparkles,
   BookOpen,
-  Layers,
   GraduationCap,
-  Check,
   Presentation,
   Download,
   Loader2,
   FileText,
-  Tag,
   ArrowLeft,
   CheckCircle2,
 } from "lucide-react";
@@ -46,7 +40,6 @@ import {
   GRADES,
   SUBJECTS_BY_GRADE,
   CHAPTERS_BY_SUBJECT,
-  CONCEPTS_BY_CHAPTER,
 } from "@/constants/lessonPlanData";
 
 const CreatePresentation = () => {
@@ -56,8 +49,6 @@ const CreatePresentation = () => {
   const [grade, setGrade] = useState("");
   const [subject, setSubject] = useState("");
   const [chapter, setChapter] = useState("");
-  const [conceptTags, setConceptTags] = useState<string[]>([]);
-  const [newConcept, setNewConcept] = useState("");
   const [selectedLessonPlans, setSelectedLessonPlans] = useState<string[]>([]);
   const [referenceFiles, setReferenceFiles] = useState<UploadedFile[]>([]);
   const [instructions, setInstructions] = useState("");
@@ -73,64 +64,24 @@ const CreatePresentation = () => {
     () => (subject ? CHAPTERS_BY_SUBJECT[subject] || [] : []),
     [subject]
   );
-  const suggestedConcepts = useMemo(
-    () => (chapter ? CONCEPTS_BY_CHAPTER[chapter] || [] : []),
-    [chapter]
-  );
 
   const handleGradeChange = useCallback((val: string) => {
     setGrade(val);
     setSubject("");
     setChapter("");
-    setConceptTags([]);
     setIsGenerated(false);
   }, []);
 
   const handleSubjectChange = useCallback((val: string) => {
     setSubject(val);
     setChapter("");
-    setConceptTags([]);
     setIsGenerated(false);
   }, []);
 
   const handleChapterChange = useCallback((val: string) => {
     setChapter(val);
-    setConceptTags([]);
     setIsGenerated(false);
   }, []);
-
-  const toggleConcept = useCallback((concept: string) => {
-    setConceptTags((prev) =>
-      prev.includes(concept)
-        ? prev.filter((c) => c !== concept)
-        : [...prev, concept]
-    );
-    setIsGenerated(false);
-  }, []);
-
-  const addCustomConcept = useCallback(() => {
-    const trimmed = newConcept.trim();
-    if (trimmed && !conceptTags.includes(trimmed)) {
-      setConceptTags((prev) => [...prev, trimmed]);
-      setNewConcept("");
-      setIsGenerated(false);
-    }
-  }, [newConcept, conceptTags]);
-
-  const removeConcept = useCallback((concept: string) => {
-    setConceptTags((prev) => prev.filter((c) => c !== concept));
-    setIsGenerated(false);
-  }, []);
-
-  const handleNewConceptKeyDown = useCallback(
-    (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === "Enter") {
-        e.preventDefault();
-        addCustomConcept();
-      }
-    },
-    [addCustomConcept]
-  );
 
   const handleCancel = useCallback(
     () => navigate("/dashboard/presentations"),
@@ -141,8 +92,7 @@ const CreatePresentation = () => {
     [navigate]
   );
 
-  const isFormValid =
-    grade && subject && chapter && conceptTags.length > 0;
+  const isFormValid = grade && subject && chapter;
 
   const handleGenerate = useCallback(() => {
     if (!isFormValid) return;
@@ -287,126 +237,7 @@ const CreatePresentation = () => {
         </div>
       </fieldset>
 
-      {/* Section 2: Concepts Tagging */}
-      <fieldset className="bg-card border border-border rounded-xl p-5 space-y-4">
-        <legend className="sr-only">Concepts Tagging</legend>
-        <div className="flex items-center gap-2 text-sm font-medium text-foreground">
-          <Layers className="w-4 h-4 text-primary" aria-hidden="true" />
-          Concepts Tagging
-        </div>
-
-        {!chapter ? (
-          <p className="text-sm text-muted-foreground italic">
-            Select a chapter to see available concepts
-          </p>
-        ) : (
-          <div className="space-y-4">
-            <Label>Concepts</Label>
-            {/* Available concepts */}
-            {suggestedConcepts.length > 0 && (
-              <div className="border border-primary/20 bg-primary/5 rounded-lg p-4">
-                <div className="flex items-center gap-2 mb-3 text-sm font-medium text-primary">
-                  <Sparkles className="w-4 h-4" aria-hidden="true" />
-                  Available Concepts:
-                </div>
-                <div
-                  className="flex flex-wrap gap-2"
-                  role="group"
-                  aria-label="Suggested concepts"
-                >
-                  {suggestedConcepts.map((concept) => {
-                    const isSelected = conceptTags.includes(concept);
-                    return (
-                      <motion.button
-                        key={concept}
-                        layout
-                        onClick={() => toggleConcept(concept)}
-                        aria-pressed={isSelected}
-                        className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium transition-colors ${
-                          isSelected
-                            ? "bg-primary/15 text-primary border border-primary/30"
-                            : "bg-background text-foreground/80 border border-border hover:border-primary/30 hover:text-primary"
-                        }`}
-                      >
-                        <span
-                          className={`w-4 h-4 rounded border flex items-center justify-center shrink-0 ${
-                            isSelected
-                              ? "bg-primary/70 border-primary/70"
-                              : "border-muted-foreground/40"
-                          }`}
-                          aria-hidden="true"
-                        >
-                          {isSelected && (
-                            <Check className="w-3 h-3 text-primary-foreground" />
-                          )}
-                        </span>
-                        {concept}
-                      </motion.button>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-
-            {/* Selected tags display */}
-            <AnimatePresence>
-              {conceptTags.filter((c) => !suggestedConcepts.includes(c))
-                .length > 0 && (
-                <div className="flex flex-wrap gap-2">
-                  {conceptTags
-                    .filter((c) => !suggestedConcepts.includes(c))
-                    .map((concept) => (
-                      <motion.button
-                        key={concept}
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.8 }}
-                        onClick={() => removeConcept(concept)}
-                        aria-label={`Remove concept: ${concept}`}
-                        className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium bg-primary/15 text-primary border border-primary/30 transition-colors"
-                      >
-                        <span
-                          className="w-4 h-4 rounded border bg-primary border-primary flex items-center justify-center shrink-0"
-                          aria-hidden="true"
-                        >
-                          <Check className="w-3 h-3 text-primary-foreground" />
-                        </span>
-                        {concept}
-                        <X
-                          className="w-3.5 h-3.5 ml-0.5 hover:text-destructive"
-                          aria-hidden="true"
-                        />
-                      </motion.button>
-                    ))}
-                </div>
-              )}
-            </AnimatePresence>
-
-            {/* Add custom concept */}
-            <div className="flex items-center gap-2">
-              <Input
-                placeholder="Add a custom concept tag..."
-                value={newConcept}
-                onChange={(e) => setNewConcept(e.target.value)}
-                onKeyDown={handleNewConceptKeyDown}
-                className="flex-1"
-                aria-label="Custom concept tag"
-              />
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={addCustomConcept}
-                disabled={!newConcept.trim()}
-              >
-                <Plus className="w-4 h-4 mr-1" aria-hidden="true" />
-                Add
-              </Button>
-            </div>
-          </div>
-        )}
-      </fieldset>
-
-      {/* Section 2b: Lesson Plans Tagging */}
+      {/* Section 2: Lesson Plans Tagging */}
       <LessonPlanTagging
         subject={subject}
         selectedIds={selectedLessonPlans}

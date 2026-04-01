@@ -2,8 +2,7 @@ import { useState, useMemo, useCallback } from "react";
 import UploadReferenceDocument, { type UploadedFile } from "@/components/UploadReferenceDocument";
 import LessonPlanTagging from "@/components/LessonPlanTagging";
 import { useNavigate } from "react-router-dom";
-import { ChevronLeft, Plus, X, Sparkles, GraduationCap, Layers, Check } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { ChevronLeft, Sparkles, GraduationCap, Layers } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -23,7 +22,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { NavLink } from "@/components/NavLink";
-import { GRADES, SUBJECTS_BY_GRADE, CHAPTERS_BY_SUBJECT, CONCEPTS_BY_CHAPTER } from "@/constants/lessonPlanData";
+import { GRADES, SUBJECTS_BY_GRADE, CHAPTERS_BY_SUBJECT } from "@/constants/lessonPlanData";
 
 const QUESTION_COUNT_OPTIONS = [
   { value: "5", label: "Create quiz with 5 questions" },
@@ -38,71 +37,40 @@ const CreateQuiz = () => {
   const [grade, setGrade] = useState("");
   const [subject, setSubject] = useState("");
   const [chapter, setChapter] = useState("");
-  const [selectedConcepts, setSelectedConcepts] = useState<string[]>([]);
-  const [newConcept, setNewConcept] = useState("");
   const [selectedLessonPlans, setSelectedLessonPlans] = useState<string[]>([]);
   const [referenceFiles, setReferenceFiles] = useState<UploadedFile[]>([]);
   const [questionCount, setQuestionCount] = useState("");
 
   const subjects = useMemo(() => (grade ? SUBJECTS_BY_GRADE[grade] || [] : []), [grade]);
   const chapters = useMemo(() => (subject ? CHAPTERS_BY_SUBJECT[subject] || [] : []), [subject]);
-  const concepts = useMemo(() => (chapter ? CONCEPTS_BY_CHAPTER[chapter] || [] : []), [chapter]);
+  
 
   const handleGradeChange = useCallback((val: string) => {
     setGrade(val);
     setSubject("");
     setChapter("");
-    setSelectedConcepts([]);
   }, []);
 
   const handleSubjectChange = useCallback((val: string) => {
     setSubject(val);
     setChapter("");
-    setSelectedConcepts([]);
   }, []);
 
   const handleChapterChange = useCallback((val: string) => {
     setChapter(val);
-    setSelectedConcepts([]);
   }, []);
 
-  const toggleConcept = useCallback((concept: string) => {
-    setSelectedConcepts((prev) =>
-      prev.includes(concept) ? prev.filter((c) => c !== concept) : [...prev, concept]
-    );
-  }, []);
-
-  const addCustomConcept = useCallback(() => {
-    const trimmed = newConcept.trim();
-    if (trimmed && !selectedConcepts.includes(trimmed)) {
-      setSelectedConcepts((prev) => [...prev, trimmed]);
-      setNewConcept("");
-    }
-  }, [newConcept, selectedConcepts]);
-
-  const removeConcept = useCallback((concept: string) => {
-    setSelectedConcepts((prev) => prev.filter((c) => c !== concept));
-  }, []);
-
-  const handleNewConceptKeyDown = useCallback(
-    (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === "Enter") addCustomConcept();
-    },
-    [addCustomConcept]
-  );
-
-  const isFormValid = quizName.trim() && grade && subject && selectedConcepts.length > 0 && questionCount;
+  const isFormValid = quizName.trim() && grade && subject && questionCount;
 
   const handleGenerate = useCallback(() => {
     const params = new URLSearchParams({
       name: quizName,
       grade,
       subject,
-      concepts: selectedConcepts.join("||"),
       count: questionCount,
     });
     navigate(`/dashboard/quizzes/preview?${params.toString()}`);
-  }, [navigate, quizName, grade, subject, selectedConcepts, questionCount]);
+  }, [navigate, quizName, grade, subject, questionCount]);
 
   const handleCancel = useCallback(() => navigate("/dashboard/quizzes"), [navigate]);
   const handleNavigateBack = useCallback(() => navigate("/dashboard/quizzes"), [navigate]);
@@ -220,89 +188,6 @@ const CreateQuiz = () => {
                 </SelectContent>
               </Select>
             </div>
-          </div>
-        </fieldset>
-
-        {/* Concepts */}
-        <fieldset className="bg-card border border-border rounded-xl p-6 space-y-6">
-          <legend className="sr-only">Concepts</legend>
-          <div className="flex items-center gap-2 text-sm font-medium text-foreground">
-            <Layers className="w-4 h-4 text-primary" />
-            Concepts
-          </div>
-          <div className="space-y-3">
-            {!chapter ? (
-              <p className="text-sm text-muted-foreground italic">Select a chapter to see available concepts</p>
-            ) : (
-              <div className="space-y-4">
-                <div className="border border-primary/20 bg-primary/5 rounded-lg p-4">
-                  <div className="flex items-center gap-2 mb-3 text-sm font-medium text-primary">
-                    <Sparkles className="w-4 h-4" />
-                    Available Concepts:
-                  </div>
-                  <div className="flex flex-wrap gap-2" role="group" aria-label="Available concepts">
-                    {concepts.map((concept) => {
-                      const isSelected = selectedConcepts.includes(concept);
-                      return (
-                        <motion.button
-                          key={concept}
-                          layout
-                          onClick={() => toggleConcept(concept)}
-                          aria-pressed={isSelected}
-                          className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium transition-colors ${
-                            isSelected
-                              ? "bg-primary/15 text-primary border border-primary/30"
-                              : "bg-background text-foreground/80 border border-border hover:border-primary/30 hover:text-primary"
-                          }`}
-                        >
-                          <span
-                            className={`w-4 h-4 rounded border flex items-center justify-center shrink-0 ${
-                              isSelected ? "bg-primary/70 border-primary/70" : "border-muted-foreground/40"
-                            }`}
-                          >
-                            {isSelected && <Check className="w-3 h-3 text-primary-foreground" />}
-                          </span>
-                          {concept}
-                        </motion.button>
-                      );
-                    })}
-                    <AnimatePresence>
-                      {selectedConcepts
-                        .filter((c) => !concepts.includes(c))
-                        .map((concept) => (
-                          <motion.button
-                            key={concept}
-                            initial={{ opacity: 0, scale: 0.8 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0, scale: 0.8 }}
-                            onClick={() => removeConcept(concept)}
-                            className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium bg-primary/15 text-primary border border-primary/30"
-                          >
-                            <span className="w-4 h-4 rounded border bg-primary border-primary flex items-center justify-center shrink-0">
-                              <Check className="w-3 h-3 text-primary-foreground" />
-                            </span>
-                            {concept}
-                            <X className="w-3.5 h-3.5 ml-0.5 hover:text-destructive" />
-                          </motion.button>
-                        ))}
-                    </AnimatePresence>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Input
-                    placeholder="Add a custom concept..."
-                    value={newConcept}
-                    onChange={(e) => setNewConcept(e.target.value)}
-                    onKeyDown={handleNewConceptKeyDown}
-                    className="flex-1"
-                  />
-                  <Button variant="outline" size="sm" onClick={addCustomConcept} disabled={!newConcept.trim()}>
-                    <Plus className="w-4 h-4 mr-1" />
-                    Add
-                  </Button>
-                </div>
-              </div>
-            )}
           </div>
         </fieldset>
 
