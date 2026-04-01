@@ -1,4 +1,5 @@
 import { useState, useMemo, useCallback } from "react";
+import UploadReferenceDocument, { type UploadedFile } from "@/components/UploadReferenceDocument";
 import { useNavigate } from "react-router-dom";
 import {
   ChevronLeft,
