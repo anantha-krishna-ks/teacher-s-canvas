@@ -306,6 +306,13 @@ const CreateQuiz = () => {
           </div>
         </fieldset>
 
+        {/* Lesson Plans Tagging */}
+        <LessonPlanTagging
+          subject={subject}
+          selectedIds={selectedLessonPlans}
+          onSelectionChange={setSelectedLessonPlans}
+        />
+
         {/* Upload Reference Document */}
         <UploadReferenceDocument files={referenceFiles} onFilesChange={setReferenceFiles} />
 

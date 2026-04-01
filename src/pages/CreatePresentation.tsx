@@ -41,6 +41,7 @@ import {
 import { NavLink } from "@/components/NavLink";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
+import LessonPlanTagging from "@/components/LessonPlanTagging";
 import {
   GRADES,
   SUBJECTS_BY_GRADE,

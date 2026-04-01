@@ -225,6 +225,13 @@ const CreateAssessment = () => {
               />
             </div>
 
+            {/* Lesson Plans Tagging */}
+            <LessonPlanTagging
+              subject={subject}
+              selectedIds={selectedLessonPlans}
+              onSelectionChange={setSelectedLessonPlans}
+            />
+
             {/* Next Button */}
             <div className="flex justify-end pt-2">
               <Button onClick={handleNext} className="px-8">
