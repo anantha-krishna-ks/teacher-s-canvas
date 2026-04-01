@@ -160,13 +160,41 @@ function flattenFolders(folders: RepositoryFolder[], depth = 0): { folder: Repos
   return result;
 }
 
-/* ── Create New Item Form ── */
+const TOOLBAR_BUTTONS = [
+  { icon: Bold, label: "Bold" },
+  { icon: Italic, label: "Italic" },
+  { icon: Underline, label: "Underline" },
+  { icon: Subscript, label: "Subscript" },
+  { icon: Superscript, label: "Superscript" },
+] as const;
+
+const ALIGN_BUTTONS = [
+  { icon: AlignLeft, label: "Align Left" },
+  { icon: AlignCenter, label: "Align Center" },
+  { icon: AlignRight, label: "Align Right" },
+  { icon: AlignJustify, label: "Justify" },
+] as const;
+
+const createDefaultPairs = (): MatchPair[] =>
+  Array.from({ length: 4 }, () => ({
+    id: crypto.randomUUID(),
+    left: "",
+    right: "",
+  }));
+
+/* ── Create New Item Form (QuestionEditorDialog-style) ── */
 const CreateNewItemForm = ({ onAddItem, activeFolderId, onSelectFolder }: { onAddItem: (item: SectionItem) => void; activeFolderId: string; onSelectFolder: (id: string) => void }) => {
   const [type, setType] = useState<ItemType>("Short Answer");
   const [question, setQuestion] = useState("");
-  const [score, setScore] = useState("1");
+  const [score, setScore] = useState("1.00");
   const [correctAnswer, setCorrectAnswer] = useState("");
-  const [options, setOptions] = useState(["", "", "", ""]);
+  const [answerText, setAnswerText] = useState("");
+  const [activeEditorTab, setActiveEditorTab] = useState<"question" | "answer" | "image">("question");
+  const [hasImage, setHasImage] = useState(false);
+  const [imageData, setImageData] = useState<string | null>(null);
+  const [includeWordBank, setIncludeWordBank] = useState(false);
+  const [matchPairs, setMatchPairs] = useState<MatchPair[]>(createDefaultPairs());
+  const [trueFalseAnswer, setTrueFalseAnswer] = useState<boolean | null>(null);
 
   const selectedFolderName = useMemo(() => {
     const find = (folders: RepositoryFolder[]): string | null => {
@@ -181,45 +209,180 @@ const CreateNewItemForm = ({ onAddItem, activeFolderId, onSelectFolder }: { onAd
 
   const resetForm = () => {
     setQuestion("");
-    setScore("1");
+    setScore("1.00");
     setCorrectAnswer("");
-    setOptions(["", "", "", ""]);
+    setAnswerText("");
+    setActiveEditorTab("question");
+    setHasImage(false);
+    setImageData(null);
+    setIncludeWordBank(false);
+    setMatchPairs(createDefaultPairs());
+    setTrueFalseAnswer(null);
   };
 
   const handleTypeChange = (val: string) => {
     setType(val as ItemType);
     setCorrectAnswer("");
-    setOptions(["", "", "", ""]);
+    setAnswerText("");
+    setActiveEditorTab("question");
+    setTrueFalseAnswer(null);
+    setMatchPairs(createDefaultPairs());
+    setIncludeWordBank(false);
   };
 
+  const handleImageChange = useCallback((newHasImage: boolean, newImageData: string | null) => {
+    setHasImage(newHasImage);
+    setImageData(newImageData);
+  }, []);
+
   const handleSubmit = () => {
-    if (!question.trim()) {
+    if (!question.trim() && type !== "Matching") {
       toast.error("Question text is required.");
       return;
     }
     const item: SectionItem = {
       id: crypto.randomUUID(),
       question: question.trim(),
-      score: Math.max(1, parseInt(score) || 1),
+      score: Math.max(0, parseFloat(score) || 1),
       type,
     };
     if (type === "Multiple Choice") {
-      const validOpts = options.map((o) => o.trim()).filter(Boolean);
-      if (validOpts.length < 2) {
-        toast.error("Add at least 2 options.");
-        return;
-      }
-      item.options = validOpts;
       if (correctAnswer) item.correctAnswer = correctAnswer;
     } else if (type === "True / False") {
-      if (correctAnswer) item.correctAnswer = correctAnswer;
-    } else if (correctAnswer.trim()) {
-      item.correctAnswer = correctAnswer.trim();
+      if (trueFalseAnswer !== null) item.correctAnswer = trueFalseAnswer ? "True" : "False";
+    } else if (type === "Fill in the Blank") {
+      if (correctAnswer.trim()) item.correctAnswer = correctAnswer.trim();
+    } else if (type === "Short Answer") {
+      if (answerText.trim()) item.correctAnswer = answerText.trim();
     }
     onAddItem(item);
     resetForm();
     toast.success(`Item created and saved to "${selectedFolderName}".`);
   };
+
+  /* Render question tab content based on type - mirrors QuestionEditorDialog */
+  const renderQuestionContent = () => {
+    if (type === "Fill in the Blank") {
+      return (
+        <FillInBlankEditor
+          value={question}
+          onChange={setQuestion}
+          includeWordBank={includeWordBank}
+          onWordBankChange={setIncludeWordBank}
+        />
+      );
+    }
+
+    if (type === "True / False") {
+      return (
+        <div className="space-y-5">
+          <Textarea
+            placeholder="Type your true/false statement here..."
+            value={question}
+            onChange={(e) => setQuestion(e.target.value)}
+            className="min-h-[100px] resize-y text-sm"
+          />
+          <div className="space-y-3">
+            <Label className="text-sm font-medium">Correct Answer</Label>
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() => setTrueFalseAnswer(true)}
+                className={cn(
+                  "relative flex items-center justify-center gap-2.5 rounded-xl border-2 py-4 text-sm font-semibold transition-all",
+                  trueFalseAnswer === true
+                    ? "border-emerald-500 bg-emerald-50 text-emerald-700 shadow-sm dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/60"
+                    : "border-border bg-background text-muted-foreground hover:border-emerald-300 hover:bg-emerald-50/50 dark:hover:bg-emerald-500/5"
+                )}
+              >
+                <span className={cn(
+                  "flex items-center justify-center w-5 h-5 rounded-full border-2 transition-all",
+                  trueFalseAnswer === true ? "border-emerald-500 bg-emerald-500" : "border-muted-foreground/30"
+                )}>
+                  {trueFalseAnswer === true && <span className="w-2 h-2 rounded-full bg-white" />}
+                </span>
+                True
+              </button>
+              <button
+                type="button"
+                onClick={() => setTrueFalseAnswer(false)}
+                className={cn(
+                  "relative flex items-center justify-center gap-2.5 rounded-xl border-2 py-4 text-sm font-semibold transition-all",
+                  trueFalseAnswer === false
+                    ? "border-red-500 bg-red-50 text-red-700 shadow-sm dark:bg-red-500/10 dark:text-red-400 dark:border-red-500/60"
+                    : "border-border bg-background text-muted-foreground hover:border-red-300 hover:bg-red-50/50 dark:hover:bg-red-500/5"
+                )}
+              >
+                <span className={cn(
+                  "flex items-center justify-center w-5 h-5 rounded-full border-2 transition-all",
+                  trueFalseAnswer === false ? "border-red-500 bg-red-500" : "border-muted-foreground/30"
+                )}>
+                  {trueFalseAnswer === false && <span className="w-2 h-2 rounded-full bg-white" />}
+                </span>
+                False
+              </button>
+            </div>
+            {trueFalseAnswer === null && (
+              <p className="text-xs text-muted-foreground">Select the correct answer above</p>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    if (type === "Matching") {
+      return (
+        <MatchTheFollowingEditor
+          pairs={matchPairs}
+          onChange={setMatchPairs}
+        />
+      );
+    }
+
+    // Short Answer & Multiple Choice
+    return (
+      <div className="space-y-3">
+        {/* Toolbar */}
+        <div className="flex items-center gap-0.5 flex-wrap">
+          {TOOLBAR_BUTTONS.map(({ icon: Icon, label: btnLabel }) => (
+            <Button key={btnLabel} type="button" variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground" aria-label={btnLabel}>
+              <Icon className="w-4 h-4" />
+            </Button>
+          ))}
+          <div className="w-px h-5 bg-border mx-1" />
+          {ALIGN_BUTTONS.map(({ icon: Icon, label: btnLabel }) => (
+            <Button key={btnLabel} type="button" variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground" aria-label={btnLabel}>
+              <Icon className="w-4 h-4" />
+            </Button>
+          ))}
+          <div className="w-px h-5 bg-border mx-1" />
+          <Button type="button" variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground" aria-label="Clear formatting">
+            <RemoveFormatting className="w-4 h-4" />
+          </Button>
+        </div>
+
+        <Textarea
+          placeholder="Type your question here..."
+          value={question}
+          onChange={(e) => setQuestion(e.target.value)}
+          className="min-h-[120px] resize-y text-sm"
+        />
+
+        {type === "Multiple Choice" && <MCQOptionsEditor />}
+      </div>
+    );
+  };
+
+  /* Tab label for the question tab */
+  const questionTabLabel = type === "Short Answer" ? "Short Answer"
+    : type === "Multiple Choice" ? "Multiple Choice"
+    : type === "True / False" ? "True / False"
+    : type === "Matching" ? "Match the Following"
+    : "Fill in the Blank";
+
+  /* Which tabs to show */
+  const showAnswerTab = type === "Short Answer" || type === "Multiple Choice" || type === "Matching";
+  const answerTabLabel = type === "Matching" ? "Question" : "Answer";
 
   return (
     <div className="flex-1 overflow-auto">
@@ -233,9 +396,9 @@ const CreateNewItemForm = ({ onAddItem, activeFolderId, onSelectFolder }: { onAd
           <span className="text-xs text-muted-foreground ml-1">— select a folder from the sidebar</span>
         </div>
 
-        {/* Type & Score row */}
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-2">
+        {/* Type & Marks row */}
+        <div className="flex items-end gap-4">
+          <div className="space-y-2 flex-1">
             <Label className="text-sm font-medium">Question Type</Label>
             <Select value={type} onValueChange={handleTypeChange}>
               <SelectTrigger className="h-10 text-sm">
@@ -248,96 +411,109 @@ const CreateNewItemForm = ({ onAddItem, activeFolderId, onSelectFolder }: { onAd
               </SelectContent>
             </Select>
           </div>
-          <div className="space-y-2">
-            <Label className="text-sm font-medium">Score</Label>
+          <div className="space-y-2 w-32">
+            <Label className="text-sm font-medium">Marks</Label>
             <Input
               type="number"
-              min={1}
+              min="0"
+              step="0.01"
               value={score}
-              onChange={(e) => setScore(e.target.value)}
+              onChange={(e) => {
+                const val = e.target.value;
+                if (/^\d*\.?\d{0,2}$/.test(val)) setScore(val);
+              }}
+              onBlur={() => {
+                const num = parseFloat(score);
+                setScore(!isNaN(num) ? num.toFixed(2) : "1.00");
+              }}
               className="h-10 text-sm"
+              placeholder="0.00"
             />
           </div>
         </div>
 
-        {/* Question */}
-        <div className="space-y-2">
-          <Label className="text-sm font-medium">Question Text</Label>
-          <Textarea
-            value={question}
-            onChange={(e) => setQuestion(e.target.value)}
-            placeholder="Enter your question here..."
-            className="min-h-[100px] text-sm"
-          />
+        {/* Editor Tabs - mirrors QuestionEditorDialog */}
+        <div className="flex items-center gap-1 border-b border-border">
+          <button
+            type="button"
+            className={cn(
+              "px-3 py-2 text-sm font-medium transition-colors border-b-2 -mb-px",
+              activeEditorTab === "question" ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground"
+            )}
+            onClick={() => setActiveEditorTab("question")}
+          >
+            {questionTabLabel}
+          </button>
+          {type === "Matching" && (
+            <button
+              type="button"
+              className={cn(
+                "px-3 py-2 text-sm font-medium transition-colors border-b-2 -mb-px",
+                activeEditorTab === "answer" ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground"
+              )}
+              onClick={() => setActiveEditorTab("answer")}
+            >
+              Question
+            </button>
+          )}
+          <button
+            type="button"
+            className={cn(
+              "px-3 py-2 text-sm font-medium transition-colors border-b-2 -mb-px flex items-center gap-1.5",
+              activeEditorTab === "image" ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground"
+            )}
+            onClick={() => setActiveEditorTab("image")}
+          >
+            <ImagePlus className="w-3.5 h-3.5" />
+            Image
+            {hasImage && <span className="w-2 h-2 rounded-full bg-primary" />}
+          </button>
+          {type !== "Fill in the Blank" && type !== "True / False" && type !== "Matching" && (
+            <button
+              type="button"
+              className={cn(
+                "px-3 py-2 text-sm font-medium transition-colors border-b-2 -mb-px",
+                activeEditorTab === "answer" ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground"
+              )}
+              onClick={() => setActiveEditorTab("answer")}
+            >
+              Answer
+            </button>
+          )}
         </div>
 
-        {/* MCQ Options */}
-        {type === "Multiple Choice" && (
-          <div className="space-y-3">
-            <Label className="text-sm font-medium">Options</Label>
-            <div className="grid grid-cols-2 gap-3">
-              {options.map((opt, i) => (
-                <div key={i} className="flex items-center gap-2">
-                  <span className="text-xs font-semibold text-muted-foreground w-5">{String.fromCharCode(65 + i)}.</span>
-                  <Input
-                    value={opt}
-                    onChange={(e) => {
-                      const next = [...options];
-                      next[i] = e.target.value;
-                      setOptions(next);
-                    }}
-                    placeholder={`Option ${String.fromCharCode(65 + i)}`}
-                    className="h-9 text-sm flex-1"
-                  />
-                </div>
-              ))}
-            </div>
-            <div className="space-y-2">
-              <Label className="text-xs font-medium text-muted-foreground">Correct Answer</Label>
-              <Select value={correctAnswer} onValueChange={setCorrectAnswer}>
-                <SelectTrigger className="h-9 text-sm w-48">
-                  <SelectValue placeholder="Select correct option" />
-                </SelectTrigger>
-                <SelectContent>
-                  {options.filter((o) => o.trim()).map((opt, i) => (
-                    <SelectItem key={i} value={opt}>{String.fromCharCode(65 + i)}. {opt}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-        )}
-
-        {/* True / False */}
-        {type === "True / False" && (
-          <div className="space-y-2">
-            <Label className="text-sm font-medium">Correct Answer</Label>
-            <Select value={correctAnswer} onValueChange={setCorrectAnswer}>
-              <SelectTrigger className="h-10 text-sm w-48">
-                <SelectValue placeholder="Select answer" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="True">True</SelectItem>
-                <SelectItem value="False">False</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        )}
-
-        {/* Fill in the Blank / Short Answer */}
-        {(type === "Fill in the Blank" || type === "Short Answer") && (
-          <div className="space-y-2">
-            <Label className="text-sm font-medium">
-              {type === "Fill in the Blank" ? "Expected Answer" : "Model Answer"}
-            </Label>
-            <Input
-              value={correctAnswer}
-              onChange={(e) => setCorrectAnswer(e.target.value)}
-              placeholder={type === "Fill in the Blank" ? "The correct word or phrase" : "A sample answer..."}
-              className="h-10 text-sm"
+        {/* Tab Content */}
+        <div className="min-h-[200px]">
+          {activeEditorTab === "image" ? (
+            <ImageUploadEditor
+              initialImage={imageData}
+              onImageChange={handleImageChange}
             />
-          </div>
-        )}
+          ) : activeEditorTab === "answer" ? (
+            type === "Matching" ? (
+              <div className="space-y-3">
+                <Textarea
+                  placeholder="Type your question or instructions here..."
+                  value={question}
+                  onChange={(e) => setQuestion(e.target.value)}
+                  className="min-h-[140px] resize-y text-sm"
+                />
+              </div>
+            ) : (
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Answer</Label>
+                <Textarea
+                  placeholder="Type the answer here..."
+                  value={answerText}
+                  onChange={(e) => setAnswerText(e.target.value)}
+                  className="min-h-[180px] resize-y text-sm"
+                />
+              </div>
+            )
+          ) : (
+            renderQuestionContent()
+          )}
+        </div>
 
         {/* Submit */}
         <div className="pt-2">
