@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { ChevronLeft, Plus, X, Sparkles, BookOpen, Layers, FileText, GraduationCap, Check } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import GeneratedLessonPlan from "@/components/GeneratedLessonPlan";
+import UploadReferenceDocument, { type UploadedFile } from "@/components/UploadReferenceDocument";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -42,6 +43,7 @@ const CreateLessonPlan = () => {
   const [durationMin, setDurationMin] = useState("");
   const [periods, setPeriods] = useState("");
   const [instructions, setInstructions] = useState("");
+  const [referenceFiles, setReferenceFiles] = useState<UploadedFile[]>([]);
   const [currentStep, setCurrentStep] = useState(0);
 
   const subjects = useMemo(() => (grade ? SUBJECTS_BY_GRADE[grade] || [] : []), [grade]);
@@ -387,7 +389,10 @@ const CreateLessonPlan = () => {
             </div>
           </fieldset>
 
-          {/* Row 3: Additional Instructions */}
+          {/* Row 3: Upload Reference Document */}
+          <UploadReferenceDocument files={referenceFiles} onFilesChange={setReferenceFiles} />
+
+          {/* Row 4: Additional Instructions */}
           <fieldset className="bg-card border border-border rounded-xl p-6 space-y-4">
             <legend className="sr-only">Additional Instructions</legend>
             <div className="flex items-center gap-2 text-sm font-medium text-foreground">

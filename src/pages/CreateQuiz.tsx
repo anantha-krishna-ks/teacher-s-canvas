@@ -1,4 +1,5 @@
 import { useState, useMemo, useCallback } from "react";
+import UploadReferenceDocument, { type UploadedFile } from "@/components/UploadReferenceDocument";
 import { useNavigate } from "react-router-dom";
 import { ChevronLeft, Plus, X, Sparkles, GraduationCap, Layers, Check } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -38,6 +39,7 @@ const CreateQuiz = () => {
   const [chapter, setChapter] = useState("");
   const [selectedConcepts, setSelectedConcepts] = useState<string[]>([]);
   const [newConcept, setNewConcept] = useState("");
+  const [referenceFiles, setReferenceFiles] = useState<UploadedFile[]>([]);
   const [questionCount, setQuestionCount] = useState("");
 
   const subjects = useMemo(() => (grade ? SUBJECTS_BY_GRADE[grade] || [] : []), [grade]);
@@ -301,6 +303,9 @@ const CreateQuiz = () => {
             )}
           </div>
         </fieldset>
+
+        {/* Upload Reference Document */}
+        <UploadReferenceDocument files={referenceFiles} onFilesChange={setReferenceFiles} />
 
         {/* Actions */}
         <div className="flex items-center justify-between pt-2">

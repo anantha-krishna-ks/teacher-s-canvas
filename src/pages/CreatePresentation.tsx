@@ -1,4 +1,5 @@
 import { useState, useMemo, useCallback } from "react";
+import UploadReferenceDocument, { type UploadedFile } from "@/components/UploadReferenceDocument";
 import { useNavigate } from "react-router-dom";
 import {
   ChevronLeft,
@@ -56,6 +57,7 @@ const CreatePresentation = () => {
   const [chapter, setChapter] = useState("");
   const [conceptTags, setConceptTags] = useState<string[]>([]);
   const [newConcept, setNewConcept] = useState("");
+  const [referenceFiles, setReferenceFiles] = useState<UploadedFile[]>([]);
   const [instructions, setInstructions] = useState("");
   const [generateAiImages, setGenerateAiImages] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -401,6 +403,9 @@ const CreatePresentation = () => {
           </div>
         )}
       </fieldset>
+
+      {/* Upload Reference Document */}
+      <UploadReferenceDocument files={referenceFiles} onFilesChange={setReferenceFiles} />
 
       {/* Section 3: Additional Settings */}
       <fieldset className="bg-card border border-border rounded-xl p-5 space-y-4">
