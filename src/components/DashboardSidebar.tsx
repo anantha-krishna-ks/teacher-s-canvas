@@ -73,6 +73,7 @@ const navItems: NavItem[] = [
 interface DashboardSidebarProps {
   collapsed: boolean;
   onToggle: () => void;
+  mobile?: boolean;
 }
 
 const DashboardSidebar = ({ collapsed, onToggle }: DashboardSidebarProps) => {
