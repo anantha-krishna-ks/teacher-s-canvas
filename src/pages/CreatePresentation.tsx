@@ -227,13 +227,13 @@ const CreatePresentation = () => {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="chapter">Chapter</Label>
+            <Label htmlFor="chapter">Chapter <span className="text-destructive">*</span></Label>
             <Select
               value={chapter}
               onValueChange={handleChapterChange}
               disabled={!subject}
             >
-              <SelectTrigger id="chapter">
+              <SelectTrigger id="chapter" className={errors.chapter ? "border-destructive" : ""}>
                 <SelectValue
                   placeholder={
                     subject ? "Select chapter" : "Select subject first"
@@ -248,6 +248,7 @@ const CreatePresentation = () => {
                 ))}
               </SelectContent>
             </Select>
+            {errors.chapter && <p className="text-xs text-destructive">{errors.chapter}</p>}
           </div>
         </div>
       </fieldset>
