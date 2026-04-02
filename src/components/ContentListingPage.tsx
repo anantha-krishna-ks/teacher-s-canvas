@@ -166,7 +166,7 @@ const ContentListingPage = ({
 
           {showChapterFilter && chapters.length > 0 && (
             <Select value={chapterFilter} onValueChange={setChapterFilter}>
-              <SelectTrigger className="w-[200px] h-9 text-sm">
+              <SelectTrigger className="w-[200px] h-9 text-sm bg-white">
                 <SelectValue placeholder="All Chapters" />
               </SelectTrigger>
               <SelectContent>
