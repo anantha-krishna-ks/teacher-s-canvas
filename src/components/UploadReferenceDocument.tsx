@@ -115,7 +115,7 @@ const UploadReferenceDocument = ({ files, onFilesChange }: UploadReferenceDocume
   const handleBrowseClick = useCallback(() => inputRef.current?.click(), []);
 
   return (
-    <fieldset className="bg-card border border-border rounded-xl p-6 space-y-4">
+    <fieldset className="bg-card border border-border rounded-xl px-6 pb-6 pt-4 space-y-4">
       <legend className="sr-only">Upload Reference Document</legend>
       <div className="flex items-center gap-2 text-sm font-medium text-foreground">
         <Upload className="w-4 h-4 text-primary" aria-hidden="true" />
