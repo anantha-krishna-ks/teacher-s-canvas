@@ -148,6 +148,30 @@ const ViewQuiz = () => {
           </div>
         ))}
       </div>
+
+      {/* Bottom actions */}
+      <div className="flex items-center justify-center gap-3 mt-8 pb-4">
+        <Button
+          variant="outline"
+          className="gap-2"
+          onClick={() =>
+            navigate(
+              `/dashboard/classroom-resources/display-quiz?name=${encodeURIComponent(chapter)}&grade=${encodeURIComponent(grade)}&subject=${encodeURIComponent(subject)}&count=5`
+            )
+          }
+        >
+          <Eye className="w-4 h-4" />
+          Display
+        </Button>
+        <Button
+          variant="outline"
+          className="gap-2"
+          onClick={() => toast.success("Quiz exported successfully")}
+        >
+          <Download className="w-4 h-4" />
+          Export
+        </Button>
+      </div>
     </div>
   );
 };
