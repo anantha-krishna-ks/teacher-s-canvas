@@ -54,7 +54,7 @@ const DashboardLayout = () => {
             mobileOpen ? "translate-x-0" : "-translate-x-full pointer-events-none"
           )}
         >
-          <DashboardSidebar collapsed={false} onToggle={handleCloseMobileMenu} />
+          <DashboardSidebar collapsed={false} onToggle={handleCloseMobileMenu} mobile />
         </div>
 
         {/* Main content */}
