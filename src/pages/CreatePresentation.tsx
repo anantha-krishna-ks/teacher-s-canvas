@@ -72,6 +72,7 @@ const CreatePresentation = () => {
     setSubject("");
     setChapter("");
     setIsGenerated(false);
+    setErrors(prev => { const { grade, ...rest } = prev; return rest; });
   }, []);
 
   const handleSubjectChange = useCallback((val: string) => {
