@@ -187,9 +187,9 @@ const CreatePresentation = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="space-y-2">
-            <Label htmlFor="grade">Class</Label>
+            <Label htmlFor="grade">Class <span className="text-destructive">*</span></Label>
             <Select value={grade} onValueChange={handleGradeChange}>
-              <SelectTrigger id="grade">
+              <SelectTrigger id="grade" className={errors.grade ? "border-destructive" : ""}>
                 <SelectValue placeholder="Select class" />
               </SelectTrigger>
               <SelectContent>
@@ -200,6 +200,7 @@ const CreatePresentation = () => {
                 ))}
               </SelectContent>
             </Select>
+            {errors.grade && <p className="text-xs text-destructive">{errors.grade}</p>}
           </div>
 
           <div className="space-y-2">
