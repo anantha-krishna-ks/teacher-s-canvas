@@ -189,7 +189,7 @@ const ContentListingPage = ({
       {/* Sections */}
       <div className="space-y-8">
         {filteredRecommended && filteredRecommended.length > 0 && (
-          <div className="bg-card border border-border rounded-xl p-5">
+          <div className="bg-card border border-border rounded-xl p-5 shadow-[0_2px_12px_-4px_rgba(0,0,0,0.08)]">
             <ScrollableSection title={recommendedTitle} accentColor="hsl(212, 100%, 44%)" plans={filteredRecommended} count={filteredRecommended.length} />
           </div>
         )}
