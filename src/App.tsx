@@ -27,6 +27,7 @@ const CreateAssessment = lazy(() => import("./pages/CreateAssessment"));
 const ClassroomResources = lazy(() => import("./pages/ClassroomResources"));
 const ViewLessonPlan = lazy(() => import("./pages/ViewLessonPlan"));
 const ViewPresentation = lazy(() => import("./pages/ViewPresentation"));
+const ViewQuiz = lazy(() => import("./pages/ViewQuiz"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
