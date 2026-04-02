@@ -100,7 +100,15 @@ const CreatePresentation = () => {
   const isFormValid = grade && subject && chapter;
 
   const handleGenerate = useCallback(() => {
-    if (!isFormValid) return;
+    const newErrors: Record<string, string> = {};
+    if (!grade) newErrors.grade = "Class is required";
+    if (!subject) newErrors.subject = "Subject is required";
+    if (!chapter) newErrors.chapter = "Chapter is required";
+    setErrors(newErrors);
+    if (Object.keys(newErrors).length > 0) {
+      sonnerToast.error("Please fill all mandatory fields");
+      return;
+    }
     setIsGenerating(true);
     // Simulate PPT generation
     setTimeout(() => {
