@@ -136,7 +136,7 @@ const ContentListingPage = ({
       {showFilters && (
         <div className="flex items-center gap-3 flex-wrap">
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Filter className="w-4 h-4" aria-hidden="true" />
+            <SlidersHorizontal className="w-4 h-4" aria-hidden="true" />
             <span className="font-medium">Filters</span>
           </div>
 
