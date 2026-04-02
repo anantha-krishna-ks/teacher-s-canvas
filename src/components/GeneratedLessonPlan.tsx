@@ -16,6 +16,7 @@ import {
   Presentation,
   FileSpreadsheet,
   Video,
+  Image,
   ExternalLink,
   Check,
   X,
@@ -54,6 +55,7 @@ const RESOURCE_ICON_MAP = {
   ppt: { icon: Presentation, color: "text-orange-600 dark:text-orange-400", bg: "bg-orange-500/10" },
   worksheet: { icon: FileSpreadsheet, color: "text-emerald-600 dark:text-emerald-400", bg: "bg-emerald-500/10" },
   video: { icon: Video, color: "text-blue-600 dark:text-blue-400", bg: "bg-blue-500/10" },
+  image: { icon: Image, color: "text-purple-600 dark:text-purple-400", bg: "bg-purple-500/10" },
 } as const;
 
 const PROCEDURE_STEPS = [
