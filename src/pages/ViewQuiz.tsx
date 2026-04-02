@@ -1,10 +1,11 @@
 import { useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
-  ChevronLeft, BookOpen, CheckCircle2, BookOpenText, LayoutList,
+  ChevronLeft, BookOpen, CheckCircle2, BookOpenText, LayoutList, Eye, Download,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { toast } from "sonner";
 import { generateMockQuiz, type QuizQuestionItem } from "@/utils/generateMockQuiz";
 
 const difficultyColor: Record<string, string> = {
