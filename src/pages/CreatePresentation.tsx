@@ -56,6 +56,7 @@ const CreatePresentation = () => {
   const [generateAiImages, setGenerateAiImages] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [isGenerated, setIsGenerated] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const subjects = useMemo(
     () => (grade ? SUBJECTS_BY_GRADE[grade] || [] : []),
