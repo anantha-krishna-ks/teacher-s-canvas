@@ -310,9 +310,9 @@ const CreateLessonPlan = () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="chapter">Chapter</Label>
-              <Select value={chapter} onValueChange={handleChapterChange} disabled={!subject}>
-                <SelectTrigger id="chapter">
+              <Label htmlFor="chapter">Chapter <span className="text-destructive">*</span></Label>
+              <Select value={chapter} onValueChange={(v) => { handleChapterChange(v); setErrors(prev => { const { chapter, ...rest } = prev; return rest; }); }} disabled={!subject}>
+                <SelectTrigger id="chapter" className={errors.chapter ? "border-destructive" : ""}>
                   <SelectValue placeholder={subject ? "Select chapter" : "Select subject first"} />
                 </SelectTrigger>
                 <SelectContent>
@@ -321,6 +321,7 @@ const CreateLessonPlan = () => {
                   ))}
                 </SelectContent>
               </Select>
+              {errors.chapter && <p className="text-xs text-destructive">{errors.chapter}</p>}
             </div>
 
             <div className="space-y-3">
