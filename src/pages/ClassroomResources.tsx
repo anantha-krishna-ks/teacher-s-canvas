@@ -186,7 +186,7 @@ const ClassroomResources = () => {
                     {/* View button pinned to bottom */}
                     <div className="mt-auto">
                       <Button
-                        variant={pod.status === "Ready" ? "default" : "outline"}
+                        variant={pod.status === "Not Created" ? "outline" : "default"}
                         size="sm"
                         className="h-8 text-xs w-full gap-1.5"
                         disabled={pod.status === "Not Created"}
