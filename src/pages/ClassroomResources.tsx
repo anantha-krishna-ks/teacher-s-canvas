@@ -95,14 +95,20 @@ const ClassroomResources = () => {
       </div>
 
       {/* Info banner */}
-      <div className="flex items-start gap-3 rounded-xl border border-primary/20 bg-primary/5 px-4 py-3.5 shadow-[0_2px_12px_-4px_rgba(0,0,0,0.08)]">
-        <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10">
-          <Info className="h-4 w-4 text-primary" />
+      <div className="relative overflow-hidden rounded-xl border border-primary/15 bg-gradient-to-r from-primary/[0.06] to-primary/[0.02] px-4 py-3">
+        <div className="flex items-center gap-3">
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10">
+            <Info className="h-4 w-4 text-primary" />
+          </div>
+          <div>
+            <p className="text-[13px] font-medium text-foreground/90 leading-snug">
+              Display resources during your classroom sessions
+            </p>
+            <p className="text-[12px] text-muted-foreground mt-0.5">
+              Select a class, subject, and chapter below to view available resources.
+            </p>
+          </div>
         </div>
-        <p className="text-[13px] leading-relaxed text-foreground/80">
-          This section allows you to display the respective resources in the class during the lesson
-          in progress. Select a class, subject, and chapter to view available resources.
-        </p>
       </div>
 
       {/* Filter dropdowns */}
