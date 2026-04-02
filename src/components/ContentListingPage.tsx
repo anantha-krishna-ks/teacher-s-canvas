@@ -3,7 +3,7 @@
 
 import { useCallback, useMemo, useState } from "react";
 import { cn } from "@/lib/utils";
-import { Plus, ChevronLeft, Filter } from "lucide-react";
+import { Plus, ChevronLeft, SlidersHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useNavigate } from "react-router-dom";
@@ -136,12 +136,12 @@ const ContentListingPage = ({
       {showFilters && (
         <div className="flex items-center gap-3 flex-wrap">
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Filter className="w-4 h-4" aria-hidden="true" />
+            <SlidersHorizontal className="w-4 h-4" aria-hidden="true" />
             <span className="font-medium">Filters</span>
           </div>
 
           <Select value={gradeFilter} onValueChange={setGradeFilter}>
-            <SelectTrigger className="w-[140px] h-9 text-sm">
+            <SelectTrigger className="w-[140px] h-9 text-sm bg-white">
               <SelectValue placeholder="All Grades" />
             </SelectTrigger>
             <SelectContent>
@@ -153,7 +153,7 @@ const ContentListingPage = ({
           </Select>
 
           <Select value={subjectFilter} onValueChange={setSubjectFilter}>
-            <SelectTrigger className="w-[170px] h-9 text-sm">
+            <SelectTrigger className="w-[170px] h-9 text-sm bg-white">
               <SelectValue placeholder="All Subjects" />
             </SelectTrigger>
             <SelectContent>
@@ -166,7 +166,7 @@ const ContentListingPage = ({
 
           {showChapterFilter && chapters.length > 0 && (
             <Select value={chapterFilter} onValueChange={setChapterFilter}>
-              <SelectTrigger className="w-[200px] h-9 text-sm">
+              <SelectTrigger className="w-[200px] h-9 text-sm bg-white">
                 <SelectValue placeholder="All Chapters" />
               </SelectTrigger>
               <SelectContent>
