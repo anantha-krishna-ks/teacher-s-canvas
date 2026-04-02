@@ -31,7 +31,7 @@ const DashboardLayout = () => {
       {/* Mobile backdrop overlay */}
       <div
         className={cn(
-          "fixed inset-0 bg-foreground/30 backdrop-blur-sm z-25 lg:hidden transition-opacity duration-300",
+          "fixed inset-0 bg-foreground/30 backdrop-blur-sm z-[25] lg:hidden transition-opacity duration-300",
           mobileOpen ? "opacity-100" : "opacity-0 pointer-events-none"
         )}
         onClick={handleCloseMobileMenu}
