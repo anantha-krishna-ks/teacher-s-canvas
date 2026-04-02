@@ -49,8 +49,8 @@ const DashboardLayout = () => {
         {/* Mobile sidebar */}
         <div
           className={cn(
-            "lg:hidden fixed left-0 top-16 z-30 transition-transform duration-300 overflow-hidden",
-            mobileOpen ? "translate-x-0" : "-translate-x-full"
+            "lg:hidden fixed left-0 top-16 z-30 transition-transform duration-300",
+            mobileOpen ? "translate-x-0" : "-translate-x-full pointer-events-none"
           )}
         >
           <DashboardSidebar collapsed={false} onToggle={handleCloseMobileMenu} />

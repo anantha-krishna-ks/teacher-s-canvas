@@ -99,7 +99,7 @@ const DashboardSidebar = ({ collapsed, onToggle }: DashboardSidebarProps) => {
       {/* Collapse toggle - floating on the edge */}
       <button
         onClick={onToggle}
-        className="absolute -right-3.5 top-5 z-40 flex h-7 w-7 items-center justify-center rounded-full border border-sidebar-border bg-card text-muted-foreground shadow-md hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-200"
+        className="hidden lg:flex absolute -right-3.5 top-5 z-40 h-7 w-7 items-center justify-center rounded-full border border-sidebar-border bg-card text-muted-foreground shadow-md hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-200"
       >
         {collapsed ? (
           <ChevronRight className="w-4 h-4" />
