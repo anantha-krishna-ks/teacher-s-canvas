@@ -141,7 +141,7 @@ const ContentListingPage = ({
           </div>
 
           <Select value={gradeFilter} onValueChange={setGradeFilter}>
-            <SelectTrigger className="w-[140px] h-9 text-sm">
+            <SelectTrigger className="w-[140px] h-9 text-sm bg-white">
               <SelectValue placeholder="All Grades" />
             </SelectTrigger>
             <SelectContent>
