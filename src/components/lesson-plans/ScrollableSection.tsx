@@ -7,7 +7,8 @@ import type { LessonPlanCard } from "@/constants/lessonPlansPageData";
 
 interface ScrollableSectionProps {
   title: string;
-  icon: React.ElementType;
+  icon?: React.ElementType;
+  accentColor?: string;
   plans: LessonPlanCard[];
   count: number;
 }
