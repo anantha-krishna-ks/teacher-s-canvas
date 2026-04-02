@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { Info, BookOpen, Eye, ArrowRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -47,7 +48,7 @@ const generateStatuses = (grade: string, subject: string, chapter: string): Reso
   const hash = (grade + subject + chapter).length;
   const statuses: ResourceStatus[] = ["Ready", "In-Progress", "Not Created"];
   return [
-    { label: "Lesson Plan", previewType: "lesson", status: statuses[hash % 3] },
+    { label: "Lesson Plan", previewType: "lesson", status: "Ready" as ResourceStatus },
     { label: "Presentation", previewType: "presentation", status: "Ready" as ResourceStatus },
     { label: "Worksheet", previewType: "worksheet", status: "Not Created" as ResourceStatus },
     { label: "Quizzes", previewType: "quiz", status: statuses[(hash + 3) % 3] },
@@ -59,6 +60,7 @@ const ClassroomResources = () => {
   const [grade, setGrade] = useState("");
   const [subject, setSubject] = useState("");
   const [chapter, setChapter] = useState("");
+  const navigate = useNavigate();
 
   const subjects = useMemo(() => (grade ? SUBJECTS_BY_GRADE[grade] || [] : []), [grade]);
   const chapters = useMemo(() => (subject ? CHAPTERS_BY_SUBJECT[subject] || [] : []), [subject]);
@@ -190,6 +192,13 @@ const ClassroomResources = () => {
                         size="sm"
                         className="h-8 text-xs w-full gap-1.5"
                         disabled={pod.status === "Not Created"}
+                        onClick={() => {
+                          if (pod.label === "Lesson Plan" && pod.status !== "Not Created") {
+                            navigate("/dashboard/classroom-resources/view-lesson-plan", {
+                              state: { grade, subject, chapter },
+                            });
+                          }
+                        }}
                       >
                         <Eye className="h-3.5 w-3.5" />
                         {pod.status === "Not Created" ? "Not Available" : "View"}
