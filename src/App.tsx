@@ -27,6 +27,7 @@ const CreateAssessment = lazy(() => import("./pages/CreateAssessment"));
 const ClassroomResources = lazy(() => import("./pages/ClassroomResources"));
 const ViewLessonPlan = lazy(() => import("./pages/ViewLessonPlan"));
 const ViewPresentation = lazy(() => import("./pages/ViewPresentation"));
+const ViewQuiz = lazy(() => import("./pages/ViewQuiz"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
@@ -60,6 +61,7 @@ const App = () => (
               <Route path="classroom-resources" element={<ClassroomResources />} />
               <Route path="classroom-resources/view-lesson-plan" element={<ViewLessonPlan />} />
               <Route path="classroom-resources/view-presentation" element={<ViewPresentation />} />
+              <Route path="classroom-resources/view-quiz" element={<ViewQuiz />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>

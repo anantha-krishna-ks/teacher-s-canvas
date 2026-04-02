@@ -51,7 +51,7 @@ const generateStatuses = (grade: string, subject: string, chapter: string): Reso
     { label: "Lesson Plan", previewType: "lesson", status: "Ready" as ResourceStatus },
     { label: "Presentation", previewType: "presentation", status: "Ready" as ResourceStatus },
     { label: "Worksheet", previewType: "worksheet", status: "Not Created" as ResourceStatus },
-    { label: "Quizzes", previewType: "quiz", status: statuses[(hash + 3) % 3] },
+    { label: "Quizzes", previewType: "quiz", status: "Ready" as ResourceStatus },
     { label: "Assessment", previewType: "assessment", status: "Not Created" as ResourceStatus },
   ];
 };
@@ -200,6 +200,10 @@ const ClassroomResources = () => {
                             });
                           } else if (pod.label === "Presentation") {
                             navigate("/dashboard/classroom-resources/view-presentation", {
+                              state: { grade, subject, chapter },
+                            });
+                          } else if (pod.label === "Quizzes") {
+                            navigate("/dashboard/classroom-resources/view-quiz", {
                               state: { grade, subject, chapter },
                             });
                           }
