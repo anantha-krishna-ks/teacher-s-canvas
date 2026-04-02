@@ -393,7 +393,7 @@ const CreateLessonPlan = () => {
           <UploadReferenceDocument files={referenceFiles} onFilesChange={setReferenceFiles} />
 
           {/* Row 4: Additional Instructions */}
-          <fieldset className="bg-card border border-border rounded-xl px-5 pb-4 pt-3 space-y-3">
+          <fieldset className="bg-card border border-border rounded-xl px-5 pb-4 pt-3 space-y-3 shadow-[0_2px_12px_-4px_rgba(0,0,0,0.08)]">
             <legend className="sr-only">Additional Instructions</legend>
             <div className="flex items-center gap-2 text-sm font-medium text-foreground">
               <BookOpen className="w-4 h-4 text-primary" aria-hidden="true" />
