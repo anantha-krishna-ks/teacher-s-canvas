@@ -153,7 +153,7 @@ const ContentListingPage = ({
           </Select>
 
           <Select value={subjectFilter} onValueChange={setSubjectFilter}>
-            <SelectTrigger className="w-[170px] h-9 text-sm">
+            <SelectTrigger className="w-[170px] h-9 text-sm bg-white">
               <SelectValue placeholder="All Subjects" />
             </SelectTrigger>
             <SelectContent>
