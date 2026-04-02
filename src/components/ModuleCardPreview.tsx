@@ -256,7 +256,7 @@ interface ModuleCardPreviewProps {
 const ModuleCardPreview: React.FC<ModuleCardPreviewProps> = ({ type }) => {
   const Preview = previewMap[type];
   return (
-    <div className="w-full h-32 overflow-hidden relative group">
+    <div className="w-full h-28 sm:h-32 overflow-hidden relative group">
       <Preview />
       <div className="absolute inset-0 bg-gradient-to-t from-white via-white/40 to-transparent opacity-60 pointer-events-none" />
     </div>
