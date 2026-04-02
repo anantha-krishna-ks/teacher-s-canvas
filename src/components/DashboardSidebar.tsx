@@ -73,9 +73,10 @@ const navItems: NavItem[] = [
 interface DashboardSidebarProps {
   collapsed: boolean;
   onToggle: () => void;
+  mobile?: boolean;
 }
 
-const DashboardSidebar = ({ collapsed, onToggle }: DashboardSidebarProps) => {
+const DashboardSidebar = ({ collapsed, onToggle, mobile }: DashboardSidebarProps) => {
   const location = useLocation();
   const [expandedGroups, setExpandedGroups] = useState<string[]>(["Plan", "Create"]);
 
@@ -92,8 +93,9 @@ const DashboardSidebar = ({ collapsed, onToggle }: DashboardSidebarProps) => {
   return (
     <aside
       className={cn(
-        "fixed left-0 top-16 h-[calc(100vh-4rem)] bg-sidebar border-r border-sidebar-border z-30 flex flex-col transition-all duration-300",
-        collapsed ? "w-16" : "w-60"
+        "h-[calc(100vh-4rem)] bg-sidebar border-r border-sidebar-border z-30 flex flex-col transition-all duration-300",
+        mobile ? "relative w-60" : "fixed left-0 top-16",
+        !mobile && (collapsed ? "w-16" : "w-60")
       )}
     >
       {/* Collapse toggle - floating on the edge */}
