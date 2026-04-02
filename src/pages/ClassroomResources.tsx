@@ -202,6 +202,10 @@ const ClassroomResources = () => {
                             navigate("/dashboard/classroom-resources/view-presentation", {
                               state: { grade, subject, chapter },
                             });
+                          } else if (pod.label === "Quizzes") {
+                            navigate("/dashboard/classroom-resources/view-quiz", {
+                              state: { grade, subject, chapter },
+                            });
                           }
                         }}
                       >
