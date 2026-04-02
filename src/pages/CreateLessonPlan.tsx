@@ -71,9 +71,11 @@ const CreateLessonPlan = () => {
   }, []);
 
   const toggleConcept = useCallback((concept: string) => {
-    setSelectedConcepts((prev) =>
-      prev.includes(concept) ? prev.filter((c) => c !== concept) : [...prev, concept]
-    );
+    setSelectedConcepts((prev) => {
+      const updated = prev.includes(concept) ? prev.filter((c) => c !== concept) : [...prev, concept];
+      if (updated.length > 0) setErrors(prev => { const { concepts, ...rest } = prev; return rest; });
+      return updated;
+    });
   }, []);
 
   const addCustomConcept = useCallback(() => {
