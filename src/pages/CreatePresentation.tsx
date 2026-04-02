@@ -1,4 +1,5 @@
 import { useState, useMemo, useCallback } from "react";
+import { toast as sonnerToast } from "sonner";
 import UploadReferenceDocument, { type UploadedFile } from "@/components/UploadReferenceDocument";
 import { useNavigate } from "react-router-dom";
 import {
@@ -55,6 +56,7 @@ const CreatePresentation = () => {
   const [generateAiImages, setGenerateAiImages] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [isGenerated, setIsGenerated] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const subjects = useMemo(
     () => (grade ? SUBJECTS_BY_GRADE[grade] || [] : []),
@@ -70,17 +72,20 @@ const CreatePresentation = () => {
     setSubject("");
     setChapter("");
     setIsGenerated(false);
+    setErrors(prev => { const { grade, ...rest } = prev; return rest; });
   }, []);
 
   const handleSubjectChange = useCallback((val: string) => {
     setSubject(val);
     setChapter("");
     setIsGenerated(false);
+    setErrors(prev => { const { subject, ...rest } = prev; return rest; });
   }, []);
 
   const handleChapterChange = useCallback((val: string) => {
     setChapter(val);
     setIsGenerated(false);
+    setErrors(prev => { const { chapter, ...rest } = prev; return rest; });
   }, []);
 
   const handleCancel = useCallback(
@@ -95,7 +100,15 @@ const CreatePresentation = () => {
   const isFormValid = grade && subject && chapter;
 
   const handleGenerate = useCallback(() => {
-    if (!isFormValid) return;
+    const newErrors: Record<string, string> = {};
+    if (!grade) newErrors.grade = "Class is required";
+    if (!subject) newErrors.subject = "Subject is required";
+    if (!chapter) newErrors.chapter = "Chapter is required";
+    setErrors(newErrors);
+    if (Object.keys(newErrors).length > 0) {
+      sonnerToast.error("Please fill all mandatory fields");
+      return;
+    }
     setIsGenerating(true);
     // Simulate PPT generation
     setTimeout(() => {
@@ -174,9 +187,9 @@ const CreatePresentation = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="space-y-2">
-            <Label htmlFor="grade">Class</Label>
+            <Label htmlFor="grade">Class <span className="text-destructive">*</span></Label>
             <Select value={grade} onValueChange={handleGradeChange}>
-              <SelectTrigger id="grade">
+              <SelectTrigger id="grade" className={errors.grade ? "border-destructive" : ""}>
                 <SelectValue placeholder="Select class" />
               </SelectTrigger>
               <SelectContent>
@@ -187,16 +200,17 @@ const CreatePresentation = () => {
                 ))}
               </SelectContent>
             </Select>
+            {errors.grade && <p className="text-xs text-destructive">{errors.grade}</p>}
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="subject">Subject</Label>
+            <Label htmlFor="subject">Subject <span className="text-destructive">*</span></Label>
             <Select
               value={subject}
               onValueChange={handleSubjectChange}
               disabled={!grade}
             >
-              <SelectTrigger id="subject">
+              <SelectTrigger id="subject" className={errors.subject ? "border-destructive" : ""}>
                 <SelectValue
                   placeholder={grade ? "Select subject" : "Select class first"}
                 />
@@ -209,16 +223,17 @@ const CreatePresentation = () => {
                 ))}
               </SelectContent>
             </Select>
+            {errors.subject && <p className="text-xs text-destructive">{errors.subject}</p>}
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="chapter">Chapter</Label>
+            <Label htmlFor="chapter">Chapter <span className="text-destructive">*</span></Label>
             <Select
               value={chapter}
               onValueChange={handleChapterChange}
               disabled={!subject}
             >
-              <SelectTrigger id="chapter">
+              <SelectTrigger id="chapter" className={errors.chapter ? "border-destructive" : ""}>
                 <SelectValue
                   placeholder={
                     subject ? "Select chapter" : "Select subject first"
@@ -233,6 +248,7 @@ const CreatePresentation = () => {
                 ))}
               </SelectContent>
             </Select>
+            {errors.chapter && <p className="text-xs text-destructive">{errors.chapter}</p>}
           </div>
         </div>
       </fieldset>
@@ -314,7 +330,7 @@ const CreatePresentation = () => {
               Cancel
             </Button>
             <Button
-              disabled={!isFormValid || isGenerating}
+              disabled={isGenerating}
               className="gap-2"
               onClick={handleGenerate}
             >
