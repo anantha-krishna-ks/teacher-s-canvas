@@ -193,8 +193,13 @@ const ClassroomResources = () => {
                         className="h-8 text-xs w-full gap-1.5"
                         disabled={pod.status === "Not Created"}
                         onClick={() => {
-                          if (pod.label === "Lesson Plan" && pod.status !== "Not Created") {
+                          if (pod.status === "Not Created") return;
+                          if (pod.label === "Lesson Plan") {
                             navigate("/dashboard/classroom-resources/view-lesson-plan", {
+                              state: { grade, subject, chapter },
+                            });
+                          } else if (pod.label === "Presentation") {
+                            navigate("/dashboard/classroom-resources/view-presentation", {
                               state: { grade, subject, chapter },
                             });
                           }
