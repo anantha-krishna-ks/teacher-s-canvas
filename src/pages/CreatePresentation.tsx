@@ -330,7 +330,10 @@ const CreatePresentation = () => {
               Cancel
             </Button>
             <Button
-              disabled={!isFormValid || isGenerating}
+              disabled={isGenerating}
+              className="gap-2"
+              onClick={handleGenerate}
+            >
               className="gap-2"
               onClick={handleGenerate}
             >
