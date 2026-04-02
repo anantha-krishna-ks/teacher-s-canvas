@@ -165,7 +165,7 @@ const CreatePresentation = () => {
       </div>
 
       {/* Section 1: Class & Subject */}
-      <fieldset className="bg-card border border-border rounded-xl p-5 space-y-4">
+      <fieldset className="bg-card border border-border rounded-xl px-5 pb-5 pt-3 space-y-4">
         <legend className="sr-only">Class and Subject</legend>
         <div className="flex items-center gap-2 text-sm font-medium text-foreground">
           <GraduationCap className="w-4 h-4 text-primary" aria-hidden="true" />
@@ -248,7 +248,7 @@ const CreatePresentation = () => {
       <UploadReferenceDocument files={referenceFiles} onFilesChange={setReferenceFiles} />
 
       {/* Section 3: Additional Settings */}
-      <fieldset className="bg-card border border-border rounded-xl p-5 space-y-4">
+      <fieldset className="bg-card border border-border rounded-xl px-5 pb-5 pt-3 space-y-4">
         <legend className="sr-only">Additional Settings</legend>
         <div className="flex items-center gap-2 text-sm font-medium text-foreground">
           <BookOpen className="w-4 h-4 text-primary" aria-hidden="true" />
