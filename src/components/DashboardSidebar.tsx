@@ -93,8 +93,9 @@ const DashboardSidebar = ({ collapsed, onToggle, mobile }: DashboardSidebarProps
   return (
     <aside
       className={cn(
-        "fixed left-0 top-16 h-[calc(100vh-4rem)] bg-sidebar border-r border-sidebar-border z-30 flex flex-col transition-all duration-300",
-        collapsed ? "w-16" : "w-60"
+        "h-[calc(100vh-4rem)] bg-sidebar border-r border-sidebar-border z-30 flex flex-col transition-all duration-300",
+        mobile ? "relative w-60" : "fixed left-0 top-16",
+        !mobile && (collapsed ? "w-16" : "w-60")
       )}
     >
       {/* Collapse toggle - floating on the edge */}
