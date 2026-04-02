@@ -110,25 +110,13 @@ const QuestionCard = ({ item, onEdit, onDelete }: QuestionCardProps) => (
       </div>
     </div>
 
-    {/* Correct Answer & Explanation side by side on larger screens */}
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-      {/* Correct Answer */}
-      <div className="bg-green-50/60 border border-green-200/70 rounded-lg px-4 py-3">
-        <p className="text-xs font-semibold text-green-700 flex items-center gap-1.5 mb-1.5 uppercase tracking-wider">
-          <CheckCircle2 className="w-3.5 h-3.5" />
-          Correct Answer
-        </p>
-        <p className="text-sm text-foreground font-medium">{item.correctAnswer}</p>
-      </div>
-
-      {/* Explanation */}
-      <div className="bg-blue-50/60 border border-blue-200/70 rounded-lg px-4 py-3">
-        <p className="text-xs font-semibold text-blue-700 flex items-center gap-1.5 mb-1.5 uppercase tracking-wider">
-          <BookOpenText className="w-3.5 h-3.5" />
-          Explanation
-        </p>
-        <p className="text-sm text-foreground/90 leading-relaxed">{item.explanation}</p>
-      </div>
+    {/* Explanation */}
+    <div className="bg-blue-50/60 border border-blue-200/70 rounded-lg px-4 py-3">
+      <p className="text-xs font-semibold text-blue-700 flex items-center gap-1.5 mb-1.5 uppercase tracking-wider">
+        <BookOpenText className="w-3.5 h-3.5" />
+        Explanation
+      </p>
+      <p className="text-sm text-foreground/90 leading-relaxed">{item.explanation}</p>
     </div>
   </div>
 );
