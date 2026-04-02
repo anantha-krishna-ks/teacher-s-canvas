@@ -51,10 +51,8 @@ export function generateMockPlan(data: LessonPlanFormData): GeneratedPlan {
     ],
     resources: [
       { name: "NCERT Textbook – Chapter PDF", type: "pdf", url: "https://ncert.nic.in/textbook.php" },
-      { name: "Lesson Presentation (PPT)", type: "ppt", url: "https://docs.google.com/presentation/d/e/2PACX-1vQ/pub" },
-      { name: "Practice Worksheet", type: "worksheet", url: "https://www.education.com/worksheets/" },
       { name: "Concept Explainer Video", type: "video", url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ" },
-      { name: "Revision Worksheet", type: "worksheet", url: "https://www.education.com/worksheets/" },
+      { name: "Chapter Diagram", type: "image", url: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Example.jpg/800px-Example.jpg" },
       { name: "Topic Summary Video", type: "video", url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ" },
     ],
     procedure: {
