@@ -121,7 +121,19 @@ const CreateLessonPlan = () => {
   );
 
   const handleCancel = useCallback(() => navigate("/dashboard/lesson-plans"), [navigate]);
-  const handleGenerate = useCallback(() => setCurrentStep(1), []);
+  const handleGenerate = useCallback(() => {
+    const newErrors: Record<string, string> = {};
+    if (!grade) newErrors.grade = "Grade is required";
+    if (!subject) newErrors.subject = "Subject is required";
+    if (!chapter) newErrors.chapter = "Chapter is required";
+    if (selectedConcepts.length === 0) newErrors.concepts = "At least one concept is required";
+    setErrors(newErrors);
+    if (Object.keys(newErrors).length > 0) {
+      toast.error("Please fill all mandatory fields");
+      return;
+    }
+    setCurrentStep(1);
+  }, [grade, subject, chapter, selectedConcepts]);
   const handleBackToSetup = useCallback(() => setCurrentStep(0), []);
   const handleNavigateBack = useCallback(() => navigate("/dashboard/lesson-plans"), [navigate]);
 
