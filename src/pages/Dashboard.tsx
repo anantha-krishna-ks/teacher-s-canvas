@@ -34,8 +34,8 @@ const Dashboard = () => {
 
       {/* Module cards */}
       <section aria-label="Modules">
-        <h3 className="text-lg font-semibold text-foreground mb-4">Modules</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <h3 className="text-base sm:text-lg font-semibold text-foreground mb-3 sm:mb-4">Modules</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
           {MODULES.map((mod, i) => (
             <motion.article
               key={mod.title}
