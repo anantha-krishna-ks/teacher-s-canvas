@@ -85,6 +85,7 @@ const CreatePresentation = () => {
   const handleChapterChange = useCallback((val: string) => {
     setChapter(val);
     setIsGenerated(false);
+    setErrors(prev => { const { chapter, ...rest } = prev; return rest; });
   }, []);
 
   const handleCancel = useCallback(
