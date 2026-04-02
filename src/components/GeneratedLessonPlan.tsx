@@ -381,7 +381,7 @@ export default function GeneratedLessonPlan({ data, onBack }: GeneratedLessonPla
                       value={res.type}
                       onChange={(e) => {
                         const updated = [...draftResources];
-                        updated[i] = { ...updated[i], type: e.target.value as "pdf" | "ppt" | "worksheet" | "video" };
+                        updated[i] = { ...updated[i], type: e.target.value as "pdf" | "ppt" | "worksheet" | "video" | "image" };
                         setDraftResources(updated);
                       }}
                       className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground"

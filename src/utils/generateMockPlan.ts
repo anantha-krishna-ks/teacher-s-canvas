@@ -11,7 +11,7 @@ export interface LessonPlanFormData {
 
 export interface ResourceItem {
   name: string;
-  type: "pdf" | "ppt" | "worksheet" | "video";
+  type: "pdf" | "ppt" | "worksheet" | "video" | "image";
   url: string;
   fileName?: string;
 }
