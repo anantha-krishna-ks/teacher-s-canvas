@@ -194,7 +194,7 @@ const ContentListingPage = ({
           </div>
         )}
         {filteredInProgress.length > 0 && (
-          <div className="bg-card border border-border rounded-xl p-5">
+          <div className="bg-card border border-border rounded-xl p-5 shadow-[0_2px_12px_-4px_rgba(0,0,0,0.08)]">
             <ScrollableSection title={inProgressTitle} accentColor="hsl(36, 100%, 50%)" plans={filteredInProgress} count={filteredInProgress.length} />
           </div>
         )}
