@@ -3,7 +3,7 @@
 
 import { useCallback, useMemo, useState } from "react";
 import { cn } from "@/lib/utils";
-import { Plus, ChevronLeft, Filter } from "lucide-react";
+import { Plus, ChevronLeft, SlidersHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useNavigate } from "react-router-dom";
