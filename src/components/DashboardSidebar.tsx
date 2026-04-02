@@ -76,7 +76,7 @@ interface DashboardSidebarProps {
   mobile?: boolean;
 }
 
-const DashboardSidebar = ({ collapsed, onToggle }: DashboardSidebarProps) => {
+const DashboardSidebar = ({ collapsed, onToggle, mobile }: DashboardSidebarProps) => {
   const location = useLocation();
   const [expandedGroups, setExpandedGroups] = useState<string[]>(["Plan", "Create"]);
 
