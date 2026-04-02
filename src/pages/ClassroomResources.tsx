@@ -49,9 +49,9 @@ const generateStatuses = (grade: string, subject: string, chapter: string): Reso
   return [
     { label: "Lesson Plan", previewType: "lesson", status: statuses[hash % 3] },
     { label: "Presentation", previewType: "presentation", status: statuses[(hash + 1) % 3] },
-    { label: "Worksheet", previewType: "worksheet", status: statuses[(hash + 2) % 3] },
+    { label: "Worksheet", previewType: "worksheet", status: "Not Created" as ResourceStatus },
     { label: "Quizzes", previewType: "quiz", status: statuses[(hash + 3) % 3] },
-    { label: "Assessment", previewType: "assessment", status: statuses[(hash + 4) % 3] },
+    { label: "Assessment", previewType: "assessment", status: "Not Created" as ResourceStatus },
   ];
 };
 
