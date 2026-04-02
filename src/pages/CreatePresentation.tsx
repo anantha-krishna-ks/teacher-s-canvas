@@ -334,9 +334,6 @@ const CreatePresentation = () => {
               className="gap-2"
               onClick={handleGenerate}
             >
-              className="gap-2"
-              onClick={handleGenerate}
-            >
               {isGenerating ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" />
