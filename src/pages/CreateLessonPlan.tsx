@@ -203,7 +203,7 @@ const CreateLessonPlan = () => {
       {currentStep === 0 && (
         <div className="space-y-6">
           {/* Row 1: Grade & Duration */}
-          <fieldset className="bg-card border border-border rounded-xl p-6 space-y-6">
+          <fieldset className="bg-card border border-border rounded-xl px-6 pb-6 pt-4 space-y-6">
             <legend className="sr-only">Class and Duration</legend>
             <div className="flex items-center gap-2 text-sm font-medium text-foreground">
               <GraduationCap className="w-4 h-4 text-primary" aria-hidden="true" />
@@ -286,7 +286,7 @@ const CreateLessonPlan = () => {
           </fieldset>
 
           {/* Row 2: Chapter & Concepts */}
-          <fieldset className="bg-card border border-border rounded-xl p-6 space-y-6">
+          <fieldset className="bg-card border border-border rounded-xl px-6 pb-6 pt-4 space-y-6">
             <legend className="sr-only">Chapter and Concepts</legend>
             <div className="flex items-center gap-2 text-sm font-medium text-foreground">
               <Layers className="w-4 h-4 text-primary" aria-hidden="true" />
