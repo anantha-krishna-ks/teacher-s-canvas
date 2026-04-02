@@ -325,7 +325,8 @@ const CreateLessonPlan = () => {
             </div>
 
             <div className="space-y-3">
-              <Label>Concepts</Label>
+              <Label>Concepts <span className="text-destructive">*</span></Label>
+              {errors.concepts && <p className="text-xs text-destructive">{errors.concepts}</p>}
 
               {!chapter ? (
                 <p className="text-sm text-muted-foreground italic">Select a chapter to see available concepts</p>
