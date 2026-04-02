@@ -3,7 +3,7 @@
 
 import { useCallback, useMemo, useState } from "react";
 import { cn } from "@/lib/utils";
-import { Plus, ChevronLeft, Clock, BookOpen, Star, Filter } from "lucide-react";
+import { Plus, ChevronLeft, Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useNavigate } from "react-router-dom";
@@ -190,17 +190,17 @@ const ContentListingPage = ({
       <div className="space-y-8">
         {filteredRecommended && filteredRecommended.length > 0 && (
           <div className="bg-card border border-border rounded-xl p-5">
-            <ScrollableSection title={recommendedTitle} icon={Star} plans={filteredRecommended} count={filteredRecommended.length} />
+            <ScrollableSection title={recommendedTitle} accentColor="hsl(212, 100%, 44%)" plans={filteredRecommended} count={filteredRecommended.length} />
           </div>
         )}
         {filteredInProgress.length > 0 && (
           <div className="bg-card border border-border rounded-xl p-5">
-            <ScrollableSection title={inProgressTitle} icon={Clock} plans={filteredInProgress} count={filteredInProgress.length} />
+            <ScrollableSection title={inProgressTitle} accentColor="hsl(36, 100%, 50%)" plans={filteredInProgress} count={filteredInProgress.length} />
           </div>
         )}
         {filteredSaved.length > 0 && (
           <div className="bg-card border border-border rounded-xl p-5">
-            <ScrollableSection title={savedTitle} icon={BookOpen} plans={filteredSaved} count={filteredSaved.length} />
+            <ScrollableSection title={savedTitle} accentColor="hsl(142, 71%, 45%)" plans={filteredSaved} count={filteredSaved.length} />
           </div>
         )}
         {showFilters && hasActiveFilters && filteredRecommended?.length === 0 && filteredInProgress.length === 0 && filteredSaved.length === 0 && (

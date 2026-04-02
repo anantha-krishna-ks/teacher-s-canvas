@@ -7,14 +7,15 @@ import type { LessonPlanCard } from "@/constants/lessonPlansPageData";
 
 interface ScrollableSectionProps {
   title: string;
-  icon: React.ElementType;
+  icon?: React.ElementType;
+  accentColor?: string;
   plans: LessonPlanCard[];
   count: number;
 }
 
 const SCROLL_AMOUNT = 240;
 
-const ScrollableSection = ({ title, icon: Icon, plans, count }: ScrollableSectionProps) => {
+const ScrollableSection = ({ title, accentColor = "hsl(var(--primary))", plans, count }: ScrollableSectionProps) => {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const handleScroll = useCallback((direction: "left" | "right") => {
@@ -30,7 +31,11 @@ const ScrollableSection = ({ title, icon: Icon, plans, count }: ScrollableSectio
     <section className="space-y-3" aria-label={title}>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Icon className="w-5 h-5 text-primary" aria-hidden="true" />
+          <div
+            className="w-1 h-5 rounded-full shrink-0"
+            style={{ backgroundColor: accentColor }}
+            aria-hidden="true"
+          />
           <h3 className="text-base font-semibold text-foreground">{title}</h3>
           <Badge variant="secondary" className="text-xs">{count}</Badge>
         </div>
