@@ -55,6 +55,7 @@ const App = () => (
               <Route path="assessment" element={<Assessment />} />
               <Route path="assessment/create" element={<CreateAssessment />} />
               <Route path="assessment/question-repository" element={<QuestionRepository />} />
+              <Route path="classroom-resources" element={<ClassroomResources />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
