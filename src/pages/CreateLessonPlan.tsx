@@ -45,6 +45,7 @@ const CreateLessonPlan = () => {
   const [instructions, setInstructions] = useState("");
   const [referenceFiles, setReferenceFiles] = useState<UploadedFile[]>([]);
   const [currentStep, setCurrentStep] = useState(0);
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const subjects = useMemo(() => (grade ? SUBJECTS_BY_GRADE[grade] || [] : []), [grade]);
   const chapters = useMemo(() => (subject ? CHAPTERS_BY_SUBJECT[subject] || [] : []), [subject]);
