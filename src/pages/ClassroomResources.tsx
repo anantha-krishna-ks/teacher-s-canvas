@@ -1,5 +1,7 @@
 import { useState, useMemo } from "react";
 import { Info, BookOpen, Eye, ArrowRight } from "lucide-react";
+import Lottie from "lottie-react";
+import emptyAnimation from "@/assets/empty-section-lottie.json";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
