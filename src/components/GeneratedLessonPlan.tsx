@@ -16,6 +16,7 @@ import {
   Presentation,
   FileSpreadsheet,
   Video,
+  Image,
   ExternalLink,
   Check,
   X,
