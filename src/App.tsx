@@ -62,6 +62,7 @@ const App = () => (
               <Route path="classroom-resources/view-lesson-plan" element={<ViewLessonPlan />} />
               <Route path="classroom-resources/view-presentation" element={<ViewPresentation />} />
               <Route path="classroom-resources/view-quiz" element={<ViewQuiz />} />
+              <Route path="classroom-resources/display-quiz" element={<QuizDisplay />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
