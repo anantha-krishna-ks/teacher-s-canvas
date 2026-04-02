@@ -57,6 +57,7 @@ const App = () => (
               <Route path="assessment/create" element={<CreateAssessment />} />
               <Route path="assessment/question-repository" element={<QuestionRepository />} />
               <Route path="classroom-resources" element={<ClassroomResources />} />
+              <Route path="classroom-resources/view-lesson-plan" element={<ViewLessonPlan />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>

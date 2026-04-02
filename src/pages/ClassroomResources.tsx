@@ -192,6 +192,13 @@ const ClassroomResources = () => {
                         size="sm"
                         className="h-8 text-xs w-full gap-1.5"
                         disabled={pod.status === "Not Created"}
+                        onClick={() => {
+                          if (pod.label === "Lesson Plan" && pod.status !== "Not Created") {
+                            navigate("/dashboard/classroom-resources/view-lesson-plan", {
+                              state: { grade, subject, chapter },
+                            });
+                          }
+                        }}
                       >
                         <Eye className="h-3.5 w-3.5" />
                         {pod.status === "Not Created" ? "Not Available" : "View"}
