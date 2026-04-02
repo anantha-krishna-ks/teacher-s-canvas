@@ -15,7 +15,7 @@ interface ScrollableSectionProps {
 
 const SCROLL_AMOUNT = 240;
 
-const ScrollableSection = ({ title, icon: Icon, plans, count }: ScrollableSectionProps) => {
+const ScrollableSection = ({ title, accentColor = "hsl(var(--primary))", plans, count }: ScrollableSectionProps) => {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const handleScroll = useCallback((direction: "left" | "right") => {
