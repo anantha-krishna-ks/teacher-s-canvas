@@ -1,4 +1,5 @@
 import { useState, useMemo, useCallback } from "react";
+import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { ChevronLeft, Plus, X, Sparkles, BookOpen, Layers, FileText, GraduationCap, Check } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -45,6 +46,7 @@ const CreateLessonPlan = () => {
   const [instructions, setInstructions] = useState("");
   const [referenceFiles, setReferenceFiles] = useState<UploadedFile[]>([]);
   const [currentStep, setCurrentStep] = useState(0);
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const subjects = useMemo(() => (grade ? SUBJECTS_BY_GRADE[grade] || [] : []), [grade]);
   const chapters = useMemo(() => (subject ? CHAPTERS_BY_SUBJECT[subject] || [] : []), [subject]);
@@ -69,9 +71,11 @@ const CreateLessonPlan = () => {
   }, []);
 
   const toggleConcept = useCallback((concept: string) => {
-    setSelectedConcepts((prev) =>
-      prev.includes(concept) ? prev.filter((c) => c !== concept) : [...prev, concept]
-    );
+    setSelectedConcepts((prev) => {
+      const updated = prev.includes(concept) ? prev.filter((c) => c !== concept) : [...prev, concept];
+      if (updated.length > 0) setErrors(prev => { const { concepts, ...rest } = prev; return rest; });
+      return updated;
+    });
   }, []);
 
   const addCustomConcept = useCallback(() => {
@@ -119,7 +123,19 @@ const CreateLessonPlan = () => {
   );
 
   const handleCancel = useCallback(() => navigate("/dashboard/lesson-plans"), [navigate]);
-  const handleGenerate = useCallback(() => setCurrentStep(1), []);
+  const handleGenerate = useCallback(() => {
+    const newErrors: Record<string, string> = {};
+    if (!grade) newErrors.grade = "Grade is required";
+    if (!subject) newErrors.subject = "Subject is required";
+    if (!chapter) newErrors.chapter = "Chapter is required";
+    if (selectedConcepts.length === 0) newErrors.concepts = "At least one concept is required";
+    setErrors(newErrors);
+    if (Object.keys(newErrors).length > 0) {
+      toast.error("Please fill all mandatory fields");
+      return;
+    }
+    setCurrentStep(1);
+  }, [grade, subject, chapter, selectedConcepts]);
   const handleBackToSetup = useCallback(() => setCurrentStep(0), []);
   const handleNavigateBack = useCallback(() => navigate("/dashboard/lesson-plans"), [navigate]);
 
@@ -212,9 +228,9 @@ const CreateLessonPlan = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <Label htmlFor="grade">Grade</Label>
-                <Select value={grade} onValueChange={handleGradeChange}>
-                  <SelectTrigger id="grade">
+                <Label htmlFor="grade">Grade <span className="text-destructive">*</span></Label>
+                <Select value={grade} onValueChange={(v) => { handleGradeChange(v); setErrors(prev => { const { grade, ...rest } = prev; return rest; }); }}>
+                  <SelectTrigger id="grade" className={errors.grade ? "border-destructive" : ""}>
                     <SelectValue placeholder="Select grade" />
                   </SelectTrigger>
                   <SelectContent>
@@ -223,6 +239,7 @@ const CreateLessonPlan = () => {
                     ))}
                   </SelectContent>
                 </Select>
+                {errors.grade && <p className="text-xs text-destructive">{errors.grade}</p>}
               </div>
 
               <div className="space-y-2">
@@ -256,9 +273,9 @@ const CreateLessonPlan = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <Label htmlFor="subject">Subject</Label>
-                <Select value={subject} onValueChange={handleSubjectChange} disabled={!grade}>
-                  <SelectTrigger id="subject">
+                <Label htmlFor="subject">Subject <span className="text-destructive">*</span></Label>
+                <Select value={subject} onValueChange={(v) => { handleSubjectChange(v); setErrors(prev => { const { subject, ...rest } = prev; return rest; }); }} disabled={!grade}>
+                  <SelectTrigger id="subject" className={errors.subject ? "border-destructive" : ""}>
                     <SelectValue placeholder={grade ? "Select subject" : "Select grade first"} />
                   </SelectTrigger>
                   <SelectContent>
@@ -267,6 +284,7 @@ const CreateLessonPlan = () => {
                     ))}
                   </SelectContent>
                 </Select>
+                {errors.subject && <p className="text-xs text-destructive">{errors.subject}</p>}
               </div>
 
               <div className="space-y-2">
@@ -294,9 +312,9 @@ const CreateLessonPlan = () => {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="chapter">Chapter</Label>
-              <Select value={chapter} onValueChange={handleChapterChange} disabled={!subject}>
-                <SelectTrigger id="chapter">
+              <Label htmlFor="chapter">Chapter <span className="text-destructive">*</span></Label>
+              <Select value={chapter} onValueChange={(v) => { handleChapterChange(v); setErrors(prev => { const { chapter, ...rest } = prev; return rest; }); }} disabled={!subject}>
+                <SelectTrigger id="chapter" className={errors.chapter ? "border-destructive" : ""}>
                   <SelectValue placeholder={subject ? "Select chapter" : "Select subject first"} />
                 </SelectTrigger>
                 <SelectContent>
@@ -305,10 +323,12 @@ const CreateLessonPlan = () => {
                   ))}
                 </SelectContent>
               </Select>
+              {errors.chapter && <p className="text-xs text-destructive">{errors.chapter}</p>}
             </div>
 
             <div className="space-y-3">
-              <Label>Concepts</Label>
+              <Label>Concepts <span className="text-destructive">*</span></Label>
+              {errors.concepts && <p className="text-xs text-destructive">{errors.concepts}</p>}
 
               {!chapter ? (
                 <p className="text-sm text-muted-foreground italic">Select a chapter to see available concepts</p>
