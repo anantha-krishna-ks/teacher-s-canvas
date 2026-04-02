@@ -28,14 +28,15 @@ const DashboardLayout = () => {
         onMobileMenuToggle={handleToggleMobileMenu}
       />
 
-      {/* Mobile overlay */}
-      {mobileOpen && (
-        <div
-          className="fixed inset-0 bg-foreground/20 z-20 lg:hidden"
-          onClick={handleCloseMobileMenu}
-          role="presentation"
-        />
-      )}
+      {/* Mobile backdrop overlay */}
+      <div
+        className={cn(
+          "fixed inset-0 bg-foreground/30 backdrop-blur-sm z-25 lg:hidden transition-opacity duration-300",
+          mobileOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+        )}
+        onClick={handleCloseMobileMenu}
+        role="presentation"
+      />
 
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar - desktop */}

@@ -25,16 +25,16 @@ const DashboardHeader = ({ title, onMobileMenuToggle }: DashboardHeaderProps) =>
 
   return (
     <header className="h-16 bg-card border-b border-border flex items-center justify-between px-4 md:px-6 shrink-0 card-shadow sticky top-0 z-40 w-full">
-      <div className="flex items-center gap-4">
-        <Link to="/dashboard" className="flex items-center gap-2.5">
-          <img src={logo} alt="ClassSphere" className="h-11" />
-        </Link>
+      <div className="flex items-center gap-3">
         <button
           onClick={onMobileMenuToggle}
           className="lg:hidden p-2 rounded-md text-muted-foreground hover:bg-accent transition-colors"
         >
           <Menu className="w-5 h-5" />
         </button>
+        <Link to="/dashboard" className="flex items-center gap-2.5">
+          <img src={logo} alt="ClassSphere" className="h-11" />
+        </Link>
       </div>
 
       <DropdownMenu>
