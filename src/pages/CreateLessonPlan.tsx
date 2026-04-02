@@ -226,9 +226,9 @@ const CreateLessonPlan = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <Label htmlFor="grade">Grade</Label>
-                <Select value={grade} onValueChange={handleGradeChange}>
-                  <SelectTrigger id="grade">
+                <Label htmlFor="grade">Grade <span className="text-destructive">*</span></Label>
+                <Select value={grade} onValueChange={(v) => { handleGradeChange(v); setErrors(prev => { const { grade, ...rest } = prev; return rest; }); }}>
+                  <SelectTrigger id="grade" className={errors.grade ? "border-destructive" : ""}>
                     <SelectValue placeholder="Select grade" />
                   </SelectTrigger>
                   <SelectContent>
@@ -237,6 +237,7 @@ const CreateLessonPlan = () => {
                     ))}
                   </SelectContent>
                 </Select>
+                {errors.grade && <p className="text-xs text-destructive">{errors.grade}</p>}
               </div>
 
               <div className="space-y-2">
