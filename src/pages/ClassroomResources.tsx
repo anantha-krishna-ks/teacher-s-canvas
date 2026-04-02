@@ -1,5 +1,7 @@
 import { useState, useMemo } from "react";
 import { Info, BookOpen, Eye, ArrowRight } from "lucide-react";
+import Lottie from "lottie-react";
+import emptyAnimation from "@/assets/empty-section-lottie.json";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -224,10 +226,13 @@ const ClassroomResources = () => {
       {/* Empty state */}
       {!allSelected && (
         <div className="flex flex-col items-center justify-center py-16 text-center">
-          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-muted mb-4">
-            <BookOpen className="h-6 w-6 text-muted-foreground" />
-          </div>
-          <p className="text-sm font-medium text-foreground">No resources to display</p>
+          <Lottie
+            animationData={emptyAnimation}
+            loop
+            autoplay
+            style={{ width: 180, height: 130 }}
+          />
+          <p className="text-sm font-medium text-foreground mt-2">No resources to display</p>
           <p className="text-xs text-muted-foreground mt-1">
             Select a class, subject, and chapter to view available resources
           </p>
