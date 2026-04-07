@@ -174,6 +174,16 @@ const PresentationEditor = () => {
     toast.success("Slide duplicated");
   }, [slide, slides, currentIdx]);
 
+  const deleteSlide = useCallback(() => {
+    if (slides.length <= 1) { toast.error("Cannot delete the last slide"); return; }
+    const next = slides.filter((_, i) => i !== currentIdx);
+    setSlides(next);
+    setCurrentIdx(Math.min(currentIdx, next.length - 1));
+    setSelectedTextId(null);
+    setEditingTextId(null);
+    toast.success("Slide deleted");
+  }, [slides, currentIdx]);
+
   const handleCanvasClick = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
       if (mode !== "edit") return;
@@ -298,6 +308,7 @@ const PresentationEditor = () => {
           {mode === "edit" && (
             <div className="p-3 border-t border-border space-y-1.5">
               <Button variant="outline" size="sm" className="w-full gap-1.5 text-xs h-8" onClick={duplicateSlide}><Copy className="w-3 h-3" /> Duplicate Slide</Button>
+              <Button variant="outline" size="sm" className="w-full gap-1.5 text-xs h-8 text-destructive hover:bg-destructive/10 hover:text-destructive" onClick={deleteSlide} disabled={slides.length <= 1}><Trash2 className="w-3 h-3" /> Delete Slide</Button>
             </div>
           )}
         </div>
