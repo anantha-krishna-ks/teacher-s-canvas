@@ -233,7 +233,7 @@ const PresentationEditor = () => {
   return (
     <div className="flex flex-col h-[calc(100vh-4rem)] -m-6 bg-background">
       {/* Toolbar */}
-      <div className="flex items-center justify-between h-12 px-3 border-b border-border bg-card shrink-0">
+      <div className="relative flex items-center h-12 px-3 border-b border-border bg-card shrink-0">
         <div className="flex items-center gap-2 min-w-0">
           <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0" onClick={() => navigate(-1)}><ArrowLeft className="w-4 h-4" /></Button>
           <Separator orientation="vertical" className="h-5" />
