@@ -16,6 +16,7 @@ const CreateLessonPlan = lazy(() => import("./pages/CreateLessonPlan"));
 const ClassPlans = lazy(() => import("./pages/ClassPlans"));
 const Presentations = lazy(() => import("./pages/Presentations"));
 const CreatePresentation = lazy(() => import("./pages/CreatePresentation"));
+const PresentationEditor = lazy(() => import("./pages/PresentationEditor"));
 const Worksheets = lazy(() => import("./pages/Worksheets"));
 const Quizzes = lazy(() => import("./pages/Quizzes"));
 const CreateQuiz = lazy(() => import("./pages/CreateQuiz"));
@@ -50,6 +51,7 @@ const App = () => (
               <Route path="class-plans" element={<ClassPlans />} />
               <Route path="presentations" element={<Presentations />} />
               <Route path="presentations/create" element={<CreatePresentation />} />
+              <Route path="presentations/editor" element={<PresentationEditor />} />
               <Route path="worksheets" element={<Worksheets />} />
               <Route path="quizzes" element={<Quizzes />} />
               <Route path="quizzes/create" element={<CreateQuiz />} />
