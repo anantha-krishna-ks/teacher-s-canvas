@@ -69,18 +69,10 @@ const Dashboard = () => {
                   )}
                 </div>
 
-                <div className="flex flex-col gap-2 mt-auto">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-9 text-xs w-full text-muted-foreground hover:text-foreground"
-                    onClick={() => handleNavigate(`/dashboard/${mod.slug}`)}
-                  >
+                <div className="mt-auto">
+                  <Button size="sm" className="h-9 text-xs w-full" onClick={() => handleNavigate(`/dashboard/${mod.slug}`)}>
                     View All
                     <ArrowRight className="w-3 h-3 ml-1" aria-hidden="true" />
-                  </Button>
-                  <Button size="sm" className="h-9 text-xs w-full" onClick={() => handleNavigate(`/dashboard/${mod.slug}`)}>
-                    Generate
                   </Button>
                 </div>
               </div>
