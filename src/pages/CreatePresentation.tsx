@@ -14,7 +14,6 @@ import {
   CheckCircle2,
   Eye,
 } from "lucide-react";
-import PresentationPreviewModal from "@/components/PresentationPreviewModal";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -59,7 +58,6 @@ const CreatePresentation = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [isGenerated, setIsGenerated] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
   const subjects = useMemo(
     () => (grade ? SUBJECTS_BY_GRADE[grade] || [] : []),
@@ -387,9 +385,14 @@ const CreatePresentation = () => {
                   </div>
                 </div>
                 <div className="flex items-center gap-2 shrink-0 ml-4">
-                  <Button onClick={() => setIsPreviewOpen(true)} size="sm" variant="outline" className="gap-2">
+                  <Button
+                    onClick={() => navigate("/dashboard/presentations/editor", { state: { subject, chapter } })}
+                    size="sm"
+                    variant="outline"
+                    className="gap-2"
+                  >
                     <Eye className="w-4 h-4" aria-hidden="true" />
-                    View
+                    View & Edit
                   </Button>
                   <Button onClick={handleDownload} size="sm" className="gap-2">
                     <Download className="w-4 h-4" aria-hidden="true" />
@@ -413,8 +416,6 @@ const CreatePresentation = () => {
           </motion.div>
         )}
       </AnimatePresence>
-
-      <PresentationPreviewModal open={isPreviewOpen} onOpenChange={setIsPreviewOpen} />
     </div>
   );
 };

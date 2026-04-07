@@ -1,14 +1,11 @@
-import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { CheckCircle2, FileText, Download, ArrowLeft, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import PresentationPreviewModal from "@/components/PresentationPreviewModal";
 
 const ViewPresentation = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const { grade, subject, chapter } = (location.state as { grade: string; subject: string; chapter: string }) || {
     grade: "",
     subject: "",
@@ -21,7 +18,6 @@ const ViewPresentation = () => {
 
   return (
     <div className="max-w-6xl mx-auto space-y-5">
-      {/* Back button */}
       <Button
         variant="outline"
         className="gap-2"
@@ -31,9 +27,7 @@ const ViewPresentation = () => {
         Back to Classroom Resources
       </Button>
 
-      {/* Result card */}
       <div className="bg-card border border-border rounded-xl overflow-hidden">
-        {/* Success banner */}
         <div className="flex items-center gap-3 px-6 py-4 border-b border-border bg-muted/20">
           <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
             <CheckCircle2 className="w-5 h-5 text-primary" aria-hidden="true" />
@@ -46,7 +40,6 @@ const ViewPresentation = () => {
           </div>
         </div>
 
-        {/* File row */}
         <div className="flex items-center justify-between px-6 py-4">
           <div className="flex items-center gap-3 min-w-0">
             <div className="w-9 h-9 rounded-lg border border-border bg-muted/30 flex items-center justify-center shrink-0">
@@ -60,9 +53,14 @@ const ViewPresentation = () => {
             </div>
           </div>
           <div className="flex items-center gap-2 shrink-0 ml-4">
-            <Button onClick={() => setIsPreviewOpen(true)} size="sm" variant="outline" className="gap-2">
+            <Button
+              onClick={() => navigate("/dashboard/presentations/editor", { state: { subject, chapter } })}
+              size="sm"
+              variant="outline"
+              className="gap-2"
+            >
               <Eye className="w-4 h-4" aria-hidden="true" />
-              View
+              View & Edit
             </Button>
             <Button onClick={handleDownload} size="sm" className="gap-2">
               <Download className="w-4 h-4" aria-hidden="true" />
@@ -71,8 +69,6 @@ const ViewPresentation = () => {
           </div>
         </div>
       </div>
-
-      <PresentationPreviewModal open={isPreviewOpen} onOpenChange={setIsPreviewOpen} />
     </div>
   );
 };
