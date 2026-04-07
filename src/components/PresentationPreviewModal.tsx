@@ -1,7 +1,7 @@
-import { useState } from "react";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+import { useState, useEffect, useCallback } from "react";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import slide1 from "@/assets/presentation-preview/slide-1.jpg";
 import slide2 from "@/assets/presentation-preview/slide-2.jpg";
 import slide3 from "@/assets/presentation-preview/slide-3.jpg";
@@ -16,12 +16,35 @@ interface PresentationPreviewModalProps {
 const PresentationPreviewModal = ({ open, onOpenChange }: PresentationPreviewModalProps) => {
   const [currentSlide, setCurrentSlide] = useState(0);
 
-  const goToPrev = () => setCurrentSlide((prev) => Math.max(0, prev - 1));
-  const goToNext = () => setCurrentSlide((prev) => Math.min(SLIDES.length - 1, prev + 1));
+  const goToPrev = useCallback(() => setCurrentSlide((prev) => Math.max(0, prev - 1)), []);
+  const goToNext = useCallback(() => setCurrentSlide((prev) => Math.min(SLIDES.length - 1, prev + 1)), []);
+
+  // Reset slide index when modal opens
+  useEffect(() => {
+    if (open) setCurrentSlide(0);
+  }, [open]);
+
+  // Keyboard navigation
+  useEffect(() => {
+    if (!open) return;
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft") goToPrev();
+      if (e.key === "ArrowRight") goToNext();
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [open, goToPrev, goToNext]);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-[90vw] max-h-[90vh] w-full p-0 overflow-hidden bg-black/95 border-none rounded-xl">
+      <DialogContent
+        className="max-w-[95vw] max-h-[95vh] w-full p-0 overflow-hidden bg-black/95 border-none rounded-xl [&>button:last-child]:hidden"
+        aria-describedby={undefined}
+      >
+        <VisuallyHidden>
+          <DialogTitle>Presentation Preview</DialogTitle>
+        </VisuallyHidden>
+
         {/* Close button */}
         <button
           onClick={() => onOpenChange(false)}
@@ -39,7 +62,7 @@ const PresentationPreviewModal = ({ open, onOpenChange }: PresentationPreviewMod
         </div>
 
         {/* Main slide area */}
-        <div className="flex items-center justify-center w-full h-[85vh] relative px-16">
+        <div className="flex items-center justify-center w-full h-[80vh] relative px-16 py-12">
           {/* Prev button */}
           <button
             onClick={goToPrev}
