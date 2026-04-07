@@ -6,7 +6,6 @@ import {
   Download,
   Maximize2,
   Type,
-  Image as ImageIcon,
   Square,
   Undo2,
   Redo2,
@@ -20,276 +19,202 @@ import {
   AlignLeft,
   AlignCenter,
   AlignRight,
+  Plus,
+  Copy,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-import slide1 from "@/assets/presentation-preview/slide-1.jpg";
-import slide2 from "@/assets/presentation-preview/slide-2.jpg";
-import slide3 from "@/assets/presentation-preview/slide-3.jpg";
-
-const SLIDES_SRC = [slide1, slide2, slide3];
+import { MOCK_SLIDES, type SlideData, type SlideTextElement } from "@/constants/presentationSlideData";
 
 type EditorMode = "view" | "edit";
-type ToolId = "select" | "text" | "image" | "shape";
+type ToolId = "select" | "text" | "shape";
 
-interface SlideElement {
-  id: string;
-  type: "text" | "shape" | "image";
-  x: number;
-  y: number;
-  w: number;
-  h: number;
-  content: string;
-  style: {
-    fontSize?: number;
-    bold?: boolean;
-    italic?: boolean;
-    align?: "left" | "center" | "right";
-    color?: string;
-    bgColor?: string;
-    borderRadius?: number;
-  };
-}
-
-const TOOLBAR_TOOLS = [
-  { icon: MousePointer2, label: "Select", id: "select" as ToolId },
-  { icon: Type, label: "Text", id: "text" as ToolId },
-  { icon: ImageIcon, label: "Image", id: "image" as ToolId },
-  { icon: Square, label: "Shape", id: "shape" as ToolId },
+const TOOLBAR_TOOLS: { icon: typeof MousePointer2; label: string; id: ToolId }[] = [
+  { icon: MousePointer2, label: "Select (V)", id: "select" },
+  { icon: Type, label: "Add Text (T)", id: "text" },
+  { icon: Square, label: "Add Shape (R)", id: "shape" },
 ];
 
-let elementIdCounter = 0;
-const genId = () => `el-${++elementIdCounter}`;
+const SLIDE_W = 1920;
+const SLIDE_H = 1080;
+let _idCounter = 100;
+const uid = () => `el-${++_idCounter}`;
 
 const PresentationEditor = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { subject, chapter } = (location.state as { subject?: string; chapter?: string }) || {};
 
-  const [currentSlide, setCurrentSlide] = useState(0);
+  const [slides, setSlides] = useState<SlideData[]>(() => JSON.parse(JSON.stringify(MOCK_SLIDES)));
+  const [currentIdx, setCurrentIdx] = useState(0);
   const [mode, setMode] = useState<EditorMode>("view");
   const [activeTool, setActiveTool] = useState<ToolId>("select");
+  const [selectedTextId, setSelectedTextId] = useState<string | null>(null);
+  const [editingTextId, setEditingTextId] = useState<string | null>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [scale, setScale] = useState(1);
-
-  // Per-slide elements
-  const [slideElements, setSlideElements] = useState<Record<number, SlideElement[]>>({});
-  const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [dragState, setDragState] = useState<{ id: string; startX: number; startY: number; elX: number; elY: number } | null>(null);
-  const [resizeState, setResizeState] = useState<{ id: string; startX: number; startY: number; elW: number; elH: number } | null>(null);
+  const [dragState, setDragState] = useState<{ id: string; sx: number; sy: number; ox: number; oy: number } | null>(null);
 
   const canvasRef = useRef<HTMLDivElement>(null);
-  const slideRef = useRef<HTMLDivElement>(null);
 
-  const SLIDE_W = 1920;
-  const SLIDE_H = 1080;
+  const slide = slides[currentIdx];
+  const selectedText = slide.texts.find((t) => t.id === selectedTextId) || null;
 
-  const currentElements = slideElements[currentSlide] || [];
+  // --- helpers ---
+  const patchSlide = useCallback(
+    (patch: Partial<SlideData>) => setSlides((s) => s.map((sl, i) => (i === currentIdx ? { ...sl, ...patch } : sl))),
+    [currentIdx]
+  );
+  const patchTexts = useCallback(
+    (texts: SlideTextElement[]) => patchSlide({ texts }),
+    [patchSlide]
+  );
+  const patchText = useCallback(
+    (id: string, patch: Partial<SlideTextElement>) =>
+      patchTexts(slide.texts.map((t) => (t.id === id ? { ...t, ...patch } : t))),
+    [slide.texts, patchTexts]
+  );
 
-  const updateElements = useCallback((els: SlideElement[]) => {
-    setSlideElements((prev) => ({ ...prev, [currentSlide]: els }));
-  }, [currentSlide]);
-
-  const selectedElement = currentElements.find((el) => el.id === selectedId) || null;
-
-  // Scale calculation
+  // --- scale ---
   const updateScale = useCallback(() => {
     if (!canvasRef.current) return;
-    const rect = canvasRef.current.getBoundingClientRect();
-    const padding = 48;
-    const s = Math.min((rect.width - padding * 2) / SLIDE_W, (rect.height - padding * 2) / SLIDE_H);
-    setScale(Math.max(0.1, s));
+    const r = canvasRef.current.getBoundingClientRect();
+    const pad = 48;
+    setScale(Math.max(0.05, Math.min((r.width - pad * 2) / SLIDE_W, (r.height - pad * 2) / SLIDE_H)));
   }, []);
 
   useEffect(() => {
     updateScale();
-    const observer = new ResizeObserver(updateScale);
-    if (canvasRef.current) observer.observe(canvasRef.current);
-    return () => observer.disconnect();
+    const obs = new ResizeObserver(updateScale);
+    if (canvasRef.current) obs.observe(canvasRef.current);
+    return () => obs.disconnect();
   }, [updateScale]);
 
-  // Keyboard
+  // --- keyboard ---
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      if (editingId) return; // don't interfere with text editing
-      if (e.key === "ArrowLeft") setCurrentSlide((p) => Math.max(0, p - 1));
-      if (e.key === "ArrowRight") setCurrentSlide((p) => Math.min(SLIDES_SRC.length - 1, p + 1));
+      if (editingTextId) return;
+      if (e.key === "ArrowLeft") setCurrentIdx((p) => Math.max(0, p - 1));
+      if (e.key === "ArrowRight") setCurrentIdx((p) => Math.min(slides.length - 1, p + 1));
       if (e.key === "Escape") {
-        if (isFullscreen) exitFullscreen();
-        else { setSelectedId(null); setEditingId(null); }
+        if (isFullscreen) document.exitFullscreen?.();
+        else { setSelectedTextId(null); setEditingTextId(null); }
       }
-      if (e.key === "Delete" || e.key === "Backspace") {
-        if (selectedId && !editingId) {
-          e.preventDefault();
-          deleteSelected();
-        }
+      if ((e.key === "Delete" || e.key === "Backspace") && selectedTextId && !editingTextId) {
+        e.preventDefault();
+        patchTexts(slide.texts.filter((t) => t.id !== selectedTextId));
+        setSelectedTextId(null);
+        toast.success("Element deleted");
       }
+      if (e.key === "v" || e.key === "V") setActiveTool("select");
+      if (e.key === "t" || e.key === "T") setActiveTool("text");
+      if (e.key === "r" || e.key === "R") setActiveTool("shape");
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [isFullscreen, selectedId, editingId, currentSlide]);
+  }, [isFullscreen, selectedTextId, editingTextId, slides.length, slide.texts, patchTexts]);
 
-  const enterFullscreen = useCallback(() => {
-    document.documentElement.requestFullscreen?.();
-    setIsFullscreen(true);
-  }, []);
-  const exitFullscreen = useCallback(() => {
-    document.exitFullscreen?.();
-    setIsFullscreen(false);
-  }, []);
-
+  // --- fullscreen ---
   useEffect(() => {
-    const handler = () => { if (!document.fullscreenElement) setIsFullscreen(false); };
-    document.addEventListener("fullscreenchange", handler);
-    return () => document.removeEventListener("fullscreenchange", handler);
+    const h = () => { if (!document.fullscreenElement) setIsFullscreen(false); };
+    document.addEventListener("fullscreenchange", h);
+    return () => document.removeEventListener("fullscreenchange", h);
   }, []);
 
-  const handleDownload = useCallback(() => toast.success("Download started"), []);
+  // --- drag ---
+  useEffect(() => {
+    if (!dragState) return;
+    const onMove = (e: MouseEvent) => {
+      const dx = (e.clientX - dragState.sx) / scale;
+      const dy = (e.clientY - dragState.sy) / scale;
+      patchText(dragState.id, {
+        x: Math.max(0, Math.min(SLIDE_W - 50, dragState.ox + dx)),
+        y: Math.max(0, Math.min(SLIDE_H - 20, dragState.oy + dy)),
+      });
+    };
+    const onUp = () => setDragState(null);
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mouseup", onUp);
+    return () => { window.removeEventListener("mousemove", onMove); window.removeEventListener("mouseup", onUp); };
+  }, [dragState, scale, patchText]);
+
+  // --- actions ---
+  const addText = useCallback(
+    (x: number, y: number) => {
+      const el: SlideTextElement = { id: uid(), text: "Edit this text", x, y, w: 400, h: 60, fontSize: 28, fontWeight: 400, color: slide.bgColor === "#FFFFFF" || slide.bgColor === "#F8FAFC" ? "#1E293B" : "#FFFFFF" };
+      patchTexts([...slide.texts, el]);
+      setSelectedTextId(el.id);
+      setActiveTool("select");
+      toast.success("Text added — double-click to edit");
+    },
+    [slide, patchTexts]
+  );
+
+  const addShape = useCallback(
+    (x: number, y: number) => {
+      patchSlide({ shapes: [...slide.shapes, { id: uid(), type: "rect", x, y, w: 300, h: 180, bgColor: "rgba(59,130,246,0.15)", borderRadius: 12, borderColor: "#3B82F6", borderWidth: 1 }] });
+      toast.success("Shape added");
+      setActiveTool("select");
+    },
+    [slide, patchSlide]
+  );
+
+  const duplicateSlide = useCallback(() => {
+    const copy: SlideData = JSON.parse(JSON.stringify(slide));
+    copy.id = uid();
+    copy.texts = copy.texts.map((t) => ({ ...t, id: uid() }));
+    copy.shapes = copy.shapes.map((s) => ({ ...s, id: uid() }));
+    const next = [...slides];
+    next.splice(currentIdx + 1, 0, copy);
+    setSlides(next);
+    setCurrentIdx(currentIdx + 1);
+    toast.success("Slide duplicated");
+  }, [slide, slides, currentIdx]);
+
+  const handleCanvasClick = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      if (mode !== "edit") return;
+      const target = e.target as HTMLElement;
+      if (target.closest("[data-text-id]")) return;
+
+      const slideEl = e.currentTarget;
+      const rect = slideEl.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / scale;
+      const y = (e.clientY - rect.top) / scale;
+
+      if (activeTool === "text") addText(x - 200, y - 30);
+      else if (activeTool === "shape") addShape(x - 150, y - 90);
+      else { setSelectedTextId(null); setEditingTextId(null); }
+    },
+    [mode, activeTool, scale, addText, addShape]
+  );
 
   const fileName = subject && chapter
     ? `${subject.toLowerCase().replace(/\s+/g, "_")}_${chapter.toLowerCase().replace(/\s+/g, "_")}_presentation`
     : "presentation";
 
-  // --- Edit actions ---
-  const addElement = useCallback((type: "text" | "shape" | "image", x: number, y: number) => {
-    const newEl: SlideElement = {
-      id: genId(),
-      type,
-      x: Math.max(0, Math.min(x - 150, SLIDE_W - 300)),
-      y: Math.max(0, Math.min(y - 40, SLIDE_H - 80)),
-      w: type === "text" ? 400 : 300,
-      h: type === "text" ? 80 : 200,
-      content: type === "text" ? "Double-click to edit" : type === "shape" ? "" : "",
-      style: {
-        fontSize: type === "text" ? 32 : 24,
-        bold: false,
-        italic: false,
-        align: "left",
-        color: type === "text" ? "#FFFFFF" : "#FFFFFF",
-        bgColor: type === "text" ? "rgba(0,0,0,0.5)" : "hsl(210,100%,44%)",
-        borderRadius: type === "shape" ? 12 : 8,
-      },
-    };
-    const updated = [...currentElements, newEl];
-    updateElements(updated);
-    setSelectedId(newEl.id);
-    setActiveTool("select");
-    toast.success(`${type.charAt(0).toUpperCase() + type.slice(1)} added`);
-  }, [currentElements, updateElements]);
-
-  const deleteSelected = useCallback(() => {
-    if (!selectedId) return;
-    updateElements(currentElements.filter((el) => el.id !== selectedId));
-    setSelectedId(null);
-    setEditingId(null);
-    toast.success("Element deleted");
-  }, [selectedId, currentElements, updateElements]);
-
-  const updateSelectedStyle = useCallback((patch: Partial<SlideElement["style"]>) => {
-    if (!selectedId) return;
-    updateElements(currentElements.map((el) =>
-      el.id === selectedId ? { ...el, style: { ...el.style, ...patch } } : el
-    ));
-  }, [selectedId, currentElements, updateElements]);
-
-  // Canvas click — add or deselect
-  const handleCanvasClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    if (mode !== "edit") return;
-    const slideEl = slideRef.current;
-    if (!slideEl) return;
-
-    const rect = slideEl.getBoundingClientRect();
-    const x = (e.clientX - rect.left) / scale;
-    const y = (e.clientY - rect.top) / scale;
-
-    if (activeTool === "text") {
-      addElement("text", x, y);
-    } else if (activeTool === "shape") {
-      addElement("shape", x, y);
-    } else if (activeTool === "image") {
-      addElement("image", x, y);
-    } else {
-      // select tool — click on empty space deselects
-      if (e.target === e.currentTarget || (e.target as HTMLElement).tagName === "IMG") {
-        setSelectedId(null);
-        setEditingId(null);
-      }
-    }
-  }, [mode, activeTool, scale, addElement]);
-
-  // Drag logic
-  const handleElementMouseDown = useCallback((e: React.MouseEvent, el: SlideElement) => {
-    if (mode !== "edit") return;
-    e.stopPropagation();
-    setSelectedId(el.id);
-    if (activeTool !== "select") return;
-    setDragState({ id: el.id, startX: e.clientX, startY: e.clientY, elX: el.x, elY: el.y });
-  }, [mode, activeTool]);
-
-  const handleResizeMouseDown = useCallback((e: React.MouseEvent, el: SlideElement) => {
-    e.stopPropagation();
-    setResizeState({ id: el.id, startX: e.clientX, startY: e.clientY, elW: el.w, elH: el.h });
-  }, []);
-
-  useEffect(() => {
-    if (!dragState && !resizeState) return;
-
-    const handleMouseMove = (e: MouseEvent) => {
-      if (dragState) {
-        const dx = (e.clientX - dragState.startX) / scale;
-        const dy = (e.clientY - dragState.startY) / scale;
-        updateElements(currentElements.map((el) =>
-          el.id === dragState.id
-            ? { ...el, x: Math.max(0, Math.min(SLIDE_W - el.w, dragState.elX + dx)), y: Math.max(0, Math.min(SLIDE_H - el.h, dragState.elY + dy)) }
-            : el
-        ));
-      }
-      if (resizeState) {
-        const dx = (e.clientX - resizeState.startX) / scale;
-        const dy = (e.clientY - resizeState.startY) / scale;
-        updateElements(currentElements.map((el) =>
-          el.id === resizeState.id
-            ? { ...el, w: Math.max(80, resizeState.elW + dx), h: Math.max(40, resizeState.elH + dy) }
-            : el
-        ));
-      }
-    };
-
-    const handleMouseUp = () => {
-      setDragState(null);
-      setResizeState(null);
-    };
-
-    window.addEventListener("mousemove", handleMouseMove);
-    window.addEventListener("mouseup", handleMouseUp);
-    return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("mouseup", handleMouseUp);
-    };
-  }, [dragState, resizeState, scale, currentElements, updateElements]);
-
-  // Fullscreen presenter
+  // --- fullscreen presenter ---
   if (isFullscreen) {
     return (
       <div className="fixed inset-0 z-[100] bg-black flex items-center justify-center cursor-none group">
-        <img src={SLIDES_SRC[currentSlide]} alt={`Slide ${currentSlide + 1}`} className="max-w-full max-h-full object-contain" />
+        <div className="relative" style={{ width: "100vw", height: "100vh", overflow: "hidden" }}>
+          <div
+            className="absolute left-1/2 top-1/2"
+            style={{ width: SLIDE_W, height: SLIDE_H, marginLeft: -SLIDE_W / 2, marginTop: -SLIDE_H / 2, transform: `scale(${Math.min(window.innerWidth / SLIDE_W, window.innerHeight / SLIDE_H)})`, transformOrigin: "center center" }}
+          >
+            <SlideRenderer slide={slides[currentIdx]} />
+          </div>
+        </div>
         <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent pt-16 pb-4 px-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300 cursor-default">
           <div className="flex items-center justify-between max-w-3xl mx-auto">
-            <button onClick={() => setCurrentSlide((p) => Math.max(0, p - 1))} disabled={currentSlide === 0} className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 disabled:opacity-30 flex items-center justify-center">
-              <ChevronLeft className="w-5 h-5 text-white" />
-            </button>
-            <span className="text-white/80 text-sm font-medium">{currentSlide + 1} / {SLIDES_SRC.length}</span>
-            <button onClick={() => setCurrentSlide((p) => Math.min(SLIDES_SRC.length - 1, p + 1))} disabled={currentSlide === SLIDES_SRC.length - 1} className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 disabled:opacity-30 flex items-center justify-center">
-              <ChevronRight className="w-5 h-5 text-white" />
-            </button>
+            <button onClick={() => setCurrentIdx((p) => Math.max(0, p - 1))} disabled={currentIdx === 0} className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 disabled:opacity-30 flex items-center justify-center"><ChevronLeft className="w-5 h-5 text-white" /></button>
+            <span className="text-white/80 text-sm font-medium">{currentIdx + 1} / {slides.length}</span>
+            <button onClick={() => setCurrentIdx((p) => Math.min(slides.length - 1, p + 1))} disabled={currentIdx === slides.length - 1} className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 disabled:opacity-30 flex items-center justify-center"><ChevronRight className="w-5 h-5 text-white" /></button>
           </div>
-          <div className="flex justify-center mt-2">
-            <button onClick={exitFullscreen} className="text-xs text-white/50 hover:text-white/80 transition-colors">Press ESC to exit</button>
-          </div>
+          <div className="flex justify-center mt-2"><button onClick={() => document.exitFullscreen?.()} className="text-xs text-white/50 hover:text-white/80 transition-colors">Press ESC to exit</button></div>
         </div>
       </div>
     );
@@ -298,257 +223,175 @@ const PresentationEditor = () => {
   return (
     <div className="flex flex-col h-[calc(100vh-4rem)] -m-6 bg-background">
       {/* Toolbar */}
-      <div className="flex items-center justify-between h-12 px-4 border-b border-border bg-card shrink-0">
-        <div className="flex items-center gap-3 min-w-0">
-          <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0" onClick={() => navigate(-1)} aria-label="Go back">
-            <ArrowLeft className="w-4 h-4" />
-          </Button>
+      <div className="flex items-center justify-between h-12 px-3 border-b border-border bg-card shrink-0">
+        <div className="flex items-center gap-2 min-w-0">
+          <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0" onClick={() => navigate(-1)}><ArrowLeft className="w-4 h-4" /></Button>
           <Separator orientation="vertical" className="h-5" />
           <p className="text-sm font-medium text-foreground truncate">{fileName}.pptx</p>
         </div>
 
-        {/* Mode toggle */}
         <div className="flex items-center gap-1 bg-muted rounded-lg p-0.5">
-          <button onClick={() => { setMode("view"); setSelectedId(null); setEditingId(null); }} className={cn("flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all", mode === "view" ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}>
-            <Eye className="w-3.5 h-3.5" /> Preview
-          </button>
-          <button onClick={() => setMode("edit")} className={cn("flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all", mode === "edit" ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}>
-            <Pencil className="w-3.5 h-3.5" /> Edit
-          </button>
+          <button onClick={() => { setMode("view"); setSelectedTextId(null); setEditingTextId(null); }} className={cn("flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all", mode === "view" ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}><Eye className="w-3.5 h-3.5" /> Preview</button>
+          <button onClick={() => setMode("edit")} className={cn("flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all", mode === "edit" ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}><Pencil className="w-3.5 h-3.5" /> Edit</button>
         </div>
 
-        {/* Right actions */}
         <div className="flex items-center gap-1">
           {mode === "edit" && (
             <>
               {TOOLBAR_TOOLS.map((tool) => (
                 <Tooltip key={tool.id}>
                   <TooltipTrigger asChild>
-                    <button onClick={() => setActiveTool(tool.id)} className={cn("w-8 h-8 rounded-md flex items-center justify-center transition-colors", activeTool === tool.id ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-accent hover:text-foreground")}>
-                      <tool.icon className="w-4 h-4" />
-                    </button>
+                    <button onClick={() => setActiveTool(tool.id)} className={cn("w-8 h-8 rounded-md flex items-center justify-center transition-colors", activeTool === tool.id ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-accent hover:text-foreground")}><tool.icon className="w-4 h-4" /></button>
                   </TooltipTrigger>
                   <TooltipContent side="bottom" className="text-xs">{tool.label}</TooltipContent>
                 </Tooltip>
               ))}
-              <Separator orientation="vertical" className="h-5 mx-1" />
-
-              {/* Style controls when element selected */}
-              {selectedElement && selectedElement.type === "text" && (
+              <Separator orientation="vertical" className="h-5 mx-0.5" />
+              {selectedText && (
                 <>
-                  <button onClick={() => updateSelectedStyle({ bold: !selectedElement.style.bold })} className={cn("w-8 h-8 rounded-md flex items-center justify-center transition-colors", selectedElement.style.bold ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-accent")}>
-                    <Bold className="w-4 h-4" />
-                  </button>
-                  <button onClick={() => updateSelectedStyle({ italic: !selectedElement.style.italic })} className={cn("w-8 h-8 rounded-md flex items-center justify-center transition-colors", selectedElement.style.italic ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-accent")}>
-                    <Italic className="w-4 h-4" />
-                  </button>
-                  <button onClick={() => updateSelectedStyle({ align: "left" })} className={cn("w-8 h-8 rounded-md flex items-center justify-center transition-colors", selectedElement.style.align === "left" ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-accent")}>
-                    <AlignLeft className="w-4 h-4" />
-                  </button>
-                  <button onClick={() => updateSelectedStyle({ align: "center" })} className={cn("w-8 h-8 rounded-md flex items-center justify-center transition-colors", selectedElement.style.align === "center" ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-accent")}>
-                    <AlignCenter className="w-4 h-4" />
-                  </button>
-                  <button onClick={() => updateSelectedStyle({ align: "right" })} className={cn("w-8 h-8 rounded-md flex items-center justify-center transition-colors", selectedElement.style.align === "right" ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-accent")}>
-                    <AlignRight className="w-4 h-4" />
-                  </button>
-                  <Separator orientation="vertical" className="h-5 mx-1" />
+                  <button onClick={() => patchText(selectedTextId!, { fontWeight: selectedText.fontWeight === 700 ? 400 : 700 })} className={cn("w-8 h-8 rounded-md flex items-center justify-center transition-colors", selectedText.fontWeight === 700 ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-accent")}><Bold className="w-4 h-4" /></button>
+                  {(["left", "center", "right"] as const).map((a) => {
+                    const Icon = a === "left" ? AlignLeft : a === "center" ? AlignCenter : AlignRight;
+                    return <button key={a} onClick={() => patchText(selectedTextId!, { align: a })} className={cn("w-8 h-8 rounded-md flex items-center justify-center transition-colors", (selectedText.align || "left") === a ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-accent")}><Icon className="w-4 h-4" /></button>;
+                  })}
+                  <Separator orientation="vertical" className="h-5 mx-0.5" />
                 </>
               )}
-
-              {selectedId && (
+              {selectedTextId && (
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <button onClick={deleteSelected} className="w-8 h-8 rounded-md flex items-center justify-center text-destructive hover:bg-destructive/10 transition-colors">
-                      <Trash2 className="w-4 h-4" />
-                    </button>
+                    <button onClick={() => { patchTexts(slide.texts.filter((t) => t.id !== selectedTextId)); setSelectedTextId(null); setEditingTextId(null); toast.success("Deleted"); }} className="w-8 h-8 rounded-md flex items-center justify-center text-destructive hover:bg-destructive/10"><Trash2 className="w-4 h-4" /></button>
                   </TooltipTrigger>
-                  <TooltipContent side="bottom" className="text-xs">Delete</TooltipContent>
+                  <TooltipContent side="bottom" className="text-xs">Delete (Del)</TooltipContent>
                 </Tooltip>
               )}
-              <Separator orientation="vertical" className="h-5 mx-1" />
+              <Separator orientation="vertical" className="h-5 mx-0.5" />
             </>
           )}
-
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={enterFullscreen}>
-                <Maximize2 className="w-4 h-4" />
-              </Button>
+              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => { document.documentElement.requestFullscreen?.(); setIsFullscreen(true); }}><Maximize2 className="w-4 h-4" /></Button>
             </TooltipTrigger>
-            <TooltipContent side="bottom" className="text-xs">Present Fullscreen</TooltipContent>
+            <TooltipContent side="bottom" className="text-xs">Present (F5)</TooltipContent>
           </Tooltip>
-          <Button size="sm" className="h-8 gap-1.5 text-xs" onClick={handleDownload}>
-            <Download className="w-3.5 h-3.5" /> Download
-          </Button>
+          <Button size="sm" className="h-8 gap-1.5 text-xs" onClick={() => toast.success("Download started")}><Download className="w-3.5 h-3.5" /> Download</Button>
         </div>
       </div>
 
-      {/* Main area */}
+      {/* Main */}
       <div className="flex flex-1 min-h-0">
         {/* Sidebar */}
-        <div className="w-[180px] shrink-0 border-r border-border bg-muted/30 overflow-y-auto p-3 space-y-2">
-          {SLIDES_SRC.map((slide, idx) => (
-            <button key={idx} onClick={() => { setCurrentSlide(idx); setSelectedId(null); setEditingId(null); }} className={cn("relative w-full rounded-lg overflow-hidden border-2 transition-all", idx === currentSlide ? "border-primary shadow-md ring-1 ring-primary/20" : "border-transparent hover:border-border")}>
-              <div className="relative">
-                <img src={slide} alt={`Slide ${idx + 1}`} className="w-full aspect-video object-cover" />
-                <span className={cn("absolute top-1 left-1 w-5 h-5 rounded text-[10px] font-semibold flex items-center justify-center", idx === currentSlide ? "bg-primary text-primary-foreground" : "bg-black/50 text-white")}>{idx + 1}</span>
-              </div>
-            </button>
-          ))}
+        <div className="w-[180px] shrink-0 border-r border-border bg-muted/30 flex flex-col">
+          <div className="flex-1 overflow-y-auto p-3 space-y-2">
+            {slides.map((sl, idx) => (
+              <button key={sl.id} onClick={() => { setCurrentIdx(idx); setSelectedTextId(null); setEditingTextId(null); }} className={cn("relative w-full rounded-lg overflow-hidden border-2 transition-all", idx === currentIdx ? "border-primary shadow-md ring-1 ring-primary/20" : "border-transparent hover:border-border")}>
+                <div className="relative w-full aspect-video overflow-hidden" style={{ background: sl.bgGradient || sl.bgColor }}>
+                  {/* Mini slide preview */}
+                  <div style={{ transform: `scale(${154 / SLIDE_W})`, transformOrigin: "top left", width: SLIDE_W, height: SLIDE_H }}>
+                    <SlideRenderer slide={sl} mini />
+                  </div>
+                  <span className={cn("absolute top-1 left-1 w-5 h-5 rounded text-[10px] font-semibold flex items-center justify-center z-10", idx === currentIdx ? "bg-primary text-primary-foreground" : "bg-black/50 text-white")}>{idx + 1}</span>
+                </div>
+              </button>
+            ))}
+          </div>
+          {mode === "edit" && (
+            <div className="p-3 border-t border-border space-y-1.5">
+              <Button variant="outline" size="sm" className="w-full gap-1.5 text-xs h-8" onClick={duplicateSlide}><Copy className="w-3 h-3" /> Duplicate Slide</Button>
+            </div>
+          )}
         </div>
 
         {/* Canvas */}
-        <div
-          ref={canvasRef}
-          className={cn("flex-1 relative overflow-hidden", mode === "edit" ? "bg-muted/50" : "bg-muted/30")}
-        >
+        <div ref={canvasRef} className={cn("flex-1 relative overflow-hidden", mode === "edit" ? "bg-muted/50" : "bg-muted/30")}>
           <div
-            ref={slideRef}
             className="absolute left-1/2 top-1/2"
-            style={{
-              width: SLIDE_W,
-              height: SLIDE_H,
-              marginLeft: -(SLIDE_W / 2),
-              marginTop: -(SLIDE_H / 2),
-              transform: `scale(${scale})`,
-              transformOrigin: "center center",
-              cursor: mode === "edit" && activeTool !== "select" ? "crosshair" : "default",
-            }}
+            style={{ width: SLIDE_W, height: SLIDE_H, marginLeft: -SLIDE_W / 2, marginTop: -SLIDE_H / 2, transform: `scale(${scale})`, transformOrigin: "center center", cursor: mode === "edit" && activeTool !== "select" ? "crosshair" : "default" }}
             onClick={handleCanvasClick}
           >
-            <img
-              src={SLIDES_SRC[currentSlide]}
-              alt={`Slide ${currentSlide + 1}`}
-              className="w-full h-full object-cover rounded-sm pointer-events-none"
-              style={{ boxShadow: "0 8px 40px -12px rgba(0,0,0,0.25)" }}
-            />
-
-            {/* Rendered elements */}
-            {currentElements.map((el) => {
-              const isSelected = el.id === selectedId && mode === "edit";
-              const isEditing = el.id === editingId;
-
-              return (
+            {/* Slide background */}
+            <div className="w-full h-full rounded-sm overflow-hidden" style={{ background: slide.bgGradient || slide.bgColor, boxShadow: "0 8px 40px -12px rgba(0,0,0,0.3)" }}>
+              {/* Shapes */}
+              {slide.shapes.map((sh) => (
                 <div
-                  key={el.id}
-                  className={cn(
-                    "absolute group",
-                    mode === "edit" ? "cursor-move" : "pointer-events-none"
-                  )}
-                  style={{
-                    left: el.x,
-                    top: el.y,
-                    width: el.w,
-                    height: el.h,
-                  }}
-                  onMouseDown={(e) => handleElementMouseDown(e, el)}
-                  onDoubleClick={(e) => {
-                    e.stopPropagation();
-                    if (mode === "edit" && el.type === "text") {
-                      setEditingId(el.id);
-                      setActiveTool("select");
-                    }
-                  }}
-                >
-                  {/* Element content */}
+                  key={sh.id}
+                  className="absolute"
+                  style={{ left: sh.x, top: sh.y, width: sh.w, height: sh.h, backgroundColor: sh.bgColor, borderRadius: sh.borderRadius || 0, border: sh.borderColor ? `${sh.borderWidth || 1}px solid ${sh.borderColor}` : "none" }}
+                />
+              ))}
+
+              {/* Text elements */}
+              {slide.texts.map((t) => {
+                const isSel = t.id === selectedTextId && mode === "edit";
+                const isEdit = t.id === editingTextId;
+                return (
                   <div
-                    className={cn(
-                      "w-full h-full overflow-hidden",
-                      isSelected && "ring-2 ring-primary ring-offset-0"
-                    )}
-                    style={{
-                      backgroundColor: el.style.bgColor || "transparent",
-                      borderRadius: el.style.borderRadius || 0,
+                    key={t.id}
+                    data-text-id={t.id}
+                    className={cn("absolute", mode === "edit" && "group")}
+                    style={{ left: t.x, top: t.y, width: t.w, minHeight: t.h, cursor: mode === "edit" ? (activeTool === "select" ? "move" : "default") : "default" }}
+                    onMouseDown={(e) => {
+                      if (mode !== "edit" || activeTool !== "select") return;
+                      e.stopPropagation();
+                      setSelectedTextId(t.id);
+                      if (!isEdit) setDragState({ id: t.id, sx: e.clientX, sy: e.clientY, ox: t.x, oy: t.y });
+                    }}
+                    onDoubleClick={(e) => {
+                      e.stopPropagation();
+                      if (mode === "edit") { setEditingTextId(t.id); setSelectedTextId(t.id); setActiveTool("select"); }
                     }}
                   >
-                    {el.type === "text" && (
-                      isEditing ? (
-                        <textarea
-                          autoFocus
-                          className="w-full h-full bg-transparent outline-none resize-none p-3"
-                          style={{
-                            fontSize: el.style.fontSize || 32,
-                            fontWeight: el.style.bold ? 700 : 400,
-                            fontStyle: el.style.italic ? "italic" : "normal",
-                            textAlign: el.style.align || "left",
-                            color: el.style.color || "#FFFFFF",
-                            lineHeight: 1.3,
-                          }}
-                          value={el.content}
-                          onChange={(e) => {
-                            updateElements(currentElements.map((item) =>
-                              item.id === el.id ? { ...item, content: e.target.value } : item
-                            ));
-                          }}
-                          onBlur={() => setEditingId(null)}
-                          onKeyDown={(e) => {
-                            e.stopPropagation();
-                            if (e.key === "Escape") setEditingId(null);
-                          }}
-                        />
-                      ) : (
-                        <div
-                          className="w-full h-full p-3 whitespace-pre-wrap"
-                          style={{
-                            fontSize: el.style.fontSize || 32,
-                            fontWeight: el.style.bold ? 700 : 400,
-                            fontStyle: el.style.italic ? "italic" : "normal",
-                            textAlign: el.style.align || "left",
-                            color: el.style.color || "#FFFFFF",
-                            lineHeight: 1.3,
-                          }}
-                        >
-                          {el.content}
-                        </div>
-                      )
-                    )}
+                    {/* Selection outline */}
+                    {isSel && <div className="absolute -inset-[3px] border-2 border-primary rounded pointer-events-none z-10" />}
+                    {/* Hover outline in edit mode */}
+                    {mode === "edit" && !isSel && <div className="absolute -inset-[2px] border border-transparent group-hover:border-primary/30 rounded pointer-events-none" />}
 
-                    {el.type === "shape" && (
-                      <div className="w-full h-full" />
-                    )}
-
-                    {el.type === "image" && (
-                      <div className="w-full h-full flex items-center justify-center text-white/60">
-                        <ImageIcon className="w-12 h-12" />
+                    {isEdit ? (
+                      <textarea
+                        autoFocus
+                        className="w-full bg-transparent outline-none resize-none p-0 m-0 border-none"
+                        style={{ fontSize: t.fontSize, fontWeight: t.fontWeight, color: t.color, textAlign: t.align || "left", lineHeight: t.lineHeight || 1.3, letterSpacing: t.letterSpacing, minHeight: t.h, fontFamily: "inherit" }}
+                        value={t.text}
+                        onChange={(e) => patchText(t.id, { text: e.target.value })}
+                        onBlur={() => setEditingTextId(null)}
+                        onMouseDown={(e) => e.stopPropagation()}
+                        onKeyDown={(e) => { e.stopPropagation(); if (e.key === "Escape") setEditingTextId(null); }}
+                      />
+                    ) : (
+                      <div style={{ fontSize: t.fontSize, fontWeight: t.fontWeight, color: t.color, textAlign: t.align || "left", lineHeight: t.lineHeight || 1.3, letterSpacing: t.letterSpacing, whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
+                        {t.text}
                       </div>
                     )}
                   </div>
-
-                  {/* Resize handle */}
-                  {isSelected && (
-                    <div
-                      className="absolute -right-1.5 -bottom-1.5 w-4 h-4 bg-primary rounded-sm cursor-se-resize border-2 border-white shadow"
-                      onMouseDown={(e) => handleResizeMouseDown(e, el)}
-                    />
-                  )}
-                </div>
-              );
-            })}
-
-            {/* Edit mode hint when no elements */}
-            {mode === "edit" && currentElements.length === 0 && (
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <div className="bg-black/60 text-white px-6 py-3 rounded-xl text-sm font-medium backdrop-blur-sm">
-                  Select a tool from the toolbar and click on the slide to add elements
-                </div>
-              </div>
-            )}
+                );
+              })}
+            </div>
           </div>
 
           {/* Nav pills */}
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 bg-card/90 backdrop-blur-sm border border-border rounded-full px-2 py-1 shadow-lg z-10">
-            <button onClick={() => setCurrentSlide((p) => Math.max(0, p - 1))} disabled={currentSlide === 0} className="w-7 h-7 rounded-full flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-accent disabled:opacity-30 transition-colors">
-              <ChevronLeft className="w-4 h-4" />
-            </button>
-            <span className="text-xs font-medium text-foreground min-w-[4rem] text-center">{currentSlide + 1} of {SLIDES_SRC.length}</span>
-            <button onClick={() => setCurrentSlide((p) => Math.min(SLIDES_SRC.length - 1, p + 1))} disabled={currentSlide === SLIDES_SRC.length - 1} className="w-7 h-7 rounded-full flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-accent disabled:opacity-30 transition-colors">
-              <ChevronRight className="w-4 h-4" />
-            </button>
+            <button onClick={() => setCurrentIdx((p) => Math.max(0, p - 1))} disabled={currentIdx === 0} className="w-7 h-7 rounded-full flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-accent disabled:opacity-30 transition-colors"><ChevronLeft className="w-4 h-4" /></button>
+            <span className="text-xs font-medium text-foreground min-w-[4rem] text-center">{currentIdx + 1} of {slides.length}</span>
+            <button onClick={() => setCurrentIdx((p) => Math.min(slides.length - 1, p + 1))} disabled={currentIdx === slides.length - 1} className="w-7 h-7 rounded-full flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-accent disabled:opacity-30 transition-colors"><ChevronRight className="w-4 h-4" /></button>
           </div>
         </div>
       </div>
     </div>
   );
 };
+
+// --- Pure slide renderer (no interactivity) ---
+const SlideRenderer = ({ slide, mini }: { slide: SlideData; mini?: boolean }) => (
+  <div className="w-full h-full relative" style={{ background: slide.bgGradient || slide.bgColor }}>
+    {slide.shapes.map((sh) => (
+      <div key={sh.id} className="absolute" style={{ left: sh.x, top: sh.y, width: sh.w, height: sh.h, backgroundColor: sh.bgColor, borderRadius: sh.borderRadius || 0, border: sh.borderColor ? `${sh.borderWidth || 1}px solid ${sh.borderColor}` : "none" }} />
+    ))}
+    {slide.texts.map((t) => (
+      <div key={t.id} className="absolute" style={{ left: t.x, top: t.y, width: t.w, minHeight: t.h, fontSize: t.fontSize, fontWeight: t.fontWeight, color: t.color, textAlign: t.align || "left", lineHeight: t.lineHeight || 1.3, whiteSpace: "pre-wrap", wordBreak: "break-word", overflow: mini ? "hidden" : undefined }}>
+        {t.text}
+      </div>
+    ))}
+  </div>
+);
 
 export default PresentationEditor;
