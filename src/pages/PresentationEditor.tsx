@@ -245,7 +245,7 @@ const PresentationEditor = () => {
           <button onClick={() => setMode("edit")} className={cn("flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all", mode === "edit" ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}><Pencil className="w-3.5 h-3.5" /> Edit</button>
         </div>
 
-        <div className="flex items-center gap-1">
+        <div className="ml-auto flex items-center gap-1">
           {mode === "edit" && (
             <>
               {TOOLBAR_TOOLS.map((tool) => (
