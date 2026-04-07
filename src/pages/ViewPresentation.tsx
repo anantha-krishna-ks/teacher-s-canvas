@@ -1,11 +1,14 @@
+import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { CheckCircle2, FileText, Download, ArrowLeft } from "lucide-react";
+import { CheckCircle2, FileText, Download, ArrowLeft, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import PresentationPreviewModal from "@/components/PresentationPreviewModal";
 
 const ViewPresentation = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const { grade, subject, chapter } = (location.state as { grade: string; subject: string; chapter: string }) || {
     grade: "",
     subject: "",
@@ -56,12 +59,20 @@ const ViewPresentation = () => {
               <p className="text-xs text-muted-foreground">Generated just now</p>
             </div>
           </div>
-          <Button onClick={handleDownload} size="sm" className="gap-2 shrink-0 ml-4">
-            <Download className="w-4 h-4" aria-hidden="true" />
-            Download PPT
-          </Button>
+          <div className="flex items-center gap-2 shrink-0 ml-4">
+            <Button onClick={() => setIsPreviewOpen(true)} size="sm" variant="outline" className="gap-2">
+              <Eye className="w-4 h-4" aria-hidden="true" />
+              View
+            </Button>
+            <Button onClick={handleDownload} size="sm" className="gap-2">
+              <Download className="w-4 h-4" aria-hidden="true" />
+              Download PPT
+            </Button>
+          </div>
         </div>
       </div>
+
+      <PresentationPreviewModal open={isPreviewOpen} onOpenChange={setIsPreviewOpen} />
     </div>
   );
 };

@@ -12,7 +12,9 @@ import {
   FileText,
   ArrowLeft,
   CheckCircle2,
+  Eye,
 } from "lucide-react";
+import PresentationPreviewModal from "@/components/PresentationPreviewModal";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -57,6 +59,7 @@ const CreatePresentation = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [isGenerated, setIsGenerated] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
   const subjects = useMemo(
     () => (grade ? SUBJECTS_BY_GRADE[grade] || [] : []),
@@ -383,10 +386,16 @@ const CreatePresentation = () => {
                     <p className="text-xs text-muted-foreground">Generated just now</p>
                   </div>
                 </div>
-                <Button onClick={handleDownload} size="sm" className="gap-2 shrink-0 ml-4">
-                  <Download className="w-4 h-4" aria-hidden="true" />
-                  Download PPT
-                </Button>
+                <div className="flex items-center gap-2 shrink-0 ml-4">
+                  <Button onClick={() => setIsPreviewOpen(true)} size="sm" variant="outline" className="gap-2">
+                    <Eye className="w-4 h-4" aria-hidden="true" />
+                    View
+                  </Button>
+                  <Button onClick={handleDownload} size="sm" className="gap-2">
+                    <Download className="w-4 h-4" aria-hidden="true" />
+                    Download PPT
+                  </Button>
+                </div>
               </div>
             </div>
 
@@ -404,6 +413,8 @@ const CreatePresentation = () => {
           </motion.div>
         )}
       </AnimatePresence>
+
+      <PresentationPreviewModal open={isPreviewOpen} onOpenChange={setIsPreviewOpen} />
     </div>
   );
 };
