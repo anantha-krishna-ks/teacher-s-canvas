@@ -233,19 +233,19 @@ const PresentationEditor = () => {
   return (
     <div className="flex flex-col h-[calc(100vh-4rem)] -m-6 bg-background">
       {/* Toolbar */}
-      <div className="flex items-center justify-between h-12 px-3 border-b border-border bg-card shrink-0">
+      <div className="relative flex items-center h-12 px-3 border-b border-border bg-card shrink-0">
         <div className="flex items-center gap-2 min-w-0">
           <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0" onClick={() => navigate(-1)}><ArrowLeft className="w-4 h-4" /></Button>
           <Separator orientation="vertical" className="h-5" />
           <p className="text-sm font-medium text-foreground truncate">{fileName}.pptx</p>
         </div>
 
-        <div className="flex items-center gap-1 bg-muted rounded-lg p-0.5">
+        <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-1 bg-muted rounded-lg p-0.5">
           <button onClick={() => { setMode("view"); setSelectedTextId(null); setEditingTextId(null); }} className={cn("flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all", mode === "view" ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}><Eye className="w-3.5 h-3.5" /> Preview</button>
           <button onClick={() => setMode("edit")} className={cn("flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all", mode === "edit" ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}><Pencil className="w-3.5 h-3.5" /> Edit</button>
         </div>
 
-        <div className="flex items-center gap-1">
+        <div className="ml-auto flex items-center gap-1">
           {mode === "edit" && (
             <>
               {TOOLBAR_TOOLS.map((tool) => (
