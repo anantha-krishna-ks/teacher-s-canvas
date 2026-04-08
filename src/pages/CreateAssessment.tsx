@@ -21,7 +21,7 @@ import { toast } from "sonner";
 const TEST_TYPES = ["PA1", "PA2", "Mid-Term Exam", "Final Exam", "Unit Test"];
 const CLASSES = ["Class 1", "Class 2", "Class 3", "Class 4", "Class 5", "Class 6", "Class 7", "Class 8", "Class 9", "Class 10", "Class 11", "Class 12"];
 const SUBJECTS = ["Mathematics", "Science", "English", "Social Studies", "Hindi", "Computer Science"];
-const TAXONOMIES = ["Bloom's Taxonomy", "Revised Bloom's Taxonomy", "Webb's Depth of Knowledge", "SOLO Taxonomy", "Marzano's Taxonomy"];
+const TAXONOMIES = ["Knowledge", "Understanding", "Application", "Analysis", "Synthesis", "Evaluation"];
 
 const CreateAssessment = () => {
   const navigate = useNavigate();
