@@ -21,6 +21,7 @@ import { toast } from "sonner";
 const TEST_TYPES = ["PA1", "PA2", "Mid-Term Exam", "Final Exam", "Unit Test"];
 const CLASSES = ["Class 1", "Class 2", "Class 3", "Class 4", "Class 5", "Class 6", "Class 7", "Class 8", "Class 9", "Class 10", "Class 11", "Class 12"];
 const SUBJECTS = ["Mathematics", "Science", "English", "Social Studies", "Hindi", "Computer Science"];
+const TAXONOMIES = ["Bloom's Taxonomy", "Revised Bloom's Taxonomy", "Webb's Depth of Knowledge", "SOLO Taxonomy", "Marzano's Taxonomy"];
 
 const CreateAssessment = () => {
   const navigate = useNavigate();
@@ -30,7 +31,7 @@ const CreateAssessment = () => {
   const [typeOfTest, setTypeOfTest] = useState("");
   const [selectedClass, setSelectedClass] = useState("");
   const [subject, setSubject] = useState("");
-  const [subjectCode, setSubjectCode] = useState("");
+  const [taxonomy, setTaxonomy] = useState("");
   const [totalMarks, setTotalMarks] = useState("");
   const [durationHr, setDurationHr] = useState("");
   const [durationMin, setDurationMin] = useState("");
@@ -43,16 +44,17 @@ const CreateAssessment = () => {
         typeOfTest: !typeOfTest ? "Please select a test type" : "",
         selectedClass: !selectedClass ? "Please select a class" : "",
         subject: !subject ? "Please select a subject" : "",
+        taxonomy: !taxonomy ? "Please select a taxonomy" : "",
       }
-    : { typeOfTest: "", selectedClass: "", subject: "" };
+    : { typeOfTest: "", selectedClass: "", subject: "", taxonomy: "" };
 
   const handleBack = useCallback(() => navigate("/dashboard/assessment"), [navigate]);
 
   const handleNext = useCallback(() => {
     setAttempted(true);
-    if (!typeOfTest || !selectedClass || !subject) return;
+    if (!typeOfTest || !selectedClass || !subject || !taxonomy) return;
     setActiveTab("sections");
-  }, [typeOfTest, selectedClass, subject]);
+  }, [typeOfTest, selectedClass, subject, taxonomy]);
 
   return (
     <div className="max-w-6xl mx-auto space-y-6 animate-fade-in">
@@ -151,20 +153,23 @@ const CreateAssessment = () => {
               </div>
             </div>
 
-            {/* Row 2: Subject Code, Total Marks, Duration */}
+            {/* Row 2: Taxonomy, Total Marks, Duration */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="space-y-1.5">
-                <Label htmlFor="subjectCode" className="text-sm font-medium text-foreground">
-                  Subject Code
+                <Label htmlFor="taxonomy" className="text-sm font-medium text-foreground">
+                  Taxonomy <span className="text-destructive">*</span>
                 </Label>
-                <Input
-                  id="subjectCode"
-                  value={subjectCode}
-                  onChange={(e) => setSubjectCode(e.target.value)}
-                  placeholder="e.g. MATH101"
-                  className="bg-background"
-                  maxLength={20}
-                />
+                <Select value={taxonomy} onValueChange={(v) => { setTaxonomy(v); }}>
+                  <SelectTrigger id="taxonomy" className={`bg-background ${errors.taxonomy ? "border-destructive ring-1 ring-destructive/30" : ""}`}>
+                    <SelectValue placeholder="Select taxonomy" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {TAXONOMIES.map((t) => (
+                      <SelectItem key={t} value={t}>{t}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {errors.taxonomy && <p className="text-xs text-destructive">{errors.taxonomy}</p>}
               </div>
 
               <div className="space-y-1.5">
