@@ -90,6 +90,7 @@ const SectionPanel = ({ sections, onChange }: SectionPanelProps) => {
       const duplicated: Section = {
         id: crypto.randomUUID(),
         label: nextLabel,
+        description: source.description,
         items: source.items.map((it) => ({ ...it, id: crypto.randomUUID() })),
       };
       const idx = sections.findIndex((s) => s.id === sectionId);
