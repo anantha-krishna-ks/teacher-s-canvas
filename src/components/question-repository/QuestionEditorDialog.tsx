@@ -253,6 +253,19 @@ const QuestionEditorDialog = ({
       );
     }
 
+    if (type === "assertion-reasoning") {
+      return (
+        <AssertionReasoningEditor
+          assertionText={assertionText}
+          reasonText={reasonText}
+          selectedAnswer={assertionAnswer}
+          onAssertionChange={setAssertionText}
+          onReasonChange={setReasonText}
+          onAnswerChange={setAssertionAnswer}
+        />
+      );
+    }
+
     return (
       <div className="space-y-3">
         {/* Toolbar */}
@@ -395,7 +408,7 @@ const QuestionEditorDialog = ({
                 <span className="w-2 h-2 rounded-full bg-primary" />
               )}
             </button>
-            {type !== "fill-blank" && type !== "true-false" && type !== "matching" && (
+            {type !== "fill-blank" && type !== "true-false" && type !== "matching" && type !== "assertion-reasoning" && (
               <button
                 type="button"
                 className={cn(
