@@ -16,6 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { MultiSelect } from "@/components/ui/multi-select";
 import { toast } from "sonner";
 
 const TEST_TYPES = ["PA1", "PA2", "Mid-Term Exam", "Final Exam", "Unit Test"];
@@ -31,7 +32,7 @@ const CreateAssessment = () => {
   const [typeOfTest, setTypeOfTest] = useState("");
   const [selectedClass, setSelectedClass] = useState("");
   const [subject, setSubject] = useState("");
-  const [taxonomy, setTaxonomy] = useState("");
+  const [taxonomy, setTaxonomy] = useState<string[]>([]);
   const [totalMarks, setTotalMarks] = useState("");
   const [durationHr, setDurationHr] = useState("");
   const [durationMin, setDurationMin] = useState("");
@@ -44,7 +45,7 @@ const CreateAssessment = () => {
         typeOfTest: !typeOfTest ? "Please select a test type" : "",
         selectedClass: !selectedClass ? "Please select a class" : "",
         subject: !subject ? "Please select a subject" : "",
-        taxonomy: !taxonomy ? "Please select a taxonomy" : "",
+        taxonomy: taxonomy.length === 0 ? "Please select at least one taxonomy level" : "",
       }
     : { typeOfTest: "", selectedClass: "", subject: "", taxonomy: "" };
 
@@ -52,7 +53,7 @@ const CreateAssessment = () => {
 
   const handleNext = useCallback(() => {
     setAttempted(true);
-    if (!typeOfTest || !selectedClass || !subject || !taxonomy) return;
+    if (!typeOfTest || !selectedClass || !subject || taxonomy.length === 0) return;
     setActiveTab("sections");
   }, [typeOfTest, selectedClass, subject, taxonomy]);
 
@@ -159,16 +160,14 @@ const CreateAssessment = () => {
                 <Label htmlFor="taxonomy" className="text-sm font-medium text-foreground">
                   Taxonomy <span className="text-destructive">*</span>
                 </Label>
-                <Select value={taxonomy} onValueChange={(v) => { setTaxonomy(v); }}>
-                  <SelectTrigger id="taxonomy" className={`bg-background ${errors.taxonomy ? "border-destructive ring-1 ring-destructive/30" : ""}`}>
-                    <SelectValue placeholder="Select taxonomy" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {TAXONOMIES.map((t) => (
-                      <SelectItem key={t} value={t}>{t}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <MultiSelect
+                  id="taxonomy"
+                  options={TAXONOMIES}
+                  selected={taxonomy}
+                  onChange={setTaxonomy}
+                  placeholder="Select taxonomy levels"
+                  className={errors.taxonomy ? "border-destructive ring-1 ring-destructive/30" : ""}
+                />
                 {errors.taxonomy && <p className="text-xs text-destructive">{errors.taxonomy}</p>}
               </div>
 
