@@ -129,6 +129,13 @@ const SectionPanel = ({ sections, onChange }: SectionPanelProps) => {
     toast.success("Section renamed.");
   }, [editingId, editingLabel, sections, onChange]);
 
+  const handleUpdateDescription = useCallback(
+    (sectionId: string, description: string) => {
+      onChange(sections.map((s) => (s.id === sectionId ? { ...s, description } : s)));
+    },
+    [sections, onChange]
+  );
+
   const updateSectionItems = useCallback(
     (sectionId: string, items: SectionItem[]) => {
       onChange(sections.map((s) => (s.id === sectionId ? { ...s, items } : s)));
