@@ -14,7 +14,7 @@ import MCQOptionsEditor from "./MCQOptionsEditor";
 import ImageUploadEditor from "./ImageUploadEditor";
 import FillInBlankEditor from "./FillInBlankEditor";
 import MatchTheFollowingEditor from "./MatchTheFollowingEditor";
-import AssertionReasoningEditor from "./AssertionReasoningEditor";
+import AssertionReasoningEditor, { type AssertionReasonPair, createDefaultPair } from "./AssertionReasoningEditor";
 import type { MatchPair } from "./MatchTheFollowingEditor";
 import type { QuestionType } from "./QuestionCard";
 import {
@@ -108,9 +108,9 @@ const QuestionEditorDialog = ({
   const [trueFalseAnswer, setTrueFalseAnswer] = useState<boolean | null>(
     editData?.trueFalseAnswer ?? null
   );
-  const [assertionText, setAssertionText] = useState(editData?.assertionText ?? "");
-  const [reasonText, setReasonText] = useState(editData?.reasonText ?? "");
-  const [assertionAnswer, setAssertionAnswer] = useState<string | null>(editData?.assertionAnswer ?? null);
+  const [assertionPairs, setAssertionPairs] = useState<AssertionReasonPair[]>(
+    editData?.assertionPairs ?? [createDefaultPair()]
+  );
 
   const handleImageChange = useCallback((newHasImage: boolean, newImageData: string | null) => {
     setHasImage(newHasImage);
@@ -127,9 +127,7 @@ const QuestionEditorDialog = ({
     setIncludeWordBank(false);
     setMatchPairs(createDefaultPairs());
     setTrueFalseAnswer(null);
-    setAssertionText("");
-    setReasonText("");
-    setAssertionAnswer(null);
+    setAssertionPairs([createDefaultPair()]);
   }, []);
 
   const handleSave = useCallback(() => {
@@ -146,12 +144,10 @@ const QuestionEditorDialog = ({
       label: editData?.label ?? labels[0],
       includeWordBank: type === "fill-blank" ? includeWordBank : undefined,
       matchPairs: type === "matching" ? matchPairs : undefined,
-      assertionText: type === "assertion-reasoning" ? assertionText : undefined,
-      reasonText: type === "assertion-reasoning" ? reasonText : undefined,
-      assertionAnswer: type === "assertion-reasoning" ? assertionAnswer : undefined,
+      assertionPairs: type === "assertion-reasoning" ? assertionPairs : undefined,
     });
     resetState();
-  }, [type, questionText, answerText, trueFalseAnswer, hasImage, imageData, marks, editData, onSave, includeWordBank, matchPairs, assertionText, reasonText, assertionAnswer, resetState]);
+  }, [type, questionText, answerText, trueFalseAnswer, hasImage, imageData, marks, editData, onSave, includeWordBank, matchPairs, assertionPairs, resetState]);
 
   const handleOpenChange = useCallback(
     (val: boolean) => {
@@ -254,10 +250,8 @@ const QuestionEditorDialog = ({
     if (type === "assertion-reasoning") {
       return (
         <AssertionReasoningEditor
-          assertionText={assertionText}
-          reasonText={reasonText}
-          onAssertionChange={setAssertionText}
-          onReasonChange={setReasonText}
+          pairs={assertionPairs}
+          onPairsChange={setAssertionPairs}
         />
       );
     }
