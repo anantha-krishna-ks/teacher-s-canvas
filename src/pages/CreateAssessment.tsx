@@ -22,7 +22,7 @@ import { toast } from "sonner";
 const TEST_TYPES = ["PA1", "PA2", "Mid-Term Exam", "Final Exam", "Unit Test"];
 const CLASSES = ["Class 1", "Class 2", "Class 3", "Class 4", "Class 5", "Class 6", "Class 7", "Class 8", "Class 9", "Class 10", "Class 11", "Class 12"];
 const SUBJECTS = ["Mathematics", "Science", "English", "Social Studies", "Hindi", "Computer Science"];
-const TAXONOMIES = ["Knowledge", "Understanding", "Application", "Analysis", "Synthesis", "Evaluation"];
+const CHAPTERS = ["Chapter 1: Number Systems", "Chapter 2: Polynomials", "Chapter 3: Coordinate Geometry", "Chapter 4: Linear Equations", "Chapter 5: Triangles", "Chapter 6: Quadrilaterals", "Chapter 7: Areas", "Chapter 8: Circles", "Chapter 9: Constructions", "Chapter 10: Statistics"];
 
 const CreateAssessment = () => {
   const navigate = useNavigate();
@@ -32,7 +32,7 @@ const CreateAssessment = () => {
   const [typeOfTest, setTypeOfTest] = useState("");
   const [selectedClass, setSelectedClass] = useState("");
   const [subject, setSubject] = useState("");
-  const [taxonomy, setTaxonomy] = useState<string[]>([]);
+  const [chapters, setChapters] = useState<string[]>([]);
   const [totalMarks, setTotalMarks] = useState("");
   const [durationHr, setDurationHr] = useState("");
   const [durationMin, setDurationMin] = useState("");
@@ -45,17 +45,17 @@ const CreateAssessment = () => {
         typeOfTest: !typeOfTest ? "Please select a test type" : "",
         selectedClass: !selectedClass ? "Please select a class" : "",
         subject: !subject ? "Please select a subject" : "",
-        taxonomy: taxonomy.length === 0 ? "Please select at least one taxonomy level" : "",
+        chapters: chapters.length === 0 ? "Please select at least one chapter" : "",
       }
-    : { typeOfTest: "", selectedClass: "", subject: "", taxonomy: "" };
+    : { typeOfTest: "", selectedClass: "", subject: "", chapters: "" };
 
   const handleBack = useCallback(() => navigate("/dashboard/assessment"), [navigate]);
 
   const handleNext = useCallback(() => {
     setAttempted(true);
-    if (!typeOfTest || !selectedClass || !subject || taxonomy.length === 0) return;
+    if (!typeOfTest || !selectedClass || !subject || chapters.length === 0) return;
     setActiveTab("sections");
-  }, [typeOfTest, selectedClass, subject, taxonomy]);
+  }, [typeOfTest, selectedClass, subject, chapters]);
 
   return (
     <div className="max-w-6xl mx-auto space-y-6 animate-fade-in">
@@ -154,21 +154,21 @@ const CreateAssessment = () => {
               </div>
             </div>
 
-            {/* Row 2: Taxonomy, Total Marks, Duration */}
+            {/* Row 2: Chapters, Total Marks, Duration */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="space-y-1.5">
-                <Label htmlFor="taxonomy" className="text-sm font-medium text-foreground">
-                  Taxonomy <span className="text-destructive">*</span>
+                <Label htmlFor="chapters" className="text-sm font-medium text-foreground">
+                  Chapters <span className="text-destructive">*</span>
                 </Label>
                 <MultiSelect
-                  id="taxonomy"
-                  options={TAXONOMIES}
-                  selected={taxonomy}
-                  onChange={setTaxonomy}
-                  placeholder="Select taxonomy levels"
-                  className={errors.taxonomy ? "border-destructive ring-1 ring-destructive/30" : ""}
+                  id="chapters"
+                  options={CHAPTERS}
+                  selected={chapters}
+                  onChange={setChapters}
+                  placeholder="Select chapters"
+                  className={errors.chapters ? "border-destructive ring-1 ring-destructive/30" : ""}
                 />
-                {errors.taxonomy && <p className="text-xs text-destructive">{errors.taxonomy}</p>}
+                {errors.chapters && <p className="text-xs text-destructive">{errors.chapters}</p>}
               </div>
 
               <div className="space-y-1.5">
