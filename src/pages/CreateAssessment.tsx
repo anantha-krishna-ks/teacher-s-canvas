@@ -1,7 +1,6 @@
 import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronLeft, FileText, Layers } from "lucide-react";
-import LessonPlanTagging from "@/components/LessonPlanTagging";
+import { ChevronLeft, FileText, Info, Layers } from "lucide-react";
 import SectionPanel from "@/components/assessment/SectionPanel";
 import { createSection, type Section } from "@/constants/assessmentSectionData";
 import { Button } from "@/components/ui/button";
@@ -24,6 +23,8 @@ const CLASSES = ["Class 1", "Class 2", "Class 3", "Class 4", "Class 5", "Class 6
 const SUBJECTS = ["Mathematics", "Science", "English", "Social Studies", "Hindi", "Computer Science"];
 const CHAPTERS = ["Chapter 1: Number Systems", "Chapter 2: Polynomials", "Chapter 3: Coordinate Geometry", "Chapter 4: Linear Equations", "Chapter 5: Triangles", "Chapter 6: Quadrilaterals", "Chapter 7: Areas", "Chapter 8: Circles", "Chapter 9: Constructions", "Chapter 10: Statistics"];
 
+const INSTRUCTIONS_REQUIRED_TYPES = ["Final Exam", "Mid-Term Exam"];
+
 const CreateAssessment = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("type");
@@ -38,7 +39,9 @@ const CreateAssessment = () => {
   const [durationMin, setDurationMin] = useState("");
   const [instructions, setInstructions] = useState("");
   const [sections, setSections] = useState<Section[]>([createSection("A")]);
-  const [selectedLessonPlans, setSelectedLessonPlans] = useState<string[]>([]);
+
+  const isInstructionsRequired = INSTRUCTIONS_REQUIRED_TYPES.includes(typeOfTest);
+  const hasDuration = durationHr || durationMin;
 
   const errors = attempted
     ? {
@@ -46,16 +49,20 @@ const CreateAssessment = () => {
         selectedClass: !selectedClass ? "Please select a class" : "",
         subject: !subject ? "Please select a subject" : "",
         chapters: chapters.length === 0 ? "Please select at least one chapter" : "",
+        totalMarks: !totalMarks ? "Please enter total marks" : "",
+        duration: !hasDuration ? "Please enter duration" : "",
+        instructions: isInstructionsRequired && !instructions.trim() ? "Instructions are mandatory for Final and Mid-Term Exams" : "",
       }
-    : { typeOfTest: "", selectedClass: "", subject: "", chapters: "" };
+    : { typeOfTest: "", selectedClass: "", subject: "", chapters: "", totalMarks: "", duration: "", instructions: "" };
 
   const handleBack = useCallback(() => navigate("/dashboard/assessment"), [navigate]);
 
   const handleNext = useCallback(() => {
     setAttempted(true);
-    if (!typeOfTest || !selectedClass || !subject || chapters.length === 0) return;
+    if (!typeOfTest || !selectedClass || !subject || chapters.length === 0 || !totalMarks || !hasDuration) return;
+    if (isInstructionsRequired && !instructions.trim()) return;
     setActiveTab("sections");
-  }, [typeOfTest, selectedClass, subject, chapters]);
+  }, [typeOfTest, selectedClass, subject, chapters, totalMarks, hasDuration, isInstructionsRequired, instructions]);
 
   return (
     <div className="max-w-6xl mx-auto space-y-6 animate-fade-in">
@@ -173,7 +180,7 @@ const CreateAssessment = () => {
 
               <div className="space-y-1.5">
                 <Label htmlFor="totalMarks" className="text-sm font-medium text-foreground">
-                  Total Marks
+                  Total Marks <span className="text-destructive">*</span>
                 </Label>
                 <Input
                   id="totalMarks"
@@ -181,21 +188,24 @@ const CreateAssessment = () => {
                   value={totalMarks}
                   onChange={(e) => setTotalMarks(e.target.value)}
                   placeholder="Enter total marks"
-                  className="bg-background"
+                  className={`bg-background ${errors.totalMarks ? "border-destructive ring-1 ring-destructive/30" : ""}`}
                   min={0}
                   max={999}
                 />
+                {errors.totalMarks && <p className="text-xs text-destructive">{errors.totalMarks}</p>}
               </div>
 
               <div className="space-y-1.5">
-                <Label className="text-sm font-medium text-foreground">Duration</Label>
+                <Label className="text-sm font-medium text-foreground">
+                  Duration <span className="text-destructive">*</span>
+                </Label>
                 <div className="flex items-center gap-2">
                   <Input
                     type="number"
                     value={durationHr}
                     onChange={(e) => setDurationHr(e.target.value)}
                     placeholder="0"
-                    className="bg-background"
+                    className={`bg-background ${errors.duration ? "border-destructive ring-1 ring-destructive/30" : ""}`}
                     min={0}
                     max={10}
                   />
@@ -205,36 +215,37 @@ const CreateAssessment = () => {
                     value={durationMin}
                     onChange={(e) => setDurationMin(e.target.value)}
                     placeholder="0"
-                    className="bg-background"
+                    className={`bg-background ${errors.duration ? "border-destructive ring-1 ring-destructive/30" : ""}`}
                     min={0}
                     max={59}
                   />
                   <span className="text-sm text-muted-foreground shrink-0">min</span>
                 </div>
+                {errors.duration && <p className="text-xs text-destructive">{errors.duration}</p>}
               </div>
             </div>
 
             {/* Row 3: Instructions */}
             <div className="space-y-1.5">
               <Label htmlFor="instructions" className="text-sm font-medium text-foreground">
-                Instructions <span className="text-muted-foreground text-xs">(optional)</span>
+                Instructions {isInstructionsRequired ? <span className="text-destructive">*</span> : <span className="text-muted-foreground text-xs">(optional)</span>}
               </Label>
               <Textarea
                 id="instructions"
                 value={instructions}
                 onChange={(e) => setInstructions(e.target.value)}
                 placeholder="Enter any instructions for students..."
-                className="bg-background min-h-[100px] resize-y"
+                className={`bg-background min-h-[100px] resize-y ${errors.instructions ? "border-destructive ring-1 ring-destructive/30" : ""}`}
                 maxLength={2000}
               />
+              <div className="flex items-start gap-2 rounded-lg bg-primary/5 border border-primary/15 px-3 py-2.5">
+                <Info className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  These instructions will appear at the beginning of the question paper.
+                </p>
+              </div>
+              {errors.instructions && <p className="text-xs text-destructive">{errors.instructions}</p>}
             </div>
-
-            {/* Lesson Plans Tagging */}
-            <LessonPlanTagging
-              subject={subject}
-              selectedIds={selectedLessonPlans}
-              onSelectionChange={setSelectedLessonPlans}
-            />
 
             {/* Next Button */}
             <div className="flex justify-end pt-2">
