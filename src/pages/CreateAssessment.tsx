@@ -55,7 +55,7 @@ const CreateAssessment = () => {
     setAttempted(true);
     if (!typeOfTest || !selectedClass || !subject || chapters.length === 0) return;
     setActiveTab("sections");
-  }, [typeOfTest, selectedClass, subject, taxonomy]);
+  }, [typeOfTest, selectedClass, subject, chapters]);
 
   return (
     <div className="max-w-6xl mx-auto space-y-6 animate-fade-in">
