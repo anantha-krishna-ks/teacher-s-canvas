@@ -37,6 +37,7 @@ const TYPE_LABELS: Record<QuestionType, string> = {
   "true-false": "True / False",
   matching: "Match the Following",
   "fill-blank": "Fill in the Blank",
+  "assertion-reasoning": "Assertion Reasoning",
 };
 
 const INITIAL_MARKS = "1.00";

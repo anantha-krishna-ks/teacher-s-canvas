@@ -10,6 +10,7 @@ const TYPE_LABELS: Record<string, string> = {
   "true-false": "True / False",
   matching: "Match the Following",
   "fill-blank": "Fill in the Blank",
+  "assertion-reasoning": "Assertion Reasoning",
 };
 
 interface QuestionListTableProps {

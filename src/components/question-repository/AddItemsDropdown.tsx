@@ -19,6 +19,7 @@ const ITEM_TYPES: { type: QuestionType; label: string }[] = [
   { type: "true-false", label: "True / False" },
   { type: "matching", label: "Match the Following" },
   { type: "fill-blank", label: "Fill in the Blank" },
+  { type: "assertion-reasoning", label: "Assertion Reasoning" },
 ];
 
 const AddItemsDropdown = ({ onAdd, onCopyQuestion }: AddItemsDropdownProps) => {
