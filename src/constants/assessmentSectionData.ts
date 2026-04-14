@@ -24,6 +24,7 @@ export interface SectionItem {
 export interface Section {
   id: string;
   label: string;
+  description: string;
   items: SectionItem[];
 }
 
@@ -148,6 +149,7 @@ export const makeSubItemsOf = (items: SectionItem[], childIds: string[], parentI
 export const createSection = (label: string): Section => ({
   id: crypto.randomUUID(),
   label,
+  description: "",
   items: [],
 });
 
