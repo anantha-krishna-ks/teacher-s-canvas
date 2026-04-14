@@ -258,10 +258,8 @@ const QuestionEditorDialog = ({
         <AssertionReasoningEditor
           assertionText={assertionText}
           reasonText={reasonText}
-          selectedAnswer={assertionAnswer}
           onAssertionChange={setAssertionText}
           onReasonChange={setReasonText}
-          onAnswerChange={setAssertionAnswer}
         />
       );
     }
@@ -392,22 +390,24 @@ const QuestionEditorDialog = ({
                 Question
               </button>
             )}
-            <button
-              type="button"
-              className={cn(
-                "px-3 py-2 text-sm font-medium transition-colors border-b-2 -mb-px flex items-center gap-1.5",
-                activeTab === "image"
-                  ? "border-primary text-primary"
-                  : "border-transparent text-muted-foreground hover:text-foreground"
-              )}
-              onClick={() => setActiveTab("image")}
-            >
-              <ImagePlus className="w-3.5 h-3.5" />
-              Image
-              {hasImage && (
-                <span className="w-2 h-2 rounded-full bg-primary" />
-              )}
-            </button>
+            {type !== "assertion-reasoning" && (
+              <button
+                type="button"
+                className={cn(
+                  "px-3 py-2 text-sm font-medium transition-colors border-b-2 -mb-px flex items-center gap-1.5",
+                  activeTab === "image"
+                    ? "border-primary text-primary"
+                    : "border-transparent text-muted-foreground hover:text-foreground"
+                )}
+                onClick={() => setActiveTab("image")}
+              >
+                <ImagePlus className="w-3.5 h-3.5" />
+                Image
+                {hasImage && (
+                  <span className="w-2 h-2 rounded-full bg-primary" />
+                )}
+              </button>
+            )}
             {type !== "fill-blank" && type !== "true-false" && type !== "matching" && type !== "assertion-reasoning" && (
               <button
                 type="button"
