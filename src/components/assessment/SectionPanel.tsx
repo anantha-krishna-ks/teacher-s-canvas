@@ -2,7 +2,7 @@ import { useState, useCallback, useRef, useMemo } from "react";
 import { ChevronDown, ChevronUp, Shuffle, Trash2, Plus, MoreHorizontal, Pencil, Copy, X, Check, Tag, Split, GitBranch, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { Textarea } from "@/components/ui/textarea";
+
 import SectionItemsTable from "./SectionItemsTable";
 import AddItemsModal from "./AddItemsModal";
 import {
@@ -54,8 +54,10 @@ const SectionPanel = ({ sections, onChange }: SectionPanelProps) => {
   const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingLabel, setEditingLabel] = useState("");
+  const [editingDescId, setEditingDescId] = useState<string | null>(null);
   const [addItemsOpen, setAddItemsOpen] = useState(false);
   const editInputRef = useRef<HTMLInputElement>(null);
+  const descInputRef = useRef<HTMLInputElement>(null);
 
   const activeSection = sections.find((s) => s.id === activeSectionId) ?? null;
 
@@ -513,22 +515,44 @@ const SectionPanel = ({ sections, onChange }: SectionPanelProps) => {
             </div>
           </div>
 
-          {/* Description + Item Toolbar */}
+          {/* Toolbar */}
           {!collapsedIds.has(activeSection.id) && (
-            <div className="flex items-start justify-between px-5 py-3 bg-card border-b border-border gap-4">
-              {/* Left: Section Description */}
-              <div className="flex-1 max-w-md space-y-1">
-                <label className="text-xs font-medium text-muted-foreground flex items-center gap-1.5">
-                  <FileText className="w-3.5 h-3.5" />
-                  Section Description
-                </label>
-                <Textarea
-                  value={activeSection.description}
-                  onChange={(e) => handleUpdateDescription(activeSection.id, e.target.value)}
-                  placeholder="Add a description for this section (e.g., Answer any 5 out of 8 questions)..."
-                  className="min-h-[60px] max-h-[100px] resize-y text-xs bg-background"
-                  maxLength={500}
-                />
+            <div className="flex items-center justify-between px-5 py-2 bg-card border-b border-border gap-4">
+              {/* Left: Inline description */}
+              <div className="flex items-center gap-2 flex-1 min-w-0">
+                {editingDescId === activeSection.id ? (
+                  <div className="flex items-center gap-1.5 flex-1 max-w-sm">
+                    <Input
+                      ref={descInputRef}
+                      value={activeSection.description}
+                      onChange={(e) => handleUpdateDescription(activeSection.id, e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === "Escape") setEditingDescId(null);
+                      }}
+                      onBlur={() => setEditingDescId(null)}
+                      placeholder="e.g., Answer any 5 out of 8 questions"
+                      className="h-7 text-xs bg-background"
+                      maxLength={200}
+                      autoFocus
+                    />
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setEditingDescId(activeSection.id);
+                      setTimeout(() => descInputRef.current?.focus(), 50);
+                    }}
+                    className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors truncate max-w-sm group/desc"
+                  >
+                    <FileText className="w-3 h-3 shrink-0" />
+                    {activeSection.description ? (
+                      <span className="truncate italic">{activeSection.description}</span>
+                    ) : (
+                      <span className="group-hover/desc:underline">Add description…</span>
+                    )}
+                  </button>
+                )}
               </div>
 
               {/* Right: Item actions */}
