@@ -481,16 +481,6 @@ const SectionPanel = ({ sections, onChange }: SectionPanelProps) => {
                 type="button"
                 variant="ghost"
                 size="sm"
-                className="h-7 text-xs gap-1.5 text-muted-foreground hover:text-foreground"
-                onClick={() => handleDuplicateSection(activeSection.id)}
-              >
-                <Copy className="w-3.5 h-3.5" />
-                Duplicate
-              </Button>
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
                 className="h-7 text-xs gap-1.5 text-destructive/70 hover:text-destructive hover:bg-destructive/5"
                 onClick={() => handleRemoveSection(activeSection.id)}
                 disabled={sections.length <= 1}
