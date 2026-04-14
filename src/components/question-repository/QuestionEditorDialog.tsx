@@ -77,9 +77,7 @@ export interface QuestionData {
   label: string;
   includeWordBank?: boolean;
   matchPairs?: MatchPair[];
-  assertionText?: string;
-  reasonText?: string;
-  assertionAnswer?: string | null;
+  assertionPairs?: AssertionReasonPair[];
 }
 
 interface QuestionEditorDialogProps {
