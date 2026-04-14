@@ -54,36 +54,20 @@ const AssertionReasoningEditor = ({
         </div>
       </div>
 
-      {/* Fixed answer options display */}
+      {/* Fixed answer options - display only */}
       <div className="space-y-2">
         <Label className="text-sm font-medium">Answer Options (Fixed)</Label>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
           {FIXED_OPTIONS.map((opt) => (
-            <button
+            <div
               key={opt.label}
-              type="button"
-              onClick={() =>
-                onAnswerChange(selectedAnswer === opt.label ? null : opt.label)
-              }
-              className={cn(
-                "flex items-start gap-2.5 rounded-lg border-2 px-3 py-2.5 text-left text-xs transition-all",
-                selectedAnswer === opt.label
-                  ? "border-primary bg-primary/5 text-foreground shadow-sm"
-                  : "border-border bg-background text-muted-foreground hover:border-primary/40 hover:bg-primary/[0.02]"
-              )}
+              className="flex items-start gap-2.5 rounded-lg border border-border bg-muted/30 px-3 py-2.5 text-xs text-muted-foreground"
             >
-              <span
-                className={cn(
-                  "flex items-center justify-center w-5 h-5 rounded-full border-2 text-[10px] font-bold shrink-0 mt-0.5 transition-all",
-                  selectedAnswer === opt.label
-                    ? "border-primary bg-primary text-primary-foreground"
-                    : "border-muted-foreground/30 text-muted-foreground"
-                )}
-              >
+              <span className="flex items-center justify-center w-5 h-5 rounded-full border-2 border-muted-foreground/30 text-[10px] font-bold shrink-0 mt-0.5">
                 {opt.label}
               </span>
               <span className="leading-relaxed">{opt.text}</span>
-            </button>
+            </div>
           ))}
         </div>
       </div>
