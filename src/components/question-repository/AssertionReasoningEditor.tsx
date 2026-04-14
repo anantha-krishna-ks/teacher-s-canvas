@@ -1,7 +1,6 @@
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Info } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 const FIXED_OPTIONS = [
   {
@@ -25,19 +24,15 @@ const FIXED_OPTIONS = [
 interface AssertionReasoningEditorProps {
   assertionText: string;
   reasonText: string;
-  selectedAnswer: string | null;
   onAssertionChange: (val: string) => void;
   onReasonChange: (val: string) => void;
-  onAnswerChange: (val: string | null) => void;
 }
 
 const AssertionReasoningEditor = ({
   assertionText,
   reasonText,
-  selectedAnswer,
   onAssertionChange,
   onReasonChange,
-  onAnswerChange,
 }: AssertionReasoningEditorProps) => {
   return (
     <div className="space-y-5">
