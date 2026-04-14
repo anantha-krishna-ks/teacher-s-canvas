@@ -2,6 +2,7 @@ import { useState, useCallback, useRef, useMemo } from "react";
 import { ChevronDown, ChevronUp, Shuffle, Trash2, Plus, MoreHorizontal, Pencil, Copy, X, Check, Tag, Split, GitBranch, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { Textarea } from "@/components/ui/textarea";
 import SectionItemsTable from "./SectionItemsTable";
 import AddItemsModal from "./AddItemsModal";
 import {
