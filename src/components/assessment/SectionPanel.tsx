@@ -439,7 +439,7 @@ const SectionPanel = ({ sections, onChange }: SectionPanelProps) => {
       {/* Active Section Content */}
       {activeSection && (
         <div className="border border-border rounded-xl overflow-hidden">
-          {/* Section Header */}
+          {/* Section Header with actions */}
           <div className="flex items-center justify-between px-5 py-3 bg-muted/20 border-b border-border">
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-1.5">
@@ -464,68 +464,71 @@ const SectionPanel = ({ sections, onChange }: SectionPanelProps) => {
                 </span>
               </div>
             </div>
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              className="h-7 w-7 text-muted-foreground"
-              onClick={() => toggleCollapse(activeSection.id)}
-            >
-              {collapsedIds.has(activeSection.id) ? (
-                <ChevronDown className="w-4 h-4" />
-              ) : (
-                <ChevronUp className="w-4 h-4" />
-              )}
-            </Button>
+            <div className="flex items-center gap-1">
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="h-7 text-xs gap-1.5 text-muted-foreground hover:text-foreground"
+                onClick={() => handleRenameSection(activeSection.id)}
+              >
+                <Pencil className="w-3.5 h-3.5" />
+                Edit
+              </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="h-7 text-xs gap-1.5 text-muted-foreground hover:text-foreground"
+                onClick={() => handleDuplicateSection(activeSection.id)}
+              >
+                <Copy className="w-3.5 h-3.5" />
+                Duplicate
+              </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="h-7 text-xs gap-1.5 text-destructive/70 hover:text-destructive hover:bg-destructive/5"
+                onClick={() => handleRemoveSection(activeSection.id)}
+                disabled={sections.length <= 1}
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+                Delete
+              </Button>
+              <div className="w-px h-4 bg-border mx-1" />
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="h-7 w-7 text-muted-foreground"
+                onClick={() => toggleCollapse(activeSection.id)}
+              >
+                {collapsedIds.has(activeSection.id) ? (
+                  <ChevronDown className="w-4 h-4" />
+                ) : (
+                  <ChevronUp className="w-4 h-4" />
+                )}
+              </Button>
+            </div>
           </div>
 
-          {/* Toolbar */}
+          {/* Description + Item Toolbar */}
           {!collapsedIds.has(activeSection.id) && (
-            <div className="flex items-center justify-between px-5 py-2 bg-card border-b border-border">
-              {/* Left: Section actions */}
-              <div className="flex items-center gap-1">
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  className="h-8 text-xs gap-1.5 text-muted-foreground hover:text-foreground"
-                  onClick={handleAddSection}
-                >
-                  <Plus className="w-3.5 h-3.5" />
-                  New Section
-                </Button>
-                <div className="w-px h-4 bg-border mx-0.5" />
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  className="h-8 text-xs gap-1.5 text-muted-foreground hover:text-foreground"
-                  onClick={() => handleRenameSection(activeSection.id)}
-                >
-                  <Pencil className="w-3.5 h-3.5" />
-                  Edit
-                </Button>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  className="h-8 text-xs gap-1.5 text-muted-foreground hover:text-foreground"
-                  onClick={() => handleDuplicateSection(activeSection.id)}
-                >
-                  <Copy className="w-3.5 h-3.5" />
-                  Duplicate
-                </Button>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  className="h-8 text-xs gap-1.5 text-destructive/70 hover:text-destructive hover:bg-destructive/5"
-                  onClick={() => handleRemoveSection(activeSection.id)}
-                  disabled={sections.length <= 1}
-                >
-                  <Trash2 className="w-3.5 h-3.5" />
-                  Delete
-                </Button>
+            <div className="flex items-start justify-between px-5 py-3 bg-card border-b border-border gap-4">
+              {/* Left: Section Description */}
+              <div className="flex-1 max-w-md space-y-1">
+                <label className="text-xs font-medium text-muted-foreground flex items-center gap-1.5">
+                  <FileText className="w-3.5 h-3.5" />
+                  Section Description
+                </label>
+                <Textarea
+                  value={activeSection.description}
+                  onChange={(e) => handleUpdateDescription(activeSection.id, e.target.value)}
+                  placeholder="Add a description for this section (e.g., Answer any 5 out of 8 questions)..."
+                  className="min-h-[60px] max-h-[100px] resize-y text-xs bg-background"
+                  maxLength={500}
+                />
               </div>
 
               {/* Right: Item actions */}
