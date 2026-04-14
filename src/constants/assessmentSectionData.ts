@@ -6,6 +6,7 @@ export const ITEM_TYPES = [
   "True / False",
   "Matching",
   "Fill in the Blank",
+  "Assertion Reasoning",
 ] as const;
 
 export type ItemType = (typeof ITEM_TYPES)[number];

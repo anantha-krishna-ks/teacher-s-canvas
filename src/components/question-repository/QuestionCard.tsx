@@ -27,7 +27,8 @@ export type QuestionType =
   | "multiple-choice"
   | "true-false"
   | "matching"
-  | "fill-blank";
+  | "fill-blank"
+  | "assertion-reasoning";
 
 interface QuestionCardProps {
   index: number;
