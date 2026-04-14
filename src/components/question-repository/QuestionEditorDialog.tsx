@@ -14,6 +14,7 @@ import MCQOptionsEditor from "./MCQOptionsEditor";
 import ImageUploadEditor from "./ImageUploadEditor";
 import FillInBlankEditor from "./FillInBlankEditor";
 import MatchTheFollowingEditor from "./MatchTheFollowingEditor";
+import AssertionReasoningEditor from "./AssertionReasoningEditor";
 import type { MatchPair } from "./MatchTheFollowingEditor";
 import type { QuestionType } from "./QuestionCard";
 import {
@@ -76,6 +77,9 @@ export interface QuestionData {
   label: string;
   includeWordBank?: boolean;
   matchPairs?: MatchPair[];
+  assertionText?: string;
+  reasonText?: string;
+  assertionAnswer?: string | null;
 }
 
 interface QuestionEditorDialogProps {
@@ -106,6 +110,9 @@ const QuestionEditorDialog = ({
   const [trueFalseAnswer, setTrueFalseAnswer] = useState<boolean | null>(
     editData?.trueFalseAnswer ?? null
   );
+  const [assertionText, setAssertionText] = useState(editData?.assertionText ?? "");
+  const [reasonText, setReasonText] = useState(editData?.reasonText ?? "");
+  const [assertionAnswer, setAssertionAnswer] = useState<string | null>(editData?.assertionAnswer ?? null);
 
   const handleImageChange = useCallback((newHasImage: boolean, newImageData: string | null) => {
     setHasImage(newHasImage);
@@ -122,6 +129,9 @@ const QuestionEditorDialog = ({
     setIncludeWordBank(false);
     setMatchPairs(createDefaultPairs());
     setTrueFalseAnswer(null);
+    setAssertionText("");
+    setReasonText("");
+    setAssertionAnswer(null);
   }, []);
 
   const handleSave = useCallback(() => {
@@ -138,9 +148,12 @@ const QuestionEditorDialog = ({
       label: editData?.label ?? labels[0],
       includeWordBank: type === "fill-blank" ? includeWordBank : undefined,
       matchPairs: type === "matching" ? matchPairs : undefined,
+      assertionText: type === "assertion-reasoning" ? assertionText : undefined,
+      reasonText: type === "assertion-reasoning" ? reasonText : undefined,
+      assertionAnswer: type === "assertion-reasoning" ? assertionAnswer : undefined,
     });
     resetState();
-  }, [type, questionText, answerText, trueFalseAnswer, hasImage, imageData, marks, editData, onSave, includeWordBank, matchPairs, resetState]);
+  }, [type, questionText, answerText, trueFalseAnswer, hasImage, imageData, marks, editData, onSave, includeWordBank, matchPairs, assertionText, reasonText, assertionAnswer, resetState]);
 
   const handleOpenChange = useCallback(
     (val: boolean) => {
