@@ -14,7 +14,7 @@ import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
-const ONLYOFFICE_URL = "https://sweetwisdom.github.io/onlyoffice-web-local/";
+const ONLYOFFICE_URL = "https://sweetwisdom.github.io/onlyoffice-web-local/?lang=en";
 
 const PresentationEditor = () => {
   const navigate = useNavigate();
