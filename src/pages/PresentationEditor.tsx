@@ -14,7 +14,7 @@ import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
-const ONLYOFFICE_URL = "https://sweetwisdom.github.io/onlyoffice-web-local/?lang=en";
+const ONLYOFFICE_URL = "https://freeoffice.app/";
 
 const PresentationEditor = () => {
   const navigate = useNavigate();
@@ -136,7 +136,7 @@ const PresentationEditor = () => {
             <div className="flex flex-col items-center gap-4">
               <div className="w-10 h-10 border-4 border-primary/30 border-t-primary rounded-full animate-spin" />
               <div className="text-center">
-                <p className="text-sm font-medium text-foreground">Loading OnlyOffice Editor</p>
+                <p className="text-sm font-medium text-foreground">Loading Presentation Editor</p>
                 <p className="text-xs text-muted-foreground mt-1">
                   This may take a moment on first load...
                 </p>
@@ -157,7 +157,7 @@ const PresentationEditor = () => {
                   Editor Failed to Load
                 </h3>
                 <p className="text-xs text-muted-foreground mt-1">
-                  The OnlyOffice editor could not be loaded. This might be due to network restrictions or the service being temporarily unavailable.
+                  The presentation editor could not be loaded. This might be due to network restrictions or the service being temporarily unavailable.
                 </p>
               </div>
               <div className="flex gap-2">
@@ -184,7 +184,7 @@ const PresentationEditor = () => {
           )}
           onLoad={handleIframeLoad}
           onError={handleIframeError}
-          title="OnlyOffice Presentation Editor"
+          title="Presentation Editor"
           allow="clipboard-write; clipboard-read"
           sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-downloads allow-modals"
         />
@@ -194,7 +194,7 @@ const PresentationEditor = () => {
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-card/95 backdrop-blur border border-border rounded-lg px-4 py-2 shadow-lg flex items-center gap-3 z-10 animate-fade-in">
             <Upload className="w-4 h-4 text-primary shrink-0" />
             <p className="text-xs text-muted-foreground">
-              Click <strong>"New/Open File"</strong> to create or open a PPT file for editing
+              Click <strong>"New Presentation"</strong> to create or <strong>"Upload Document"</strong> to open a PPT file for editing
             </p>
           </div>
         )}
