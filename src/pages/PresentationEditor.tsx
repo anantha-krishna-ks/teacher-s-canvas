@@ -14,7 +14,7 @@ import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
-const ONLYOFFICE_URL = "https://sweetwisdom.github.io/onlyoffice-web-local/";
+const ONLYOFFICE_URL = "https://sweetwisdom.github.io/onlyoffice-web-local/?lang=en";
 
 const PresentationEditor = () => {
   const navigate = useNavigate();
@@ -194,7 +194,7 @@ const PresentationEditor = () => {
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-card/95 backdrop-blur border border-border rounded-lg px-4 py-2 shadow-lg flex items-center gap-3 z-10 animate-fade-in">
             <Upload className="w-4 h-4 text-primary shrink-0" />
             <p className="text-xs text-muted-foreground">
-              Click <strong>"新建/打开文件"</strong> (New/Open File) to create or open a PPT file for editing
+              Click <strong>"New/Open File"</strong> to create or open a PPT file for editing
             </p>
           </div>
         )}
