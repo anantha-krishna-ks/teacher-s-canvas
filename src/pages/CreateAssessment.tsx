@@ -16,6 +16,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { MultiSelect } from "@/components/ui/multi-select";
+import AssessmentPreviewModal from "@/components/assessment/AssessmentPreviewModal";
 import { toast } from "sonner";
 
 const TEST_TYPES = ["PA1", "PA2", "Mid-Term Exam", "Final Exam", "Unit Test"];
@@ -39,6 +40,11 @@ const CreateAssessment = () => {
   const [durationMin, setDurationMin] = useState("");
   const [instructions, setInstructions] = useState("");
   const [sections, setSections] = useState<Section[]>([createSection("A")]);
+  const [previewOpen, setPreviewOpen] = useState(false);
+
+  const handleCreateAssessment = useCallback(() => {
+    setPreviewOpen(true);
+  }, []);
 
   const isInstructionsRequired = INSTRUCTIONS_REQUIRED_TYPES.includes(typeOfTest);
   const hasDuration = durationHr || durationMin;
@@ -264,16 +270,15 @@ const CreateAssessment = () => {
               <Button variant="outline" onClick={() => setActiveTab("type")}>
                 Back
               </Button>
-              <Button
-                onClick={() => toast.success("Assessment created successfully!")}
-                className="px-8"
-              >
+              <Button onClick={handleCreateAssessment} className="px-8">
                 Create Assessment
               </Button>
             </div>
           </TabsContent>
         </Tabs>
       </div>
+
+      <AssessmentPreviewModal open={previewOpen} onOpenChange={setPreviewOpen} />
     </div>
   );
 };
