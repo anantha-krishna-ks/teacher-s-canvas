@@ -103,6 +103,8 @@ const SectionPanel = ({ sections, onChange }: SectionPanelProps) => {
   const [editingLabel, setEditingLabel] = useState("");
   const [editingDescId, setEditingDescId] = useState<string | null>(null);
   const [addItemsOpen, setAddItemsOpen] = useState(false);
+  const [makeSubOpen, setMakeSubOpen] = useState(false);
+  const [parentQuestion, setParentQuestion] = useState("");
   const editInputRef = useRef<HTMLInputElement>(null);
   const descInputRef = useRef<HTMLInputElement>(null);
 
@@ -286,6 +288,29 @@ const SectionPanel = ({ sections, onChange }: SectionPanelProps) => {
     },
     [activeSection, selectedItems, updateSectionItems]
   );
+
+  const handleOpenMakeSubModal = useCallback(() => {
+    setParentQuestion("");
+    setMakeSubOpen(true);
+  }, []);
+
+  const handleCreateSubQuestionGroup = useCallback(() => {
+    if (!activeSection || selectedItems.size === 0) return;
+    const question = parentQuestion.trim();
+    if (!question) {
+      toast.error("Please enter a question.");
+      return;
+    }
+    const childIds = Array.from(selectedItems);
+    updateSectionItems(
+      activeSection.id,
+      createParentWithSubItems(activeSection.items, childIds, question)
+    );
+    setSelectedItems(new Set());
+    setMakeSubOpen(false);
+    setParentQuestion("");
+    toast.success(`${childIds.length} item(s) added as sub-question(s).`);
+  }, [activeSection, selectedItems, parentQuestion, updateSectionItems]);
 
   const handleReorder = useCallback(
     (from: number, to: number) => {
