@@ -11,6 +11,13 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import type { SectionItem, ItemType } from "@/constants/assessmentSectionData";
 import { ITEM_TYPES } from "@/constants/assessmentSectionData";
 
@@ -25,6 +32,14 @@ interface SectionItemsTableProps {
   onAddSubItem?: (parentId: string, type: ItemType) => void;
   onAddOrItem?: (targetId: string, type: ItemType) => void;
 }
+
+const toRoman = (value: number) => {
+  const numerals = ["i", "ii", "iii", "iv", "v", "vi", "vii", "viii", "ix", "x"];
+  return numerals[value - 1] ?? `${value}`;
+};
+
+const getSubQuestionLabel = (index: number, style: SectionItem["subQuestionStyle"] = "alpha") =>
+  style === "roman" ? `${toRoman(index + 1)}.` : `${String.fromCharCode(97 + index)}.`;
 
 /* ── Item action menu ── */
 const ItemActions = ({
