@@ -156,6 +156,72 @@ const InlineRow = ({
   </div>
 );
 
+const QuestionRow = ({
+  item,
+  label,
+  hasOr = false,
+  onUpdateItem,
+  onRemoveItem,
+  selectedIds,
+  onToggleSelect,
+  onAddSubItem,
+  onAddOrItem,
+  showDragHandle = false,
+}: {
+  item: SectionItem;
+  label: string;
+  hasOr?: boolean;
+  onUpdateItem: (id: string, updates: Partial<SectionItem>) => void;
+  onRemoveItem: (id: string) => void;
+  selectedIds: Set<string>;
+  onToggleSelect: (id: string) => void;
+  onAddSubItem?: (parentId: string, type: ItemType) => void;
+  onAddOrItem?: (targetId: string, type: ItemType) => void;
+  showDragHandle?: boolean;
+}) => (
+  <div className="grid grid-cols-[36px_52px_1fr_88px_112px_40px] items-center gap-2 px-3 py-3 group/row hover:bg-muted/20 transition-colors">
+    <div className="flex justify-center">
+      <Checkbox checked={selectedIds.has(item.id)} onCheckedChange={() => onToggleSelect(item.id)} />
+    </div>
+    <div className="flex items-center gap-0.5 justify-start">
+      <GripVertical className={`w-3.5 h-3.5 -ml-1 ${showDragHandle ? "text-muted-foreground/30 cursor-grab active:cursor-grabbing group-hover/row:text-muted-foreground/60" : "text-muted-foreground/20"}`} aria-hidden="true" focusable="false" />
+      <span className="text-sm font-semibold text-foreground">{label}</span>
+    </div>
+    <div className="pl-2 pr-2">
+      <Input
+        value={item.question}
+        onChange={(e) => onUpdateItem(item.id, { question: e.target.value })}
+        placeholder="Enter question text..."
+        className="h-8 text-sm bg-transparent border-0 shadow-none focus-visible:ring-0 px-0"
+      />
+    </div>
+    <div className="flex flex-col items-center gap-1">
+      <span className="text-[10px] font-medium text-muted-foreground">Marks</span>
+      <Input
+        type="number"
+        value={item.score}
+        onChange={(e) => onUpdateItem(item.id, { score: Number(e.target.value) || 0 })}
+        className="h-8 w-16 text-sm text-center bg-transparent border-border"
+        min={0}
+        max={100}
+      />
+    </div>
+    <div className="flex justify-center min-w-0">
+      <span className="text-xs text-muted-foreground bg-muted/60 rounded-md px-2 py-1 truncate max-w-[110px]">
+        {item.type}
+      </span>
+    </div>
+    <div className="flex justify-center">
+      <ItemActions
+        hasOr={hasOr}
+        onRemove={() => onRemoveItem(item.id)}
+        onAddSub={onAddSubItem ? (type) => onAddSubItem(item.id, type) : undefined}
+        onAddOr={onAddOrItem ? (type) => onAddOrItem(item.id, type) : undefined}
+      />
+    </div>
+  </div>
+);
+
 /* ── Main question row with nested sub/OR rendering ── */
 const QuestionBlock = ({
   item,
@@ -186,7 +252,6 @@ const QuestionBlock = ({
 }) => {
   const hasSubs = item.subItems && item.subItems.length > 0;
   const hasOr = !!item.orItem;
-  const hasNested = hasSubs || hasOr;
 
   return (
     <div
@@ -199,50 +264,18 @@ const QuestionBlock = ({
         ${dragHandlers.isOver ? "border-primary/40 bg-primary/5" : ""}`}
     >
       {/* ── Primary question row ── */}
-      <div className="grid grid-cols-[36px_52px_1fr_88px_112px_40px] items-center gap-2 px-3 py-3 group/row hover:bg-muted/20 transition-colors">
-        <div className="flex justify-center">
-          <Checkbox
-            checked={selectedIds.has(item.id)}
-            onCheckedChange={() => onToggleSelect(item.id)}
-          />
-        </div>
-        <div className="flex items-center gap-0.5 justify-start">
-          <GripVertical className="w-3.5 h-3.5 text-muted-foreground/30 cursor-grab active:cursor-grabbing group-hover/row:text-muted-foreground/60 -ml-1" aria-hidden="true" focusable="false" />
-          <span className="text-sm font-semibold text-foreground">{hasOr ? `${index + 1}.A` : index + 1}</span>
-        </div>
-        <div className="pl-2 pr-2">
-          <Input
-            value={item.question}
-            onChange={(e) => onUpdateItem(item.id, { question: e.target.value })}
-            placeholder="Enter question text..."
-            className="h-8 text-sm bg-transparent border-0 shadow-none focus-visible:ring-0 px-0"
-          />
-        </div>
-        <div className="flex flex-col items-center gap-1">
-          <span className="text-[10px] font-medium text-muted-foreground">Marks</span>
-          <Input
-            type="number"
-            value={item.score}
-            onChange={(e) => onUpdateItem(item.id, { score: Number(e.target.value) || 0 })}
-            className="h-8 w-16 text-sm text-center bg-transparent border-border"
-            min={0}
-            max={100}
-          />
-        </div>
-        <div className="flex justify-center min-w-0">
-          <span className="text-xs text-muted-foreground bg-muted/60 rounded-md px-2 py-1 truncate max-w-[110px]">
-            {item.type}
-          </span>
-        </div>
-        <div className="flex justify-center">
-          <ItemActions
-            hasOr={hasOr}
-            onRemove={() => onRemoveItem(item.id)}
-            onAddSub={onAddSubItem ? (type) => onAddSubItem(item.id, type) : undefined}
-            onAddOr={onAddOrItem ? (type) => onAddOrItem(item.id, type) : undefined}
-          />
-        </div>
-      </div>
+      <QuestionRow
+        item={item}
+        label={hasOr ? `${index + 1}.A` : `${index + 1}`}
+        hasOr={hasOr}
+        onUpdateItem={onUpdateItem}
+        onRemoveItem={onRemoveItem}
+        selectedIds={selectedIds}
+        onToggleSelect={onToggleSelect}
+        onAddSubItem={onAddSubItem}
+        onAddOrItem={onAddOrItem}
+        showDragHandle
+      />
 
       {/* ── Nested content (sub-items + OR) ── */}
       {hasSubs && (
@@ -299,14 +332,16 @@ const QuestionBlock = ({
             </span>
             <span className="h-px flex-1 bg-gradient-to-l from-transparent via-primary/35 to-primary/10" />
           </div>
-          <div className="px-1 pb-2">
-            <InlineRow
+          <div className="pb-1">
+            <QuestionRow
               item={item.orItem!}
               label={`${index + 1}.B`}
+              hasOr
               onUpdateItem={onUpdateItem}
               onRemoveItem={onRemoveItem}
               selectedIds={selectedIds}
               onToggleSelect={onToggleSelect}
+              onAddSubItem={onAddSubItem}
             />
           </div>
         </div>
