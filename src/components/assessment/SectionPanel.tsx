@@ -552,7 +552,7 @@ const SectionPanel = ({ sections, onChange }: SectionPanelProps) => {
           {!collapsedIds.has(activeSection.id) && (
             <div className="flex items-start justify-between px-5 py-2 bg-card border-b border-border gap-4">
               {/* Left: Inline description pill */}
-              <div className="flex items-center gap-2 flex-1 min-w-0 max-w-md">
+              <div className="flex items-center gap-2 flex-1 min-w-0 max-w-2xl">
                 <InlineDescriptionPill
                   value={activeSection.description}
                   onChange={(val) => handleUpdateDescription(activeSection.id, val)}
