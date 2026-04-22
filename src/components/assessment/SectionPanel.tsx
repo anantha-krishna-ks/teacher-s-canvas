@@ -70,8 +70,8 @@ const InlineDescriptionPill = ({ value, onChange }: InlineDescriptionPillProps) 
   );
 
   return (
-    <div className="flex w-full items-center gap-2 border-b border-border bg-transparent px-0 py-2 transition-colors focus-within:border-primary/50">
-      <FileText className="w-3 h-3 shrink-0 text-muted-foreground" aria-hidden="true" focusable="false" />
+    <div className="flex w-full items-center gap-2 border-b border-border bg-transparent px-0 py-2 pb-3 transition-colors focus-within:border-primary/50">
+      <FileText className="w-4 h-4 shrink-0 text-muted-foreground" aria-hidden="true" focusable="false" />
       <input
         type="text"
         value={value}
@@ -81,10 +81,10 @@ const InlineDescriptionPill = ({ value, onChange }: InlineDescriptionPillProps) 
         placeholder="Add description…"
         autoComplete="off"
         aria-label="Section description"
-        className="flex-1 min-w-0 bg-transparent outline-none text-xs text-foreground placeholder:text-muted-foreground"
+        className="flex-1 min-w-0 bg-transparent outline-none text-sm text-foreground placeholder:text-muted-foreground"
       />
       <span
-        className={`text-[9px] text-muted-foreground tabular-nums transition-opacity ${isFocused ? "opacity-100" : "opacity-0"}`}
+        className={`text-[10px] text-muted-foreground tabular-nums transition-opacity ${isFocused ? "opacity-100" : "opacity-0"}`}
         aria-hidden={!isFocused}
       >
         {value.length}/{DESCRIPTION_MAX}
