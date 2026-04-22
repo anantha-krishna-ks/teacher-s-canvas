@@ -2,6 +2,14 @@ import { useState, useCallback, useRef, useMemo } from "react";
 import { ChevronDown, ChevronUp, Shuffle, Trash2, Plus, MoreHorizontal, Pencil, Copy, X, Check, Tag, Split, GitBranch, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 import SectionItemsTable from "./SectionItemsTable";
 import AddItemsModal from "./AddItemsModal";
@@ -22,15 +30,11 @@ import {
   addOrItem,
   linkAsOr,
   makeSubItemsOf,
+  createParentWithSubItems,
   type Section,
   type SectionItem,
   type ItemType,
 } from "@/constants/assessmentSectionData";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 
 interface SectionPanelProps {
   sections: Section[];
