@@ -684,6 +684,40 @@ const SectionPanel = ({ sections, onChange }: SectionPanelProps) => {
           onAddItems={handleAddItemsFromRepo}
         />
       )}
+      <Dialog open={makeSubOpen} onOpenChange={setMakeSubOpen}>
+        <DialogContent className="sm:max-w-xl">
+          <DialogHeader>
+            <DialogTitle>Create sub-question group</DialogTitle>
+            <DialogDescription>
+              Add a parent question for the selected items.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-2">
+            <label htmlFor="parentQuestion" className="text-sm font-medium text-foreground">
+              Question <span className="text-destructive">*</span>
+            </label>
+            <Input
+              id="parentQuestion"
+              value={parentQuestion}
+              onChange={(e) => setParentQuestion(e.target.value)}
+              placeholder="Enter parent question text"
+              autoComplete="off"
+              aria-label="Parent question for selected sub-questions"
+            />
+            <p className="text-xs text-muted-foreground">
+              {selectedItems.size} selected item{selectedItems.size !== 1 ? "s" : ""} will be nested under this question.
+            </p>
+          </div>
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={() => setMakeSubOpen(false)}>
+              Cancel
+            </Button>
+            <Button type="button" onClick={handleCreateSubQuestionGroup}>
+              Add Sub-Questions
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
