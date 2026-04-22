@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronLeft, FileText, Info, Layers } from "lucide-react";
+import { ChevronLeft, Eye, FileText, Info, Layers } from "lucide-react";
 import SectionPanel from "@/components/assessment/SectionPanel";
 import { createSection, type Section } from "@/constants/assessmentSectionData";
 import { Button } from "@/components/ui/button";
@@ -48,6 +48,19 @@ const CreateAssessment = () => {
 
   const isInstructionsRequired = INSTRUCTIONS_REQUIRED_TYPES.includes(typeOfTest);
   const hasDuration = durationHr || durationMin;
+  const formattedDuration = [durationHr ? `${durationHr} hr` : "", durationMin ? `${durationMin} min` : ""]
+    .filter(Boolean)
+    .join(" ");
+  const previewData = {
+    schoolName: "EXCEL PUBLIC SCHOOL, MYSURU",
+    examTitle: typeOfTest ? `${typeOfTest} ASSESSMENT` : "ASSESSMENT PREVIEW",
+    className: selectedClass,
+    subject,
+    totalMarks,
+    duration: formattedDuration,
+    instructions,
+    sections,
+  };
 
   const errors = attempted
     ? {
@@ -89,6 +102,10 @@ const CreateAssessment = () => {
             Set up a new assessment for your students
           </p>
         </div>
+        <Button variant="outline" onClick={() => setPreviewOpen(true)} className="ml-auto gap-2">
+          <Eye className="w-4 h-4" />
+          Preview
+        </Button>
       </div>
 
       {/* Tabs */}
@@ -278,7 +295,7 @@ const CreateAssessment = () => {
         </Tabs>
       </div>
 
-      <AssessmentPreviewModal open={previewOpen} onOpenChange={setPreviewOpen} />
+      <AssessmentPreviewModal open={previewOpen} onOpenChange={setPreviewOpen} data={previewData} />
     </div>
   );
 };

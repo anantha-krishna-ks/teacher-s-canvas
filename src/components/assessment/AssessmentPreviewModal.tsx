@@ -9,21 +9,81 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Download, Printer, FileText, FileImage, X, Loader2, ChevronDown } from "lucide-react";
-import { GENERATED_ASSESSMENT } from "@/constants/generatedAssessmentData";
+import type { Section, SectionItem } from "@/constants/assessmentSectionData";
 import epsLogo from "@/assets/eps-logo.png";
 import { toast } from "sonner";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 
+export interface AssessmentPreviewData {
+  schoolName: string;
+  examTitle: string;
+  className: string;
+  subject: string;
+  totalMarks: string;
+  duration: string;
+  instructions: string;
+  sections: Section[];
+}
+
 interface AssessmentPreviewModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  data: AssessmentPreviewData;
 }
 
-const AssessmentPreviewModal = ({ open, onOpenChange }: AssessmentPreviewModalProps) => {
+const getInstructionLines = (instructions: string) =>
+  instructions
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .filter((line) => !/^general instructions:?$/i.test(line))
+    .map((line) => line.replace(/^(?:[ivxlcdm]+\.|\d+\.|[-•])\s*/i, ""));
+
+const getSubQuestionLabel = (index: number, style: SectionItem["subQuestionStyle"] = "alpha") => {
+  const roman = ["i", "ii", "iii", "iv", "v", "vi", "vii", "viii", "ix", "x"];
+  return style === "roman" ? `${roman[index] ?? index + 1})` : `${String.fromCharCode(97 + index)})`;
+};
+
+const QuestionPreview = ({ item, label }: { item: SectionItem; label: string }) => (
+  <div className="flex gap-3 break-inside-avoid">
+    <span className="w-10 shrink-0 text-right font-semibold">{label}</span>
+    <div className="flex-1 min-w-0">
+      <div className="flex justify-between gap-4">
+        <p className="whitespace-pre-line">{item.question || "Untitled question"}</p>
+        <span className="font-semibold shrink-0">[{item.score || 0}]</span>
+      </div>
+      {item.options && item.options.length > 0 && (
+        <div className="grid grid-cols-2 gap-x-10 gap-y-1 mt-2 pl-6">
+          {item.options.map((option, index) => (
+            <p key={`${item.id}-option-${index}`}>
+              <span className="font-semibold mr-3">{String.fromCharCode(65 + index)}.</span>
+              {option}
+            </p>
+          ))}
+        </div>
+      )}
+      {item.subItems && item.subItems.length > 0 && (
+        <div className="mt-2 space-y-1 pl-6">
+          {item.subItems.map((subItem, index) => (
+            <div key={subItem.id} className="flex justify-between gap-4">
+              <p>
+                <span className="font-semibold mr-2">{getSubQuestionLabel(index, item.subQuestionStyle)}</span>
+                {subItem.question || "Untitled sub-question"}
+              </p>
+              <span className="font-semibold shrink-0">[{subItem.score || 0}]</span>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  </div>
+);
+
+const AssessmentPreviewModal = ({ open, onOpenChange, data }: AssessmentPreviewModalProps) => {
   const paperRef = useRef<HTMLDivElement>(null);
   const [exporting, setExporting] = useState<"pdf" | "image" | null>(null);
-  const data = GENERATED_ASSESSMENT;
+  const instructionLines = getInstructionLines(data.instructions);
 
   const handlePrint = useCallback(() => {
     if (!paperRef.current) return;
@@ -160,24 +220,24 @@ const AssessmentPreviewModal = ({ open, onOpenChange }: AssessmentPreviewModalPr
         <div className="flex-1 overflow-y-auto bg-muted/20 p-6">
           <div
             ref={paperRef}
-            className="mx-auto bg-white shadow-lg max-w-[820px] px-12 py-10 text-black font-serif"
+            className="mx-auto bg-background shadow-lg max-w-[820px] px-12 py-10 text-foreground font-serif"
             style={{ fontFamily: "'Times New Roman', Times, serif", lineHeight: 1.55, fontSize: "14px" }}
           >
             {/* Header */}
             <div className="text-center">
-              <h1 className="text-xl font-bold tracking-wide">{data.schoolName}</h1>
-              <h2 className="text-base font-semibold mt-1">{data.examTitle}</h2>
+              <h1 className="text-xl font-bold tracking-wide uppercase">{data.schoolName}</h1>
+              <h2 className="text-base font-semibold mt-1 uppercase">{data.examTitle || "ASSESSMENT PREVIEW"}</h2>
             </div>
 
             <div className="flex items-start justify-between mt-4 gap-4">
               <div className="text-sm space-y-1">
-                <p><strong>Class :</strong> {data.className}</p>
-                <p><strong>Subject :</strong> {data.subject}</p>
+                <p><strong>Class :</strong> {data.className || "—"}</p>
+                <p><strong>Subject :</strong> {data.subject || "—"}</p>
               </div>
-              <img src={epsLogo} alt="School Logo" className="h-20 w-auto object-contain" />
+              <img src={epsLogo} alt="School logo" className="h-20 w-auto object-contain" />
               <div className="text-sm space-y-1 text-right">
-                <p><strong>Total Marks:</strong> {data.totalMarks}</p>
-                <p><strong>Time:</strong> {data.duration}</p>
+                <p><strong>Total Marks:</strong> {data.totalMarks || "—"}</p>
+                <p><strong>Time:</strong> {data.duration || "—"}</p>
               </div>
             </div>
 
@@ -187,7 +247,7 @@ const AssessmentPreviewModal = ({ open, onOpenChange }: AssessmentPreviewModalPr
             <div className="text-sm">
               <p className="italic font-semibold">General Instructions:</p>
               <ol className="list-[lower-roman] pl-6 mt-1 space-y-0.5">
-                {data.generalInstructions.map((ins, i) => (
+                {(instructionLines.length ? instructionLines : ["Answer all questions as instructed."]).map((ins, i) => (
                   <li key={i}>{ins}</li>
                 ))}
               </ol>
@@ -197,62 +257,34 @@ const AssessmentPreviewModal = ({ open, onOpenChange }: AssessmentPreviewModalPr
             {data.sections.map((section) => (
               <div key={section.id} className="mt-5">
                 <div className="text-center">
-                  <h3 className="font-bold underline">{section.name}</h3>
-                  <p className="text-sm">({section.title})</p>
-                  <p className="text-sm italic">{section.description}</p>
+                  <h3 className="font-bold underline">SECTION - {section.label}</h3>
+                  {section.description && <p className="text-sm font-semibold">{section.description}</p>}
                 </div>
 
-                <ol className="mt-3 space-y-3 text-sm">
-                  {section.questions.map((q) => (
-                    <div key={q.number}>
-                      {/* Inner heading e.g. ASSERTION-REASON */}
-                      {section.innerHeading && section.innerHeadingAfterQ === q.number - 1 && (
-                        <div className="my-3">
-                          <p className="font-bold text-center">{section.innerHeading}</p>
-                          {section.innerNote && (
-                            <p className="text-sm mt-2 whitespace-pre-line">{section.innerNote}</p>
-                          )}
-                        </div>
-                      )}
-                      <li className="flex gap-2" value={q.number}>
-                        <span className="font-semibold shrink-0">{q.number}.</span>
-                        <div className="flex-1">
-                          <div className="flex justify-between gap-3">
-                            <p className="whitespace-pre-line">{q.text}</p>
-                            <span className="font-semibold shrink-0">[{q.marks}]</span>
+                <div className="mt-4 space-y-4 text-sm">
+                  {section.items.length === 0 && (
+                    <p className="text-center italic text-gray-600">No questions added in this section.</p>
+                  )}
+                  {section.items.map((item, index) => (
+                    <div key={item.id} className="space-y-3">
+                      <QuestionPreview item={item} label={item.orItem ? `${index + 1}. A` : `${index + 1}.`} />
+                      {item.orItem && (
+                        <>
+                          <div className="flex items-center gap-3 px-10" aria-label="OR divider">
+                            <span className="h-px flex-1 bg-current opacity-50" />
+                            <span className="font-bold tracking-wide">OR</span>
+                            <span className="h-px flex-1 bg-current opacity-50" />
                           </div>
-                          {q.options && (
-                            <div className="grid grid-cols-2 gap-x-6 gap-y-1 mt-2 ml-2">
-                              {q.options.map((opt, i) => (
-                                <p key={i}>
-                                  <span className="font-semibold mr-2">{String.fromCharCode(65 + i)}.</span>
-                                  {opt}
-                                </p>
-                              ))}
-                            </div>
-                          )}
-                          {q.subParts && (
-                            <div className="mt-2 ml-2 space-y-1">
-                              {q.subParts.map((sp, i) => (
-                                <div key={i} className="flex justify-between gap-3">
-                                  <p>
-                                    <span className="font-semibold mr-2">{sp.label}</span>
-                                    {sp.text}
-                                  </p>
-                                  <span className="font-semibold shrink-0">[{sp.marks}]</span>
-                                </div>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      </li>
+                          <QuestionPreview item={item.orItem} label={`${index + 1}. B`} />
+                        </>
+                      )}
                     </div>
                   ))}
-                </ol>
+                </div>
               </div>
             ))}
 
-            <p className="text-center text-xs mt-8 text-gray-700">— End of Question Paper —</p>
+            <p className="text-center text-xs mt-8 opacity-70">— End of Question Paper —</p>
           </div>
         </div>
       </DialogContent>
