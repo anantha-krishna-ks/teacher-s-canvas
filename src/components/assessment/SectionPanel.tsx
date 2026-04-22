@@ -627,19 +627,18 @@ const SectionPanel = ({ sections, onChange }: SectionPanelProps) => {
 
           {/* Collapsible Body */}
           <div>
-              <SectionItemsTable
-                items={activeSection.items}
-                onUpdateItem={handleUpdateItem}
-                onRemoveItem={handleRemoveItem}
-                onReorder={handleReorder}
-                selectedIds={selectedItems}
-                onToggleSelect={toggleSelect}
-                onToggleAll={toggleAll}
-                onAddSubItem={handleAddSubItem}
-                onAddOrItem={handleAddOrItem}
-              />
-            </div>
-          )}
+            <SectionItemsTable
+              items={activeSection.items}
+              onUpdateItem={handleUpdateItem}
+              onRemoveItem={handleRemoveItem}
+              onReorder={handleReorder}
+              selectedIds={selectedItems}
+              onToggleSelect={toggleSelect}
+              onToggleAll={toggleAll}
+              onAddSubItem={handleAddSubItem}
+              onAddOrItem={handleAddOrItem}
+            />
+          </div>
         </div>
       )}
       {activeSection && (
