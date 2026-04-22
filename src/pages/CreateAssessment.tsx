@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/select";
 import { MultiSelect } from "@/components/ui/multi-select";
 import AssessmentPreviewModal from "@/components/assessment/AssessmentPreviewModal";
+import AssessmentBlueprintDrawer from "@/components/assessment/AssessmentBlueprintDrawer";
 import { toast } from "sonner";
 
 const TEST_TYPES = ["PA1", "PA2", "Mid-Term Exam", "Final Exam", "Unit Test"];
@@ -102,10 +103,13 @@ const CreateAssessment = () => {
             Set up a new assessment for your students
           </p>
         </div>
-        <Button variant="outline" onClick={() => setPreviewOpen(true)} className="ml-auto gap-2">
-          <Eye className="w-4 h-4" />
-          Preview
-        </Button>
+        <div className="ml-auto flex items-center gap-2">
+          {activeTab === "sections" && <AssessmentBlueprintDrawer chapters={chapters} sections={sections} />}
+          <Button variant="outline" onClick={() => setPreviewOpen(true)} className="gap-2">
+            <Eye className="w-4 h-4" />
+            Preview
+          </Button>
+        </div>
       </div>
 
       {/* Tabs */}
