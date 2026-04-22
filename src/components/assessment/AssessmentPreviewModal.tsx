@@ -220,7 +220,7 @@ const AssessmentPreviewModal = ({ open, onOpenChange, data }: AssessmentPreviewM
         <div className="flex-1 overflow-y-auto bg-muted/20 p-6">
           <div
             ref={paperRef}
-            className="mx-auto bg-white shadow-lg max-w-[820px] px-12 py-10 text-black font-serif"
+            className="mx-auto bg-background shadow-lg max-w-[820px] px-12 py-10 text-foreground font-serif"
             style={{ fontFamily: "'Times New Roman', Times, serif", lineHeight: 1.55, fontSize: "14px" }}
           >
             {/* Header */}
