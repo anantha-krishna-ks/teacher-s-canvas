@@ -206,8 +206,8 @@ const QuestionBlock = ({
             onCheckedChange={() => onToggleSelect(item.id)}
           />
         </div>
-        <div className="flex items-center gap-0.5 justify-center">
-          <GripVertical className="w-3.5 h-3.5 text-muted-foreground/30 cursor-grab active:cursor-grabbing group-hover/row:text-muted-foreground/60" aria-hidden="true" focusable="false" />
+        <div className="flex items-center gap-0.5 justify-start">
+          <GripVertical className="w-3.5 h-3.5 text-muted-foreground/30 cursor-grab active:cursor-grabbing group-hover/row:text-muted-foreground/60 -ml-1" aria-hidden="true" focusable="false" />
           <span className="text-sm font-semibold text-foreground">{index + 1}</span>
         </div>
         <div className="pl-2 pr-2">
