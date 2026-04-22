@@ -271,9 +271,9 @@ const AssessmentPreviewModal = ({ open, onOpenChange, data }: AssessmentPreviewM
                       {item.orItem && (
                         <>
                           <div className="flex items-center gap-3 px-10" aria-label="OR divider">
-                            <span className="h-px flex-1 bg-black/50" />
+                            <span className="h-px flex-1 bg-current opacity-50" />
                             <span className="font-bold tracking-wide">OR</span>
-                            <span className="h-px flex-1 bg-black/50" />
+                            <span className="h-px flex-1 bg-current opacity-50" />
                           </div>
                           <QuestionPreview item={item.orItem} label={`${index + 1}. B`} />
                         </>
