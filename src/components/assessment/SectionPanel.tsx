@@ -66,7 +66,7 @@ const InlineDescriptionPill = ({ value, onChange }: InlineDescriptionPillProps) 
   );
 
   return (
-    <div className="flex items-center gap-2 flex-1 min-w-0 rounded-full border border-input bg-background pl-3 pr-2 py-1 transition-colors focus-within:border-primary/40 focus-within:ring-1 focus-within:ring-primary/20">
+    <div className="flex items-center gap-2 flex-1 min-w-0 border-b border-transparent px-1 py-1 transition-colors focus-within:border-input">
       <FileText className="w-3 h-3 shrink-0 text-muted-foreground" aria-hidden="true" focusable="false" />
       <input
         type="text"
