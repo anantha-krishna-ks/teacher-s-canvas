@@ -208,7 +208,7 @@ const QuestionBlock = ({
         </div>
         <div className="flex items-center gap-0.5 justify-start">
           <GripVertical className="w-3.5 h-3.5 text-muted-foreground/30 cursor-grab active:cursor-grabbing group-hover/row:text-muted-foreground/60 -ml-1" aria-hidden="true" focusable="false" />
-          <span className="text-sm font-semibold text-foreground">{index + 1}</span>
+          <span className="text-sm font-semibold text-foreground">{hasOr ? `${index + 1}.A` : index + 1}</span>
         </div>
         <div className="pl-2 pr-2">
           <Input
@@ -245,7 +245,7 @@ const QuestionBlock = ({
       </div>
 
       {/* ── Nested content (sub-items + OR) ── */}
-      {hasNested && (
+      {hasSubs && (
         <div className="ml-12 mr-4 mb-3 space-y-2">
           {/* Sub-items card */}
           {hasSubs && (
@@ -286,27 +286,29 @@ const QuestionBlock = ({
             </div>
           )}
 
-          {/* OR alternative card */}
-          {hasOr && (
-            <div className={`rounded-lg border-2 border-dashed border-primary/25 bg-primary/[0.02] overflow-hidden ${hasSubs ? "mt-2" : ""}`}>
-              <div className="flex items-center gap-2 px-3 py-1.5 bg-primary/5 border-b border-dashed border-primary/20">
-                <Split className="w-3 h-3 text-primary/70" />
-                <span className="text-[10px] font-bold text-primary/70 uppercase tracking-wider">
-                  OR Alternative
-                </span>
-              </div>
-              <div className="px-1">
-                <InlineRow
-                  item={item.orItem!}
-                  label={`${index + 1}'`}
-                  onUpdateItem={onUpdateItem}
-                  onRemoveItem={onRemoveItem}
-                  selectedIds={selectedIds}
-                  onToggleSelect={onToggleSelect}
-                />
-              </div>
-            </div>
-          )}
+        </div>
+      )}
+
+      {/* OR alternative with full-width divider */}
+      {hasOr && (
+        <div className="border-t border-border/70 bg-primary/[0.02]">
+          <div className="flex items-center gap-3 px-4 py-2" aria-label="OR divider">
+            <span className="h-px flex-1 bg-gradient-to-r from-transparent via-primary/35 to-primary/10" />
+            <span className="rounded-sm border border-primary/25 bg-background px-3 py-0.5 text-[10px] font-bold uppercase tracking-wider text-primary shadow-[inset_0_1px_3px_hsl(var(--primary)/0.12)]">
+              OR
+            </span>
+            <span className="h-px flex-1 bg-gradient-to-l from-transparent via-primary/35 to-primary/10" />
+          </div>
+          <div className="px-1 pb-2">
+            <InlineRow
+              item={item.orItem!}
+              label={`${index + 1}.B`}
+              onUpdateItem={onUpdateItem}
+              onRemoveItem={onRemoveItem}
+              selectedIds={selectedIds}
+              onToggleSelect={onToggleSelect}
+            />
+          </div>
         </div>
       )}
     </div>
