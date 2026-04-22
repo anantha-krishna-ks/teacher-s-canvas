@@ -254,18 +254,32 @@ const QuestionBlock = ({
           {/* Sub-items card */}
           {hasSubs && (
             <div className="rounded-lg border border-border/60 bg-muted/20 overflow-hidden">
-              <div className="flex items-center gap-2 px-3 py-1.5 bg-muted/40 border-b border-border/40">
-                <CornerDownRight className="w-3 h-3 text-muted-foreground" />
-                <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
-                  Sub-Questions
-                </span>
+              <div className="flex items-center justify-between gap-3 px-3 py-1.5 bg-muted/40 border-b border-border/40">
+                <div className="flex items-center gap-2">
+                  <CornerDownRight className="w-3 h-3 text-muted-foreground" aria-hidden="true" focusable="false" />
+                  <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+                    Sub-Questions
+                  </span>
+                </div>
+                <Select
+                  value={item.subQuestionStyle ?? "alpha"}
+                  onValueChange={(value: "alpha" | "roman") => onUpdateItem(item.id, { subQuestionStyle: value })}
+                >
+                  <SelectTrigger className="h-7 w-36 bg-background text-xs" aria-label="Sub-question numbering style">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="alpha">a, b, c...</SelectItem>
+                    <SelectItem value="roman">i, ii, iii...</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               <div className="divide-y divide-border/30">
                 {item.subItems!.map((sub, si) => (
                   <InlineRow
                     key={sub.id}
                     item={sub}
-                    label={`(${String.fromCharCode(97 + si)})`}
+                    label={getSubQuestionLabel(si, item.subQuestionStyle)}
                     onUpdateItem={onUpdateItem}
                     onRemoveItem={onRemoveItem}
                     selectedIds={selectedIds}
