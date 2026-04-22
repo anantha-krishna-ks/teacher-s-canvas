@@ -46,6 +46,49 @@ const shuffleArray = <T,>(arr: T[]): T[] => {
   return shuffled;
 };
 
+const DESCRIPTION_MAX = 255;
+
+interface InlineDescriptionPillProps {
+  value: string;
+  onChange: (value: string) => void;
+}
+
+const InlineDescriptionPill = ({ value, onChange }: InlineDescriptionPillProps) => {
+  const [isFocused, setIsFocused] = useState(false);
+
+  const handleChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const next = e.target.value;
+      if (next.length > DESCRIPTION_MAX) return;
+      onChange(next);
+    },
+    [onChange]
+  );
+
+  return (
+    <div className="flex items-center gap-2 flex-1 min-w-0 rounded-full border border-input bg-background pl-3 pr-2 py-1 transition-colors focus-within:border-primary/40 focus-within:ring-1 focus-within:ring-primary/20">
+      <FileText className="w-3 h-3 shrink-0 text-muted-foreground" aria-hidden="true" focusable="false" />
+      <input
+        type="text"
+        value={value}
+        onChange={handleChange}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
+        placeholder="Add description…"
+        autoComplete="off"
+        aria-label="Section description"
+        className="flex-1 min-w-0 bg-transparent outline-none text-xs text-foreground placeholder:text-muted-foreground"
+      />
+      <span
+        className={`text-[9px] text-muted-foreground tabular-nums transition-opacity ${isFocused ? "opacity-100" : "opacity-0"}`}
+        aria-hidden={!isFocused}
+      >
+        {value.length}/{DESCRIPTION_MAX}
+      </span>
+    </div>
+  );
+};
+
 const SectionPanel = ({ sections, onChange }: SectionPanelProps) => {
   const [activeSectionId, setActiveSectionId] = useState<string | null>(
     sections[0]?.id ?? null
