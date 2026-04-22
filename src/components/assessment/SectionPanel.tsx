@@ -2,6 +2,14 @@ import { useState, useCallback, useRef, useMemo } from "react";
 import { ChevronDown, ChevronUp, Shuffle, Trash2, Plus, MoreHorizontal, Pencil, Copy, X, Check, Tag, Split, GitBranch, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 import SectionItemsTable from "./SectionItemsTable";
 import AddItemsModal from "./AddItemsModal";
@@ -22,15 +30,11 @@ import {
   addOrItem,
   linkAsOr,
   makeSubItemsOf,
+  createParentWithSubItems,
   type Section,
   type SectionItem,
   type ItemType,
 } from "@/constants/assessmentSectionData";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 
 interface SectionPanelProps {
   sections: Section[];
@@ -99,6 +103,8 @@ const SectionPanel = ({ sections, onChange }: SectionPanelProps) => {
   const [editingLabel, setEditingLabel] = useState("");
   const [editingDescId, setEditingDescId] = useState<string | null>(null);
   const [addItemsOpen, setAddItemsOpen] = useState(false);
+  const [makeSubOpen, setMakeSubOpen] = useState(false);
+  const [parentQuestion, setParentQuestion] = useState("");
   const editInputRef = useRef<HTMLInputElement>(null);
   const descInputRef = useRef<HTMLInputElement>(null);
 
@@ -282,6 +288,29 @@ const SectionPanel = ({ sections, onChange }: SectionPanelProps) => {
     },
     [activeSection, selectedItems, updateSectionItems]
   );
+
+  const handleOpenMakeSubModal = useCallback(() => {
+    setParentQuestion("");
+    setMakeSubOpen(true);
+  }, []);
+
+  const handleCreateSubQuestionGroup = useCallback(() => {
+    if (!activeSection || selectedItems.size === 0) return;
+    const question = parentQuestion.trim();
+    if (!question) {
+      toast.error("Please enter a question.");
+      return;
+    }
+    const childIds = Array.from(selectedItems);
+    updateSectionItems(
+      activeSection.id,
+      createParentWithSubItems(activeSection.items, childIds, question)
+    );
+    setSelectedItems(new Set());
+    setMakeSubOpen(false);
+    setParentQuestion("");
+    toast.success(`${childIds.length} item(s) added as sub-question(s).`);
+  }, [activeSection, selectedItems, parentQuestion, updateSectionItems]);
 
   const handleReorder = useCallback(
     (from: number, to: number) => {
@@ -588,37 +617,18 @@ const SectionPanel = ({ sections, onChange }: SectionPanelProps) => {
                         Link as OR
                       </Button>
                     )}
-                    {/* Make Sub-Question of... */}
+                    {/* Make Sub-Question */}
                     {canMakeSub && (
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            className="h-8 text-xs gap-1.5 text-primary hover:text-primary hover:bg-primary/5"
-                          >
-                            <GitBranch className="w-3.5 h-3.5" />
-                            Make Sub-Q of…
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent align="end" className="w-56 p-1">
-                          <p className="text-[11px] text-muted-foreground font-medium px-2 py-1.5 uppercase tracking-wider">
-                            Select Parent Question
-                          </p>
-                          {eligibleParents.map((p, idx) => (
-                            <button
-                              key={p.id}
-                              type="button"
-                              onClick={() => handleMakeSubItemOf(p.id)}
-                              className="w-full text-left px-2 py-1.5 text-sm rounded-md hover:bg-muted transition-colors truncate"
-                            >
-                              <span className="font-medium text-foreground">{idx + 1}.</span>{" "}
-                              <span className="text-muted-foreground">{p.question || "(empty question)"}</span>
-                            </button>
-                          ))}
-                        </PopoverContent>
-                      </Popover>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="h-8 text-xs gap-1.5 text-primary hover:text-primary hover:bg-primary/5"
+                        onClick={handleOpenMakeSubModal}
+                      >
+                        <GitBranch className="w-3.5 h-3.5" aria-hidden="true" focusable="false" />
+                        Make Sub-Q
+                      </Button>
                     )}
                     <div className="w-px h-4 bg-border mx-0.5" />
                     <Button
@@ -674,6 +684,40 @@ const SectionPanel = ({ sections, onChange }: SectionPanelProps) => {
           onAddItems={handleAddItemsFromRepo}
         />
       )}
+      <Dialog open={makeSubOpen} onOpenChange={setMakeSubOpen}>
+        <DialogContent className="sm:max-w-xl">
+          <DialogHeader>
+            <DialogTitle>Create sub-question group</DialogTitle>
+            <DialogDescription>
+              Add a parent question for the selected items.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-2">
+            <label htmlFor="parentQuestion" className="text-sm font-medium text-foreground">
+              Question <span className="text-destructive">*</span>
+            </label>
+            <Input
+              id="parentQuestion"
+              value={parentQuestion}
+              onChange={(e) => setParentQuestion(e.target.value)}
+              placeholder="Enter parent question text"
+              autoComplete="off"
+              aria-label="Parent question for selected sub-questions"
+            />
+            <p className="text-xs text-muted-foreground">
+              {selectedItems.size} selected item{selectedItems.size !== 1 ? "s" : ""} will be nested under this question.
+            </p>
+          </div>
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={() => setMakeSubOpen(false)}>
+              Cancel
+            </Button>
+            <Button type="button" onClick={handleCreateSubQuestionGroup}>
+              Add Sub-Questions
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

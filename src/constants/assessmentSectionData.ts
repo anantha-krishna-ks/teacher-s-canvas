@@ -18,6 +18,7 @@ export interface SectionItem {
   correctAnswer?: string;
   score: number;
   type: ItemType;
+  subQuestionStyle?: "alpha" | "roman";
   subItems?: SectionItem[];
   orItem?: SectionItem;
 }
@@ -145,6 +146,29 @@ export const makeSubItemsOf = (items: SectionItem[], childIds: string[], parentI
     }
     return item;
   });
+};
+
+/** Group selected top-level items under a new parent question */
+export const createParentWithSubItems = (
+  items: SectionItem[],
+  childIds: string[],
+  parentQuestion: string
+): SectionItem[] => {
+  const children = items.filter((it) => childIds.includes(it.id));
+  if (children.length === 0) return items;
+
+  const firstChildIndex = items.findIndex((it) => childIds.includes(it.id));
+  const parent: SectionItem = {
+    ...createSectionItem("Short Answer"),
+    question: parentQuestion,
+    score: children.reduce((sum, child) => sum + child.score, 0),
+    subQuestionStyle: "alpha",
+    subItems: children,
+  };
+
+  const remaining = items.filter((it) => !childIds.includes(it.id));
+  const insertAt = firstChildIndex < 0 ? remaining.length : firstChildIndex;
+  return [...remaining.slice(0, insertAt), parent, ...remaining.slice(insertAt)];
 };
 
 export const createSection = (label: string): Section => ({
