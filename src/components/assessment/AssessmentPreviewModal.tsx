@@ -284,7 +284,7 @@ const AssessmentPreviewModal = ({ open, onOpenChange, data }: AssessmentPreviewM
               </div>
             ))}
 
-            <p className="text-center text-xs mt-8 text-gray-700">— End of Question Paper —</p>
+            <p className="text-center text-xs mt-8 opacity-70">— End of Question Paper —</p>
           </div>
         </div>
       </DialogContent>
