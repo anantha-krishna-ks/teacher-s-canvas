@@ -70,7 +70,7 @@ const InlineDescriptionPill = ({ value, onChange }: InlineDescriptionPillProps) 
   );
 
   return (
-    <div className="flex items-center gap-2 flex-1 min-w-0 rounded-full border border-input bg-background pl-3 pr-2 py-1 transition-colors focus-within:border-primary/40 focus-within:ring-1 focus-within:ring-primary/20">
+    <div className="flex w-full items-center gap-2 border-b border-border bg-transparent px-0 py-2 transition-colors focus-within:border-primary/50">
       <FileText className="w-3 h-3 shrink-0 text-muted-foreground" aria-hidden="true" focusable="false" />
       <input
         type="text"
@@ -615,9 +615,8 @@ const SectionPanel = ({ sections, onChange }: SectionPanelProps) => {
           </div>
 
           {/* Toolbar */}
-          <div className="flex items-start justify-between gap-4">
-              {/* Left: Inline description pill */}
-              <div className="flex items-center gap-2 flex-1 min-w-0 max-w-2xl">
+          <div>
+              <div className="w-full">
                 <InlineDescriptionPill
                   value={activeSection.description}
                   onChange={(val) => handleUpdateDescription(activeSection.id, val)}
