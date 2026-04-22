@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef, useMemo } from "react";
-import { ChevronDown, ChevronUp, Shuffle, Trash2, Plus, MoreHorizontal, Pencil, Copy, X, Check, Tag, Split, GitBranch, FileText } from "lucide-react";
+import { Shuffle, Trash2, Plus, MoreHorizontal, Pencil, Copy, X, Check, Tag, Split, GitBranch, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import {
@@ -97,7 +97,6 @@ const SectionPanel = ({ sections, onChange }: SectionPanelProps) => {
   const [activeSectionId, setActiveSectionId] = useState<string | null>(
     sections[0]?.id ?? null
   );
-  const [collapsedIds, setCollapsedIds] = useState<Set<string>>(new Set());
   const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingLabel, setEditingLabel] = useState("");
@@ -338,14 +337,6 @@ const SectionPanel = ({ sections, onChange }: SectionPanelProps) => {
     setSelectedItems(new Set());
     toast.success(`${selectedItems.size} item(s) removed.`);
   }, [activeSection, selectedItems, updateSectionItems]);
-
-  const toggleCollapse = (id: string) => {
-    setCollapsedIds((prev) => {
-      const next = new Set(prev);
-      next.has(id) ? next.delete(id) : next.add(id);
-      return next;
-    });
-  };
 
   const toggleSelect = (id: string) => {
     setSelectedItems((prev) => {
