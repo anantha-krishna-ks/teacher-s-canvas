@@ -116,7 +116,7 @@ const InlineRow = ({
   selectedIds: Set<string>;
   onToggleSelect: (id: string) => void;
 }) => (
-  <div className="grid grid-cols-[32px_40px_1fr_80px_100px_36px] items-center py-2 group/row">
+  <div className="grid grid-cols-[32px_40px_1fr_74px_36px] items-center gap-2 px-2 py-2 group/row">
     <div className="flex justify-center">
       <Checkbox
         checked={selectedIds.has(item.id)}
@@ -142,11 +142,6 @@ const InlineRow = ({
         min={0}
         max={100}
       />
-    </div>
-    <div className="flex justify-center">
-      <span className="text-[10px] text-muted-foreground bg-muted/60 rounded px-1.5 py-0.5 truncate max-w-[90px]">
-        {item.type}
-      </span>
     </div>
     <div className="flex justify-center">
       <button
@@ -199,12 +194,12 @@ const QuestionBlock = ({
       onDragStart={dragHandlers.onDragStart}
       onDragOver={dragHandlers.onDragOver}
       onDragEnd={dragHandlers.onDragEnd}
-      className={`border-b border-border last:border-b-0 transition-all
+      className={`rounded-lg border border-border bg-card shadow-sm transition-all overflow-hidden
         ${dragHandlers.isDragging ? "opacity-30" : ""}
-        ${dragHandlers.isOver ? "bg-primary/5" : ""}`}
+        ${dragHandlers.isOver ? "border-primary/40 bg-primary/5" : ""}`}
     >
       {/* ── Primary question row ── */}
-      <div className="grid grid-cols-[40px_56px_1fr_100px_120px_44px] items-center px-2 py-3 group/row hover:bg-muted/30 transition-colors">
+      <div className="grid grid-cols-[36px_52px_1fr_88px_112px_40px] items-center gap-2 px-3 py-3 group/row hover:bg-muted/20 transition-colors">
         <div className="flex justify-center">
           <Checkbox
             checked={selectedIds.has(item.id)}
@@ -212,7 +207,7 @@ const QuestionBlock = ({
           />
         </div>
         <div className="flex items-center gap-0.5 justify-center">
-          <GripVertical className="w-3.5 h-3.5 text-muted-foreground/30 cursor-grab active:cursor-grabbing group-hover/row:text-muted-foreground/60" />
+          <GripVertical className="w-3.5 h-3.5 text-muted-foreground/30 cursor-grab active:cursor-grabbing group-hover/row:text-muted-foreground/60" aria-hidden="true" focusable="false" />
           <span className="text-sm font-semibold text-foreground">{index + 1}</span>
         </div>
         <div className="pl-2 pr-2">
@@ -223,7 +218,8 @@ const QuestionBlock = ({
             className="h-8 text-sm bg-transparent border-0 shadow-none focus-visible:ring-0 px-0"
           />
         </div>
-        <div className="flex justify-center">
+        <div className="flex flex-col items-center gap-1">
+          <span className="text-[10px] font-medium text-muted-foreground">Marks</span>
           <Input
             type="number"
             value={item.score}
@@ -233,7 +229,7 @@ const QuestionBlock = ({
             max={100}
           />
         </div>
-        <div className="flex justify-center">
+        <div className="flex justify-center min-w-0">
           <span className="text-xs text-muted-foreground bg-muted/60 rounded-md px-2 py-1 truncate max-w-[110px]">
             {item.type}
           </span>
@@ -250,7 +246,7 @@ const QuestionBlock = ({
 
       {/* ── Nested content (sub-items + OR) ── */}
       {hasNested && (
-        <div className="ml-12 mr-4 mb-3">
+        <div className="ml-12 mr-4 mb-3 space-y-2">
           {/* Sub-items card */}
           {hasSubs && (
             <div className="rounded-lg border border-border/60 bg-muted/20 overflow-hidden">
