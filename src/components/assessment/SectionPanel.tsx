@@ -535,6 +535,65 @@ const SectionPanel = ({ sections, onChange }: SectionPanelProps) => {
                 variant="ghost"
                 size="sm"
                 className="h-7 text-xs gap-1.5 text-muted-foreground hover:text-foreground"
+                onClick={handleShuffle}
+                disabled={totalItems < 2}
+              >
+                <Shuffle className="w-3.5 h-3.5" />
+                Shuffle
+              </Button>
+              {selectedItems.size > 0 && (
+                <>
+                  {canLinkOr && (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="h-7 text-xs gap-1.5 text-primary hover:text-primary hover:bg-primary/5"
+                      onClick={handleLinkAsOr}
+                    >
+                      <Split className="w-3.5 h-3.5" />
+                      Link as OR
+                    </Button>
+                  )}
+                  {canMakeSub && (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="h-7 text-xs gap-1.5 text-primary hover:text-primary hover:bg-primary/5"
+                      onClick={handleOpenMakeSubModal}
+                    >
+                      <GitBranch className="w-3.5 h-3.5" aria-hidden="true" focusable="false" />
+                      Make Sub-Q
+                    </Button>
+                  )}
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="h-7 text-xs gap-1.5 text-destructive/70 hover:text-destructive hover:bg-destructive/5"
+                    onClick={handleDeleteSelected}
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                    Delete ({selectedItems.size})
+                  </Button>
+                </>
+              )}
+              <Button
+                type="button"
+                size="sm"
+                className="h-7 text-xs gap-1.5"
+                onClick={() => setAddItemsOpen(true)}
+              >
+                <Tag className="w-3.5 h-3.5" />
+                Add Items
+              </Button>
+              <div className="w-px h-4 bg-border mx-1" />
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="h-7 text-xs gap-1.5 text-muted-foreground hover:text-foreground"
                 onClick={() => handleRenameSection(activeSection.id)}
               >
                 <Pencil className="w-3.5 h-3.5" />
@@ -551,26 +610,11 @@ const SectionPanel = ({ sections, onChange }: SectionPanelProps) => {
                 <Trash2 className="w-3.5 h-3.5" />
                 Delete
               </Button>
-              <div className="w-px h-4 bg-border mx-1" />
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                className="h-7 w-7 text-muted-foreground"
-                onClick={() => toggleCollapse(activeSection.id)}
-              >
-                {collapsedIds.has(activeSection.id) ? (
-                  <ChevronDown className="w-4 h-4" />
-                ) : (
-                  <ChevronUp className="w-4 h-4" />
-                )}
-              </Button>
             </div>
           </div>
 
           {/* Toolbar */}
-          {!collapsedIds.has(activeSection.id) && (
-            <div className="flex items-start justify-between gap-4">
+          <div className="flex items-start justify-between gap-4">
               {/* Left: Inline description pill */}
               <div className="flex items-center gap-2 flex-1 min-w-0 max-w-2xl">
                 <InlineDescriptionPill
@@ -579,78 +623,10 @@ const SectionPanel = ({ sections, onChange }: SectionPanelProps) => {
                 />
               </div>
 
-              {/* Right: Item actions */}
-              <div className="flex items-center gap-1">
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  className="h-8 text-xs gap-1.5 text-muted-foreground hover:text-foreground"
-                  onClick={handleShuffle}
-                  disabled={totalItems < 2}
-                >
-                  <Shuffle className="w-3.5 h-3.5" />
-                  Shuffle
-                </Button>
-                {selectedItems.size > 0 && (
-                  <>
-                    <div className="w-px h-4 bg-border mx-0.5" />
-                    {/* Link as OR: exactly 2 selected */}
-                    {canLinkOr && (
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        className="h-8 text-xs gap-1.5 text-primary hover:text-primary hover:bg-primary/5"
-                        onClick={handleLinkAsOr}
-                      >
-                        <Split className="w-3.5 h-3.5" />
-                        Link as OR
-                      </Button>
-                    )}
-                    {/* Make Sub-Question */}
-                    {canMakeSub && (
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        className="h-8 text-xs gap-1.5 text-primary hover:text-primary hover:bg-primary/5"
-                        onClick={handleOpenMakeSubModal}
-                      >
-                        <GitBranch className="w-3.5 h-3.5" aria-hidden="true" focusable="false" />
-                        Make Sub-Q
-                      </Button>
-                    )}
-                    <div className="w-px h-4 bg-border mx-0.5" />
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      className="h-8 text-xs gap-1.5 text-destructive/70 hover:text-destructive hover:bg-destructive/5"
-                      onClick={handleDeleteSelected}
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                      Delete ({selectedItems.size})
-                    </Button>
-                  </>
-                )}
-                <div className="w-px h-4 bg-border mx-0.5" />
-                <Button
-                  type="button"
-                  size="sm"
-                  className="h-8 text-xs gap-1.5"
-                  onClick={() => setAddItemsOpen(true)}
-                >
-                  <Tag className="w-3.5 h-3.5" />
-                  Add Items
-                </Button>
-              </div>
             </div>
-          )}
 
           {/* Collapsible Body */}
-          {!collapsedIds.has(activeSection.id) && (
-            <div>
+          <div>
               <SectionItemsTable
                 items={activeSection.items}
                 onUpdateItem={handleUpdateItem}
