@@ -508,50 +508,12 @@ const SectionPanel = ({ sections, onChange }: SectionPanelProps) => {
           {/* Toolbar */}
           {!collapsedIds.has(activeSection.id) && (
             <div className="flex items-start justify-between px-5 py-2 bg-card border-b border-border gap-4">
-              {/* Left: Inline description */}
-              <div className="flex items-start gap-2 flex-1 min-w-0">
-                {editingDescId === activeSection.id ? (
-                  <div className="flex items-start gap-1.5 flex-1 max-w-md">
-                    <textarea
-                      ref={descInputRef as any}
-                      value={activeSection.description}
-                      onChange={(e) => {
-                        handleUpdateDescription(activeSection.id, e.target.value);
-                        // Auto-grow
-                        e.target.style.height = "auto";
-                        e.target.style.height = e.target.scrollHeight + "px";
-                      }}
-                      onKeyDown={(e) => {
-                        if (e.key === "Escape") setEditingDescId(null);
-                      }}
-                      onBlur={() => setEditingDescId(null)}
-                      onFocus={(e) => {
-                        e.target.style.height = "auto";
-                        e.target.style.height = e.target.scrollHeight + "px";
-                      }}
-                      placeholder="e.g., Answer any 5 out of 8 questions"
-                      className="flex w-full rounded-md border border-input bg-background px-2 py-1.5 text-xs ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 resize-none overflow-hidden"
-                      maxLength={500}
-                      rows={1}
-                      autoFocus
-                    />
-                  </div>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setEditingDescId(activeSection.id);
-                    }}
-                    className="flex items-start gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors max-w-md group/desc text-left"
-                  >
-                    <FileText className="w-3 h-3 shrink-0 mt-0.5" />
-                    {activeSection.description ? (
-                      <span className="italic whitespace-pre-wrap break-words">{activeSection.description}</span>
-                    ) : (
-                      <span className="group-hover/desc:underline">Add description…</span>
-                    )}
-                  </button>
-                )}
+              {/* Left: Inline description pill */}
+              <div className="flex items-center gap-2 flex-1 min-w-0 max-w-md">
+                <InlineDescriptionPill
+                  value={activeSection.description}
+                  onChange={(val) => handleUpdateDescription(activeSection.id, val)}
+                />
               </div>
 
               {/* Right: Item actions */}
