@@ -512,9 +512,9 @@ const SectionPanel = ({ sections, onChange }: SectionPanelProps) => {
 
       {/* Active Section Content */}
       {activeSection && (
-        <div className="border border-border rounded-xl overflow-hidden">
+        <div className="space-y-3">
           {/* Section Header with actions */}
-          <div className="flex items-center justify-between px-5 py-3 bg-muted/20 border-b border-border">
+          <div className="flex items-center justify-between px-1 py-2">
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-1.5">
                 <div className="w-1 h-5 rounded-full bg-primary" />
@@ -579,7 +579,7 @@ const SectionPanel = ({ sections, onChange }: SectionPanelProps) => {
 
           {/* Toolbar */}
           {!collapsedIds.has(activeSection.id) && (
-            <div className="flex items-start justify-between px-5 py-2 bg-card border-b border-border gap-4">
+            <div className="flex items-start justify-between gap-4">
               {/* Left: Inline description pill */}
               <div className="flex items-center gap-2 flex-1 min-w-0 max-w-2xl">
                 <InlineDescriptionPill
@@ -659,8 +659,7 @@ const SectionPanel = ({ sections, onChange }: SectionPanelProps) => {
 
           {/* Collapsible Body */}
           {!collapsedIds.has(activeSection.id) && (
-            <div className="p-4">
-              {/* Items Table */}
+            <div>
               <SectionItemsTable
                 items={activeSection.items}
                 onUpdateItem={handleUpdateItem}
