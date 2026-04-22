@@ -332,14 +332,16 @@ const QuestionBlock = ({
             </span>
             <span className="h-px flex-1 bg-gradient-to-l from-transparent via-primary/35 to-primary/10" />
           </div>
-          <div className="px-1 pb-2">
-            <InlineRow
+          <div className="pb-1">
+            <QuestionRow
               item={item.orItem!}
               label={`${index + 1}.B`}
+              hasOr
               onUpdateItem={onUpdateItem}
               onRemoveItem={onRemoveItem}
               selectedIds={selectedIds}
               onToggleSelect={onToggleSelect}
+              onAddSubItem={onAddSubItem}
             />
           </div>
         </div>
