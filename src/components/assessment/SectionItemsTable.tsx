@@ -313,7 +313,7 @@ const QuestionBlock = ({
   );
 };
 
-/* ── Main Table ── */
+/* ── Main stacked items list ── */
 const SectionItemsTable = ({
   items,
   onUpdateItem,
@@ -355,23 +355,15 @@ const SectionItemsTable = ({
     );
   }
 
-  const allSelected = items.length > 0 && items.every((it) => selectedIds.has(it.id));
-
   return (
-    <div className="border border-border rounded-lg overflow-hidden">
-      {/* Header */}
-      <div className="grid grid-cols-[40px_56px_1fr_100px_120px_44px] items-center bg-muted/50 px-2 py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground border-b border-border">
-        <div className="flex justify-center">
-          <Checkbox checked={allSelected} onCheckedChange={onToggleAll} />
-        </div>
-        <span className="text-center">No.</span>
-        <span className="pl-2">Items</span>
-        <span className="text-center">Score</span>
-        <span className="text-center">Type</span>
-        <span />
+    <div className="space-y-3">
+      <div className="flex items-center justify-between gap-3 px-1">
+        <label className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
+          <Checkbox checked={items.every((it) => selectedIds.has(it.id))} onCheckedChange={onToggleAll} />
+          Select all items
+        </label>
+        <span className="text-xs text-muted-foreground tabular-nums">{items.length} item{items.length !== 1 ? "s" : ""}</span>
       </div>
-
-      {/* Rows */}
       {items.map((item, i) => (
         <QuestionBlock
           key={item.id}
