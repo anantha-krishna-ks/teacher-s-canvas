@@ -535,6 +535,28 @@ const SectionPanel = ({ sections, onChange }: SectionPanelProps) => {
                 variant="ghost"
                 size="sm"
                 className="h-7 text-xs gap-1.5 text-muted-foreground hover:text-foreground"
+                onClick={() => handleRenameSection(activeSection.id)}
+              >
+                <Pencil className="w-3.5 h-3.5" />
+                Edit
+              </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="h-7 text-xs gap-1.5 text-destructive/70 hover:text-destructive hover:bg-destructive/5"
+                onClick={() => handleRemoveSection(activeSection.id)}
+                disabled={sections.length <= 1}
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+                Delete
+              </Button>
+              <div className="mx-2 h-5 w-px bg-gradient-to-b from-transparent via-border to-transparent" />
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="h-7 text-xs gap-1.5 text-muted-foreground hover:text-foreground"
                 onClick={handleShuffle}
                 disabled={totalItems < 2}
               >
@@ -587,28 +609,6 @@ const SectionPanel = ({ sections, onChange }: SectionPanelProps) => {
               >
                 <Tag className="w-3.5 h-3.5" />
                 Add Items
-              </Button>
-              <div className="w-px h-4 bg-border mx-1" />
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                className="h-7 text-xs gap-1.5 text-muted-foreground hover:text-foreground"
-                onClick={() => handleRenameSection(activeSection.id)}
-              >
-                <Pencil className="w-3.5 h-3.5" />
-                Edit
-              </Button>
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                className="h-7 text-xs gap-1.5 text-destructive/70 hover:text-destructive hover:bg-destructive/5"
-                onClick={() => handleRemoveSection(activeSection.id)}
-                disabled={sections.length <= 1}
-              >
-                <Trash2 className="w-3.5 h-3.5" />
-                Delete
               </Button>
             </div>
           </div>
