@@ -504,7 +504,7 @@ const SectionPanel = ({ sections, onChange }: SectionPanelProps) => {
       {/* Active Section Content */}
       {activeSection && (
         <div className="space-y-3">
-          <div className="h-px w-full bg-gradient-to-r from-transparent via-border to-transparent" />
+          <div className="-mx-6 h-px bg-border/80" />
           {/* Section Header with actions */}
           <div className="flex items-center justify-between px-1 py-2">
             <div className="flex items-center gap-4">
