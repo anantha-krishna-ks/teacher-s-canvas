@@ -38,7 +38,7 @@ const CreateAssessment = () => {
   const [totalMarks, setTotalMarks] = useState("");
   const [durationHr, setDurationHr] = useState("");
   const [durationMin, setDurationMin] = useState("");
-  const [instructions, setInstructions] = useState("");
+  const [instructions, setInstructions] = useState("General Instructions:\ni. This question paper contains five sections A, B, C, D, and E. Each section is compulsory.\nii. Section A has 10 MCQs of 1 mark each.\niii. Section B has 3 Very Short Answer (VSA)-type questions of 2 marks each.\niv. Section C has 2 Short Answer (SA) – type questions of 3 marks each.\nv. Section D has 2 Long Answer (LA) – type questions of 5 marks each.\nvi. Section E has 2 Case study – type questions of 4 marks each.");
   const [sections, setSections] = useState<Section[]>([createSection("A")]);
   const [previewOpen, setPreviewOpen] = useState(false);
 
