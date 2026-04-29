@@ -102,15 +102,16 @@ const AssertionReasoningEditor = ({
       {/* Question pairs */}
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <Label className="text-sm font-medium">Question Pairs</Label>
+          <Label className="text-sm font-semibold text-foreground">Question Pairs</Label>
           <Button
             type="button"
             variant="outline"
             size="sm"
-            className="h-7 text-xs gap-1.5 border-primary/30 text-primary hover:bg-primary/10 hover:text-primary"
+            className="h-8 text-sm gap-1.5 border-primary/40 text-primary hover:bg-primary/10 hover:text-primary"
             onClick={handleAddPair}
+            aria-label="Add a new assertion-reason pair"
           >
-            <Plus className="w-3.5 h-3.5" />
+            <Plus className="w-4 h-4" aria-hidden="true" />
             Add Pair
           </Button>
         </div>
