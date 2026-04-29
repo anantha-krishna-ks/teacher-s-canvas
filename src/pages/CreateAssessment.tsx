@@ -113,9 +113,9 @@ const CreateAssessment = () => {
       </div>
 
       {/* Tabs */}
-      <div className="bg-card border border-border rounded-xl overflow-visible">
+      <div className="bg-card border border-border rounded-xl overflow-hidden">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="w-full justify-start rounded-t-xl border-b border-border bg-muted/30 p-0 h-auto overflow-hidden">
+          <TabsList className="w-full justify-start rounded-none border-b border-border bg-muted/30 p-0 h-auto">
             <TabsTrigger
               value="type"
               className="flex items-center gap-2 rounded-none border-b-2 border-transparent px-6 py-3 text-sm font-medium data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:bg-card data-[state=active]:shadow-none"
@@ -261,42 +261,42 @@ const CreateAssessment = () => {
           </TabsContent>
 
           {/* Sections Tab */}
-          <TabsContent value="sections" className="mt-0 max-h-[calc(100vh-11rem)] overflow-y-auto">
-            {/* Sticky Instructions */}
-            <div className="sticky top-0 z-30 px-6 pt-6 pb-4 bg-card border-b border-border shadow-sm">
-              <div className="space-y-1.5">
-                <Label htmlFor="instructions" className="text-sm font-medium text-foreground">
-                  Instructions {isInstructionsRequired ? <span className="text-destructive">*</span> : <span className="text-muted-foreground text-xs">(optional)</span>}
-                </Label>
-                <Textarea
-                  id="instructions"
-                  value={instructions}
-                  onChange={(e) => setInstructions(e.target.value)}
-                  placeholder="Enter any instructions for students..."
-                  className={`bg-background min-h-[100px] resize-y ${errors.instructions ? "border-destructive ring-1 ring-destructive/30" : ""}`}
-                  maxLength={2000}
-                />
-                <div className="flex items-start gap-2 rounded-lg bg-primary/5 border border-primary/15 px-3 py-2.5">
-                  <Info className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-                  <p className="text-xs text-muted-foreground leading-relaxed">
-                    These instructions will appear at the beginning of the question paper.
-                  </p>
-                </div>
-                {errors.instructions && <p className="text-xs text-destructive">{errors.instructions}</p>}
+          <TabsContent value="sections" className="p-6 mt-0 space-y-6">
+            {/* Instructions */}
+            <div className="space-y-1.5">
+              <Label htmlFor="instructions" className="text-sm font-medium text-foreground">
+                Instructions {isInstructionsRequired ? <span className="text-destructive">*</span> : <span className="text-muted-foreground text-xs">(optional)</span>}
+              </Label>
+              <Textarea
+                id="instructions"
+                value={instructions}
+                onChange={(e) => setInstructions(e.target.value)}
+                placeholder="Enter any instructions for students..."
+                className={`bg-background min-h-[100px] resize-y ${errors.instructions ? "border-destructive ring-1 ring-destructive/30" : ""}`}
+                maxLength={2000}
+              />
+              <div className="flex items-start gap-2 rounded-lg bg-primary/5 border border-primary/15 px-3 py-2.5">
+                <Info className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  These instructions will appear at the beginning of the question paper.
+                </p>
               </div>
+              {errors.instructions && <p className="text-xs text-destructive">{errors.instructions}</p>}
             </div>
-            <div className="space-y-6 px-6 pb-6">
-              <SectionPanel sections={sections} onChange={setSections} />
 
-              {/* Back / Submit */}
-              <div className="flex justify-between pt-2">
-                <Button variant="outline" onClick={() => setActiveTab("type")}>
-                  Back
-                </Button>
-                <Button onClick={handleCreateAssessment} className="px-8">
-                  Create Assessment
-                </Button>
-              </div>
+            {/* Inset divider */}
+            <div className="border-t border-border -mx-6" />
+
+            <SectionPanel sections={sections} onChange={setSections} />
+
+            {/* Back / Submit */}
+            <div className="flex justify-between pt-2">
+              <Button variant="outline" onClick={() => setActiveTab("type")}>
+                Back
+              </Button>
+              <Button onClick={handleCreateAssessment} className="px-8">
+                Create Assessment
+              </Button>
             </div>
           </TabsContent>
         </Tabs>
