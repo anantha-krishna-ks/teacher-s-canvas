@@ -11,6 +11,7 @@ import type { QuestionType } from "./QuestionCard";
 interface AddItemsDropdownProps {
   onAdd: (type: QuestionType) => void;
   onCopyQuestion?: () => void;
+  disabled?: boolean;
 }
 
 const ITEM_TYPES: { type: QuestionType; label: string }[] = [
