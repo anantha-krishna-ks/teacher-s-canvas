@@ -28,12 +28,14 @@ export interface AssertionReasonPair {
   id: string;
   assertion: string;
   reason: string;
+  answer: string | null;
 }
 
 export const createDefaultPair = (): AssertionReasonPair => ({
   id: crypto.randomUUID(),
   assertion: "",
   reason: "",
+  answer: null,
 });
 
 interface AssertionReasoningEditorProps {
