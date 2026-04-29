@@ -263,7 +263,7 @@ const CreateAssessment = () => {
           {/* Sections Tab */}
           <TabsContent value="sections" className="p-6 mt-0 space-y-6 overflow-visible">
             {/* Sticky Instructions */}
-            <div className="sticky top-0 z-30 -mx-6 -mt-6 px-6 pt-6 pb-4 bg-card border-b border-border shadow-sm">
+            <div className="sticky top-16 z-30 -mx-6 -mt-6 px-6 pt-6 pb-4 bg-card border-b border-border shadow-sm">
               <div className="space-y-1.5">
                 <Label htmlFor="instructions" className="text-sm font-medium text-foreground">
                   Instructions {isInstructionsRequired ? <span className="text-destructive">*</span> : <span className="text-muted-foreground text-xs">(optional)</span>}
