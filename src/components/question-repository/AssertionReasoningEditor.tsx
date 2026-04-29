@@ -311,6 +311,19 @@ const AssertionReasoningEditor = ({
               </div>
             );
           })}
+
+          {pairs.length > 1 && (
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full h-10 text-sm gap-1.5 border-dashed border-primary/40 text-primary hover:bg-primary/10 hover:text-primary hover:border-primary/60"
+              onClick={handleAddPair}
+              aria-label="Add a new assertion-reason pair"
+            >
+              <Plus className="w-4 h-4" aria-hidden="true" />
+              Add Question
+            </Button>
+          )}
         </div>
       </div>
     </div>
