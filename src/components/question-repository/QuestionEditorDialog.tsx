@@ -174,32 +174,40 @@ const QuestionEditorDialog = ({
       return (
         <div className="space-y-5">
           {/* Question text */}
-          <Textarea
-            placeholder="Type your true/false statement here..."
-            value={questionText}
-            onChange={(e) => setQuestionText(e.target.value)}
-            className="min-h-[100px] resize-y text-sm"
-          />
+          <div className="space-y-1.5">
+            <Label htmlFor="tf-statement" className="text-sm font-medium text-foreground">
+              Statement
+            </Label>
+            <Textarea
+              id="tf-statement"
+              placeholder="Type your true/false statement here..."
+              value={questionText}
+              onChange={(e) => setQuestionText(e.target.value)}
+              className="min-h-[100px] resize-y text-sm"
+            />
+          </div>
 
           {/* True/False selector */}
-          <div className="space-y-3">
-            <Label className="text-sm font-medium">Correct Answer</Label>
-            <div className="grid grid-cols-2 gap-3">
+          <fieldset className="space-y-3">
+            <legend className="text-sm font-medium text-foreground">Correct Answer</legend>
+            <div className="grid grid-cols-2 gap-3" role="radiogroup" aria-label="Correct answer">
               <button
                 type="button"
+                role="radio"
+                aria-checked={trueFalseAnswer === true}
                 onClick={() => setTrueFalseAnswer(true)}
                 className={cn(
-                  "relative flex items-center justify-center gap-2.5 rounded-xl border-2 py-4 text-sm font-semibold transition-all",
+                  "relative flex items-center justify-center gap-2.5 rounded-xl border-2 py-4 text-sm font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
                   trueFalseAnswer === true
-                    ? "border-emerald-500 bg-emerald-50 text-emerald-700 shadow-sm dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/60"
-                    : "border-border bg-background text-muted-foreground hover:border-emerald-300 hover:bg-emerald-50/50 dark:hover:bg-emerald-500/5"
+                    ? "border-emerald-600 bg-emerald-50 text-emerald-800 shadow-sm dark:bg-emerald-500/10 dark:text-emerald-300 dark:border-emerald-500/60"
+                    : "border-border bg-background text-foreground hover:border-emerald-400 hover:bg-emerald-50/50 dark:hover:bg-emerald-500/5"
                 )}
               >
-                <span className={cn(
+                <span aria-hidden="true" className={cn(
                   "flex items-center justify-center w-5 h-5 rounded-full border-2 transition-all",
                   trueFalseAnswer === true
-                    ? "border-emerald-500 bg-emerald-500"
-                    : "border-muted-foreground/30"
+                    ? "border-emerald-600 bg-emerald-600"
+                    : "border-foreground/30"
                 )}>
                   {trueFalseAnswer === true && (
                     <span className="w-2 h-2 rounded-full bg-white" />
@@ -209,19 +217,21 @@ const QuestionEditorDialog = ({
               </button>
               <button
                 type="button"
+                role="radio"
+                aria-checked={trueFalseAnswer === false}
                 onClick={() => setTrueFalseAnswer(false)}
                 className={cn(
-                  "relative flex items-center justify-center gap-2.5 rounded-xl border-2 py-4 text-sm font-semibold transition-all",
+                  "relative flex items-center justify-center gap-2.5 rounded-xl border-2 py-4 text-sm font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
                   trueFalseAnswer === false
-                    ? "border-red-500 bg-red-50 text-red-700 shadow-sm dark:bg-red-500/10 dark:text-red-400 dark:border-red-500/60"
-                    : "border-border bg-background text-muted-foreground hover:border-red-300 hover:bg-red-50/50 dark:hover:bg-red-500/5"
+                    ? "border-red-600 bg-red-50 text-red-800 shadow-sm dark:bg-red-500/10 dark:text-red-300 dark:border-red-500/60"
+                    : "border-border bg-background text-foreground hover:border-red-400 hover:bg-red-50/50 dark:hover:bg-red-500/5"
                 )}
               >
-                <span className={cn(
+                <span aria-hidden="true" className={cn(
                   "flex items-center justify-center w-5 h-5 rounded-full border-2 transition-all",
                   trueFalseAnswer === false
-                    ? "border-red-500 bg-red-500"
-                    : "border-muted-foreground/30"
+                    ? "border-red-600 bg-red-600"
+                    : "border-foreground/30"
                 )}>
                   {trueFalseAnswer === false && (
                     <span className="w-2 h-2 rounded-full bg-white" />
@@ -231,9 +241,9 @@ const QuestionEditorDialog = ({
               </button>
             </div>
             {trueFalseAnswer === null && (
-              <p className="text-xs text-muted-foreground">Select the correct answer above</p>
+              <p className="text-sm text-muted-foreground" role="status">Select the correct answer above</p>
             )}
-          </div>
+          </fieldset>
         </div>
       );
     }
@@ -259,50 +269,59 @@ const QuestionEditorDialog = ({
     return (
       <div className="space-y-3">
         {/* Toolbar */}
-        <div className="flex items-center gap-0.5 flex-wrap">
+        <div className="flex items-center gap-0.5 flex-wrap" role="toolbar" aria-label="Text formatting">
           {TOOLBAR_BUTTONS.map(({ icon: Icon, label: btnLabel }) => (
             <Button
               key={btnLabel}
               type="button"
               variant="ghost"
               size="icon"
-              className="h-8 w-8 text-muted-foreground hover:text-foreground"
+              className="h-8 w-8 text-foreground/70 hover:text-foreground"
               aria-label={btnLabel}
+              title={btnLabel}
             >
-              <Icon className="w-4 h-4" />
+              <Icon className="w-4 h-4" aria-hidden="true" />
             </Button>
           ))}
-          <div className="w-px h-5 bg-border mx-1" />
+          <div className="w-px h-5 bg-border mx-1" role="separator" aria-orientation="vertical" />
           {ALIGN_BUTTONS.map(({ icon: Icon, label: btnLabel }) => (
             <Button
               key={btnLabel}
               type="button"
               variant="ghost"
               size="icon"
-              className="h-8 w-8 text-muted-foreground hover:text-foreground"
+              className="h-8 w-8 text-foreground/70 hover:text-foreground"
               aria-label={btnLabel}
+              title={btnLabel}
             >
-              <Icon className="w-4 h-4" />
+              <Icon className="w-4 h-4" aria-hidden="true" />
             </Button>
           ))}
-          <div className="w-px h-5 bg-border mx-1" />
+          <div className="w-px h-5 bg-border mx-1" role="separator" aria-orientation="vertical" />
           <Button
             type="button"
             variant="ghost"
             size="icon"
-            className="h-8 w-8 text-muted-foreground hover:text-foreground"
+            className="h-8 w-8 text-foreground/70 hover:text-foreground"
             aria-label="Clear formatting"
+            title="Clear formatting"
           >
-            <RemoveFormatting className="w-4 h-4" />
+            <RemoveFormatting className="w-4 h-4" aria-hidden="true" />
           </Button>
         </div>
 
-        <Textarea
-          placeholder="Type your question here..."
-          value={questionText}
-          onChange={(e) => setQuestionText(e.target.value)}
-          className="min-h-[120px] resize-y text-sm"
-        />
+        <div className="space-y-1.5">
+          <Label htmlFor="question-text" className="text-sm font-medium text-foreground">
+            Question
+          </Label>
+          <Textarea
+            id="question-text"
+            placeholder="Type your question here..."
+            value={questionText}
+            onChange={(e) => setQuestionText(e.target.value)}
+            className="min-h-[120px] resize-y text-sm"
+          />
+        </div>
 
         {type === "multiple-choice" && <MCQOptionsEditor />}
       </div>
@@ -322,8 +341,9 @@ const QuestionEditorDialog = ({
           {/* Marks & Type */}
           <div className="flex items-center gap-4">
             <div className="space-y-1.5 w-32">
-              <Label className="text-sm font-medium">Marks</Label>
+              <Label htmlFor="marks-input" className="text-sm font-medium text-foreground">Marks</Label>
               <Input
+                id="marks-input"
                 type="number"
                 min="0"
                 step="0.01"
@@ -344,25 +364,37 @@ const QuestionEditorDialog = ({
                 }}
                 className="h-9"
                 placeholder="0.00"
+                aria-label="Marks"
               />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-sm font-medium">Type</Label>
-              <div className="h-9 px-3 flex items-center rounded-md border border-input bg-muted/40 text-sm text-muted-foreground">
+              <span className="text-sm font-medium text-foreground block">Type</span>
+              <div
+                className="h-9 px-3 flex items-center rounded-md border border-input bg-muted/40 text-sm text-foreground"
+                aria-label="Question type"
+              >
                 {TYPE_LABELS[type]}
               </div>
             </div>
           </div>
 
           {/* Tabs */}
-          <div className="flex items-center gap-1 border-b border-border">
+          <div
+            role="tablist"
+            aria-label="Question editor sections"
+            className="flex items-center gap-1 border-b border-border"
+          >
             <button
               type="button"
+              role="tab"
+              aria-selected={activeTab === "question"}
+              aria-controls="tab-panel-question"
+              id="tab-question"
               className={cn(
-                "px-3 py-2 text-sm font-medium transition-colors border-b-2 -mb-px",
+                "px-3 py-2 text-sm font-medium transition-colors border-b-2 -mb-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-t-sm",
                 activeTab === "question"
                   ? "border-primary text-primary"
-                  : "border-transparent text-muted-foreground hover:text-foreground"
+                  : "border-transparent text-foreground/70 hover:text-foreground"
               )}
               onClick={() => setActiveTab("question")}
             >
@@ -371,11 +403,15 @@ const QuestionEditorDialog = ({
             {type === "matching" && (
               <button
                 type="button"
+                role="tab"
+                aria-selected={activeTab === "answer"}
+                aria-controls="tab-panel-matching-question"
+                id="tab-matching-question"
                 className={cn(
-                  "px-3 py-2 text-sm font-medium transition-colors border-b-2 -mb-px",
+                  "px-3 py-2 text-sm font-medium transition-colors border-b-2 -mb-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-t-sm",
                   activeTab === "answer"
                     ? "border-primary text-primary"
-                    : "border-transparent text-muted-foreground hover:text-foreground"
+                    : "border-transparent text-foreground/70 hover:text-foreground"
                 )}
                 onClick={() => setActiveTab("answer")}
               >
@@ -385,29 +421,41 @@ const QuestionEditorDialog = ({
             {type !== "assertion-reasoning" && (
               <button
                 type="button"
+                role="tab"
+                aria-selected={activeTab === "image"}
+                aria-controls="tab-panel-image"
+                id="tab-image"
                 className={cn(
-                  "px-3 py-2 text-sm font-medium transition-colors border-b-2 -mb-px flex items-center gap-1.5",
+                  "px-3 py-2 text-sm font-medium transition-colors border-b-2 -mb-px flex items-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-t-sm",
                   activeTab === "image"
                     ? "border-primary text-primary"
-                    : "border-transparent text-muted-foreground hover:text-foreground"
+                    : "border-transparent text-foreground/70 hover:text-foreground"
                 )}
                 onClick={() => setActiveTab("image")}
               >
-                <ImagePlus className="w-3.5 h-3.5" />
+                <ImagePlus className="w-4 h-4" aria-hidden="true" />
                 Image
                 {hasImage && (
-                  <span className="w-2 h-2 rounded-full bg-primary" />
+                  <span
+                    className="w-2 h-2 rounded-full bg-primary"
+                    aria-label="Image attached"
+                    role="status"
+                  />
                 )}
               </button>
             )}
             {type !== "fill-blank" && type !== "true-false" && type !== "matching" && type !== "assertion-reasoning" && (
               <button
                 type="button"
+                role="tab"
+                aria-selected={activeTab === "answer"}
+                aria-controls="tab-panel-answer"
+                id="tab-answer"
                 className={cn(
-                  "px-3 py-2 text-sm font-medium transition-colors border-b-2 -mb-px",
+                  "px-3 py-2 text-sm font-medium transition-colors border-b-2 -mb-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-t-sm",
                   activeTab === "answer"
                     ? "border-primary text-primary"
-                    : "border-transparent text-muted-foreground hover:text-foreground"
+                    : "border-transparent text-foreground/70 hover:text-foreground"
                 )}
                 onClick={() => setActiveTab("answer")}
               >
@@ -418,14 +466,20 @@ const QuestionEditorDialog = ({
 
           {/* Tab content */}
           {activeTab === "image" ? (
-            <ImageUploadEditor
-              initialImage={imageData}
-              onImageChange={handleImageChange}
-            />
+            <div role="tabpanel" id="tab-panel-image" aria-labelledby="tab-image">
+              <ImageUploadEditor
+                initialImage={imageData}
+                onImageChange={handleImageChange}
+              />
+            </div>
           ) : activeTab === "answer" ? (
             type === "matching" ? (
-              <div className="space-y-3">
+              <div role="tabpanel" id="tab-panel-matching-question" aria-labelledby="tab-matching-question" className="space-y-1.5">
+                <Label htmlFor="matching-question" className="text-sm font-medium text-foreground">
+                  Question
+                </Label>
                 <Textarea
+                  id="matching-question"
                   placeholder="Type your question or instructions here..."
                   value={questionText}
                   onChange={(e) => setQuestionText(e.target.value)}
@@ -433,9 +487,10 @@ const QuestionEditorDialog = ({
                 />
               </div>
             ) : (
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Answer</Label>
+              <div role="tabpanel" id="tab-panel-answer" aria-labelledby="tab-answer" className="space-y-2">
+                <Label htmlFor="answer-text" className="text-sm font-medium text-foreground">Answer</Label>
                 <Textarea
+                  id="answer-text"
                   placeholder="Type the answer here..."
                   value={answerText}
                   onChange={(e) => setAnswerText(e.target.value)}
@@ -444,7 +499,9 @@ const QuestionEditorDialog = ({
               </div>
             )
           ) : (
-            renderQuestionContent()
+            <div role="tabpanel" id="tab-panel-question" aria-labelledby="tab-question">
+              {renderQuestionContent()}
+            </div>
           )}
         </div>
 
