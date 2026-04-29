@@ -653,6 +653,14 @@ const AddItemsModal = ({ open, onOpenChange, sectionLabel, onAddItems }: AddItem
             <Badge variant="outline" className="text-xs font-medium h-7 px-3">
               Section {sectionLabel}
             </Badge>
+            <button
+              type="button"
+              onClick={handleClose}
+              aria-label="Close"
+              className="w-8 h-8 inline-flex items-center justify-center rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+            >
+              <X className="w-4 h-4" />
+            </button>
           </div>
         </div>
 
