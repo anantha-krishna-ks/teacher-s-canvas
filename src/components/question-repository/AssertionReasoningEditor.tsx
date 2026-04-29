@@ -3,13 +3,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Info, Plus, Trash2, ChevronDown } from "lucide-react";
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Info, Plus, Trash2, ChevronDown, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const FIXED_OPTIONS = [
@@ -239,53 +237,73 @@ const AssertionReasoningEditor = ({
                         >
                           Correct Answer
                         </Label>
-                        <Select
-                          value={pair.answer ?? undefined}
-                          onValueChange={(val) =>
-                            onPairsChange(
-                              pairs.map((p) =>
-                                p.id === pair.id ? { ...p, answer: val } : p
-                              )
-                            )
-                          }
-                        >
-                          <SelectTrigger
-                            id={`answer-${pair.id}`}
-                            className="w-full h-auto min-h-9 text-left text-sm bg-background"
-                            aria-label="Select the correct answer option"
-                          >
-                            <SelectValue placeholder="Select the correct option...">
-                              {pair.answer && (
-                                <span className="flex items-start gap-2 py-0.5">
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <button
+                              type="button"
+                              id={`answer-${pair.id}`}
+                              aria-label="Select the correct answer option"
+                              className="w-full min-h-9 rounded-md border border-input bg-background px-3 py-2 text-left text-sm flex items-start justify-between gap-2 hover:border-primary/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring transition-colors"
+                            >
+                              {pair.answer ? (
+                                <span className="flex items-start gap-2 flex-1 min-w-0">
                                   <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-primary/10 text-primary text-xs font-bold shrink-0 mt-0.5">
                                     {pair.answer}
                                   </span>
-                                  <span className="text-sm text-foreground leading-relaxed whitespace-normal">
+                                  <span className="text-sm text-foreground leading-relaxed whitespace-normal break-words">
                                     {FIXED_OPTIONS.find((o) => o.label === pair.answer)?.text}
                                   </span>
                                 </span>
-                              )}
-                            </SelectValue>
-                          </SelectTrigger>
-                          <SelectContent className="max-w-[calc(100vw-3rem)] sm:max-w-[640px]">
-                            {FIXED_OPTIONS.map((opt) => (
-                              <SelectItem
-                                key={opt.label}
-                                value={opt.label}
-                                className="py-2"
-                              >
-                                <span className="flex items-start gap-2">
-                                  <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-primary/10 text-primary text-xs font-bold shrink-0 mt-0.5">
-                                    {opt.label}
-                                  </span>
-                                  <span className="text-sm text-foreground leading-relaxed whitespace-normal">
-                                    {opt.text}
-                                  </span>
+                              ) : (
+                                <span className="text-muted-foreground">
+                                  Select the correct option...
                                 </span>
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                              )}
+                              <ChevronDown className="w-4 h-4 opacity-50 shrink-0 mt-1" aria-hidden="true" />
+                            </button>
+                          </PopoverTrigger>
+                          <PopoverContent
+                            align="start"
+                            sideOffset={4}
+                            className="p-1 w-[var(--radix-popover-trigger-width)] max-h-80 overflow-y-auto"
+                          >
+                            <ul role="listbox" aria-label="Answer options">
+                              {FIXED_OPTIONS.map((opt) => {
+                                const selected = pair.answer === opt.label;
+                                return (
+                                  <li key={opt.label}>
+                                    <button
+                                      type="button"
+                                      role="option"
+                                      aria-selected={selected}
+                                      onClick={() =>
+                                        onPairsChange(
+                                          pairs.map((p) =>
+                                            p.id === pair.id ? { ...p, answer: opt.label } : p
+                                          )
+                                        )
+                                      }
+                                      className={cn(
+                                        "w-full text-left flex items-start gap-2 rounded-sm px-2 py-2 text-sm hover:bg-accent focus-visible:outline-none focus-visible:bg-accent transition-colors",
+                                        selected && "bg-accent"
+                                      )}
+                                    >
+                                      <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-primary/10 text-primary text-xs font-bold shrink-0 mt-0.5">
+                                        {opt.label}
+                                      </span>
+                                      <span className="text-sm text-foreground leading-relaxed whitespace-normal break-words flex-1">
+                                        {opt.text}
+                                      </span>
+                                      {selected && (
+                                        <Check className="w-4 h-4 text-primary shrink-0 mt-0.5" aria-hidden="true" />
+                                      )}
+                                    </button>
+                                  </li>
+                                );
+                              })}
+                            </ul>
+                          </PopoverContent>
+                        </Popover>
                       </div>
                     </div>
                   </div>
