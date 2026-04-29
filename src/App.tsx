@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -9,31 +9,73 @@ import Login from "./pages/Login";
 import ForgotPassword from "./pages/ForgotPassword";
 import DashboardLayout from "./layouts/DashboardLayout";
 
-// Lazy-loaded dashboard pages
-const Dashboard = lazy(() => import("./pages/Dashboard"));
-const LessonPlans = lazy(() => import("./pages/LessonPlans"));
-const CreateLessonPlan = lazy(() => import("./pages/CreateLessonPlan"));
-const ClassPlans = lazy(() => import("./pages/ClassPlans"));
-const Presentations = lazy(() => import("./pages/Presentations"));
-const CreatePresentation = lazy(() => import("./pages/CreatePresentation"));
-const PresentationEditor = lazy(() => import("./pages/PresentationEditor"));
-const Worksheets = lazy(() => import("./pages/Worksheets"));
-const Quizzes = lazy(() => import("./pages/Quizzes"));
-const CreateQuiz = lazy(() => import("./pages/CreateQuiz"));
-const QuizPreview = lazy(() => import("./pages/QuizPreview"));
-const QuizDisplay = lazy(() => import("./pages/QuizDisplay"));
-const Assessment = lazy(() => import("./pages/Assessment"));
-const QuestionRepository = lazy(() => import("./pages/QuestionRepository"));
-const CreateAssessment = lazy(() => import("./pages/CreateAssessment"));
-const ClassroomResources = lazy(() => import("./pages/ClassroomResources"));
-const ViewLessonPlan = lazy(() => import("./pages/ViewLessonPlan"));
-const ViewPresentation = lazy(() => import("./pages/ViewPresentation"));
-const ViewQuiz = lazy(() => import("./pages/ViewQuiz"));
-const NotFound = lazy(() => import("./pages/NotFound"));
+// Lazy-loaded dashboard pages — kept as named importers so we can prefetch them on idle.
+const importers = {
+  Dashboard: () => import("./pages/Dashboard"),
+  LessonPlans: () => import("./pages/LessonPlans"),
+  CreateLessonPlan: () => import("./pages/CreateLessonPlan"),
+  ClassPlans: () => import("./pages/ClassPlans"),
+  Presentations: () => import("./pages/Presentations"),
+  CreatePresentation: () => import("./pages/CreatePresentation"),
+  PresentationEditor: () => import("./pages/PresentationEditor"),
+  Worksheets: () => import("./pages/Worksheets"),
+  Quizzes: () => import("./pages/Quizzes"),
+  CreateQuiz: () => import("./pages/CreateQuiz"),
+  QuizPreview: () => import("./pages/QuizPreview"),
+  QuizDisplay: () => import("./pages/QuizDisplay"),
+  Assessment: () => import("./pages/Assessment"),
+  QuestionRepository: () => import("./pages/QuestionRepository"),
+  CreateAssessment: () => import("./pages/CreateAssessment"),
+  ClassroomResources: () => import("./pages/ClassroomResources"),
+  ViewLessonPlan: () => import("./pages/ViewLessonPlan"),
+  ViewPresentation: () => import("./pages/ViewPresentation"),
+  ViewQuiz: () => import("./pages/ViewQuiz"),
+  NotFound: () => import("./pages/NotFound"),
+};
+
+const Dashboard = lazy(importers.Dashboard);
+const LessonPlans = lazy(importers.LessonPlans);
+const CreateLessonPlan = lazy(importers.CreateLessonPlan);
+const ClassPlans = lazy(importers.ClassPlans);
+const Presentations = lazy(importers.Presentations);
+const CreatePresentation = lazy(importers.CreatePresentation);
+const PresentationEditor = lazy(importers.PresentationEditor);
+const Worksheets = lazy(importers.Worksheets);
+const Quizzes = lazy(importers.Quizzes);
+const CreateQuiz = lazy(importers.CreateQuiz);
+const QuizPreview = lazy(importers.QuizPreview);
+const QuizDisplay = lazy(importers.QuizDisplay);
+const Assessment = lazy(importers.Assessment);
+const QuestionRepository = lazy(importers.QuestionRepository);
+const CreateAssessment = lazy(importers.CreateAssessment);
+const ClassroomResources = lazy(importers.ClassroomResources);
+const ViewLessonPlan = lazy(importers.ViewLessonPlan);
+const ViewPresentation = lazy(importers.ViewPresentation);
+const ViewQuiz = lazy(importers.ViewQuiz);
+const NotFound = lazy(importers.NotFound);
 
 const queryClient = new QueryClient();
 
-const App = () => (
+const prefetchRoutes = () => {
+  const ric = typeof window !== "undefined" ? (window as Window & {
+    requestIdleCallback?: (cb: () => void) => number;
+  }).requestIdleCallback : undefined;
+  const schedule = ric ?? ((cb: () => void) => window.setTimeout(cb, 200));
+  Object.values(importers).forEach((load) => {
+    schedule(() => {
+      load().catch(() => {
+        /* swallow prefetch errors */
+      });
+    });
+  });
+};
+
+const App = () => {
+  useEffect(() => {
+    prefetchRoutes();
+  }, []);
+
+  return (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
@@ -72,6 +114,7 @@ const App = () => (
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
-);
+  );
+};
 
 export default App;
