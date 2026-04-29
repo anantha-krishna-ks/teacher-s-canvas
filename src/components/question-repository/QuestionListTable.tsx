@@ -115,6 +115,15 @@ const QuestionListTable = ({
           <span className="text-xs text-muted-foreground text-center">
             {TYPE_LABELS[q.type] ?? q.type}
           </span>
+          <span className="text-xs text-center">
+            {taxonomy ? (
+              <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">
+                {taxonomy}
+              </span>
+            ) : (
+              <span className="text-muted-foreground italic">—</span>
+            )}
+          </span>
           <div className="flex items-center justify-center gap-1">
             <Button
               variant="ghost"
