@@ -59,6 +59,12 @@ const AssertionReasoningEditor = ({
     onPairsChange(pairs.map((p) => (p.id === id ? { ...p, [field]: value } : p)));
   };
 
+  const handleAnswerChange = (id: string, answer: string) => {
+    onPairsChange(
+      pairs.map((p) => (p.id === id ? { ...p, answer: p.answer === answer ? null : answer } : p))
+    );
+  };
+
   const handleAddPair = () => {
     onPairsChange([...pairs, createDefaultPair()]);
   };
