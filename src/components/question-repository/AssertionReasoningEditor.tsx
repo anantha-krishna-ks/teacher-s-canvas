@@ -95,7 +95,7 @@ const AssertionReasoningEditor = ({
             type="button"
             variant="outline"
             size="sm"
-            className="h-7 text-xs gap-1.5"
+            className="h-7 text-xs gap-1.5 border-primary/30 text-primary hover:bg-primary/10 hover:text-primary"
             onClick={handleAddPair}
           >
             <Plus className="w-3.5 h-3.5" />
