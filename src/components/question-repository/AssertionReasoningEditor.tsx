@@ -127,8 +127,8 @@ const AssertionReasoningEditor = ({
                 )}
               </div>
 
-              {/* Assertion & Reason side by side */}
-              <div className="grid grid-cols-2 divide-x divide-border">
+              {/* Assertion & Reason stacked */}
+              <div className="divide-y divide-border">
                 <div className="p-3 space-y-1.5">
                   <Label className="text-xs font-medium text-muted-foreground">
                     Assertion (A)
