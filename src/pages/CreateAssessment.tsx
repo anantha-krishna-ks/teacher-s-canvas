@@ -262,31 +262,29 @@ const CreateAssessment = () => {
 
           {/* Sections Tab */}
           <TabsContent value="sections" className="p-6 mt-0 space-y-6">
-            {/* Instructions */}
-            <div className="space-y-1.5">
-              <Label htmlFor="instructions" className="text-sm font-medium text-foreground">
-                Instructions {isInstructionsRequired ? <span className="text-destructive">*</span> : <span className="text-muted-foreground text-xs">(optional)</span>}
-              </Label>
-              <Textarea
-                id="instructions"
-                value={instructions}
-                onChange={(e) => setInstructions(e.target.value)}
-                placeholder="Enter any instructions for students..."
-                className={`bg-background min-h-[100px] resize-y ${errors.instructions ? "border-destructive ring-1 ring-destructive/30" : ""}`}
-                maxLength={2000}
-              />
-              <div className="flex items-start gap-2 rounded-lg bg-primary/5 border border-primary/15 px-3 py-2.5">
-                <Info className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-                <p className="text-xs text-muted-foreground leading-relaxed">
-                  These instructions will appear at the beginning of the question paper.
-                </p>
+            {/* Sticky Instructions */}
+            <div className="sticky top-0 z-20 -mx-6 -mt-6 px-6 pt-6 pb-4 bg-card border-b border-border">
+              <div className="space-y-1.5">
+                <Label htmlFor="instructions" className="text-sm font-medium text-foreground">
+                  Instructions {isInstructionsRequired ? <span className="text-destructive">*</span> : <span className="text-muted-foreground text-xs">(optional)</span>}
+                </Label>
+                <Textarea
+                  id="instructions"
+                  value={instructions}
+                  onChange={(e) => setInstructions(e.target.value)}
+                  placeholder="Enter any instructions for students..."
+                  className={`bg-background min-h-[100px] resize-y ${errors.instructions ? "border-destructive ring-1 ring-destructive/30" : ""}`}
+                  maxLength={2000}
+                />
+                <div className="flex items-start gap-2 rounded-lg bg-primary/5 border border-primary/15 px-3 py-2.5">
+                  <Info className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    These instructions will appear at the beginning of the question paper.
+                  </p>
+                </div>
+                {errors.instructions && <p className="text-xs text-destructive">{errors.instructions}</p>}
               </div>
-              {errors.instructions && <p className="text-xs text-destructive">{errors.instructions}</p>}
             </div>
-
-            {/* Inset divider */}
-            <div className="border-t border-border -mx-6" />
-
             <SectionPanel sections={sections} onChange={setSections} />
 
             {/* Back / Submit */}
