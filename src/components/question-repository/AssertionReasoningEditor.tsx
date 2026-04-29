@@ -1,7 +1,8 @@
+import { useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Info, Plus, Trash2 } from "lucide-react";
+import { Info, Plus, Trash2, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const FIXED_OPTIONS = [
@@ -44,6 +45,14 @@ const AssertionReasoningEditor = ({
   pairs,
   onPairsChange,
 }: AssertionReasoningEditorProps) => {
+  const [openPairs, setOpenPairs] = useState<Record<string, boolean>>(() =>
+    Object.fromEntries(pairs.map((p) => [p.id, true]))
+  );
+
+  const togglePair = (id: string) => {
+    setOpenPairs((prev) => ({ ...prev, [id]: !(prev[id] ?? true) }));
+  };
+
   const handlePairChange = (id: string, field: "assertion" | "reason", value: string) => {
     onPairsChange(pairs.map((p) => (p.id === id ? { ...p, [field]: value } : p)));
   };
@@ -104,56 +113,91 @@ const AssertionReasoningEditor = ({
         </div>
 
         <div className="space-y-3">
-          {pairs.map((pair, index) => (
-            <div
-              key={pair.id}
-              className="relative rounded-lg border border-border bg-card overflow-hidden"
-            >
-              {/* Pair header */}
-              <div className="flex items-center justify-between px-4 py-2 bg-muted/40 border-b border-border">
-                <span className="text-xs font-semibold text-foreground">
-                  Q{index + 1}
-                </span>
-                {pairs.length > 1 && (
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    className="h-6 w-6 text-muted-foreground hover:text-destructive"
-                    onClick={() => handleRemovePair(pair.id)}
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </Button>
-                )}
-              </div>
+          {pairs.map((pair, index) => {
+            const isOpen = openPairs[pair.id] ?? true;
+            return (
+              <div
+                key={pair.id}
+                className="relative rounded-lg border border-border bg-card overflow-hidden transition-shadow hover:shadow-sm"
+              >
+                {/* Pair header (clickable) */}
+                <button
+                  type="button"
+                  onClick={() => togglePair(pair.id)}
+                  aria-expanded={isOpen}
+                  className="w-full flex items-center justify-between px-4 py-2 bg-muted/40 border-b border-border hover:bg-muted/60 transition-colors"
+                >
+                  <div className="flex items-center gap-2">
+                    <ChevronDown
+                      className={cn(
+                        "w-3.5 h-3.5 text-muted-foreground transition-transform duration-200",
+                        !isOpen && "-rotate-90"
+                      )}
+                    />
+                    <span className="text-xs font-semibold text-foreground">
+                      Q{index + 1}
+                    </span>
+                  </div>
+                  {pairs.length > 1 && (
+                    <span
+                      role="button"
+                      tabIndex={0}
+                      aria-label="Remove pair"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleRemovePair(pair.id);
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          handleRemovePair(pair.id);
+                        }
+                      }}
+                      className="inline-flex items-center justify-center h-6 w-6 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </span>
+                  )}
+                </button>
 
-              {/* Assertion & Reason stacked */}
-              <div className="divide-y divide-border">
-                <div className="p-3 space-y-1.5">
-                  <Label className="text-xs font-medium text-muted-foreground">
-                    Assertion (A)
-                  </Label>
-                  <Textarea
-                    placeholder="Enter assertion statement..."
-                    value={pair.assertion}
-                    onChange={(e) => handlePairChange(pair.id, "assertion", e.target.value)}
-                    className="min-h-[72px] resize-y text-sm border-0 bg-background/50 focus-visible:ring-1"
-                  />
-                </div>
-                <div className="p-3 space-y-1.5">
-                  <Label className="text-xs font-medium text-muted-foreground">
-                    Reason (R)
-                  </Label>
-                  <Textarea
-                    placeholder="Enter reason statement..."
-                    value={pair.reason}
-                    onChange={(e) => handlePairChange(pair.id, "reason", e.target.value)}
-                    className="min-h-[72px] resize-y text-sm border-0 bg-background/50 focus-visible:ring-1"
-                  />
+                {/* Collapsible content */}
+                <div
+                  className={cn(
+                    "grid transition-all duration-300 ease-out",
+                    isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+                  )}
+                >
+                  <div className="overflow-hidden">
+                    <div className="divide-y divide-border">
+                      <div className="p-3 space-y-1.5">
+                        <Label className="text-xs font-medium text-muted-foreground">
+                          Assertion (A)
+                        </Label>
+                        <Textarea
+                          placeholder="Enter assertion statement..."
+                          value={pair.assertion}
+                          onChange={(e) => handlePairChange(pair.id, "assertion", e.target.value)}
+                          className="min-h-[72px] resize-y text-sm border-0 bg-background/50 focus-visible:ring-1"
+                        />
+                      </div>
+                      <div className="p-3 space-y-1.5">
+                        <Label className="text-xs font-medium text-muted-foreground">
+                          Reason (R)
+                        </Label>
+                        <Textarea
+                          placeholder="Enter reason statement..."
+                          value={pair.reason}
+                          onChange={(e) => handlePairChange(pair.id, "reason", e.target.value)}
+                          className="min-h-[72px] resize-y text-sm border-0 bg-background/50 focus-visible:ring-1"
+                        />
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>
