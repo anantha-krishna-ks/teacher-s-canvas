@@ -225,6 +225,48 @@ const AssertionReasoningEditor = ({
                           className="min-h-[72px] resize-y text-sm border border-border bg-background focus-visible:ring-2"
                         />
                       </div>
+                      <div className="p-3 space-y-2">
+                        <div className="flex items-center justify-between gap-3">
+                          <span
+                            id={`answer-label-${pair.id}`}
+                            className="text-sm font-medium text-foreground"
+                          >
+                            Correct Answer
+                          </span>
+                          {!pair.answer && (
+                            <span className="text-xs text-muted-foreground">
+                              Select an option
+                            </span>
+                          )}
+                        </div>
+                        <div
+                          role="radiogroup"
+                          aria-labelledby={`answer-label-${pair.id}`}
+                          className="grid grid-cols-4 gap-2"
+                        >
+                          {FIXED_OPTIONS.map((opt) => {
+                            const selected = pair.answer === opt.label;
+                            return (
+                              <button
+                                key={opt.label}
+                                type="button"
+                                role="radio"
+                                aria-checked={selected}
+                                title={opt.text}
+                                onClick={() => handleAnswerChange(pair.id, opt.label)}
+                                className={cn(
+                                  "h-9 rounded-md border text-sm font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                                  selected
+                                    ? "border-primary bg-primary text-primary-foreground shadow-sm"
+                                    : "border-border bg-background text-foreground hover:border-primary/50 hover:bg-primary/5"
+                                )}
+                              >
+                                {opt.label}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
