@@ -261,9 +261,9 @@ const CreateAssessment = () => {
           </TabsContent>
 
           {/* Sections Tab */}
-          <TabsContent value="sections" className="p-6 mt-0 space-y-6 overflow-visible">
+          <TabsContent value="sections" className="mt-0 max-h-[calc(100vh-11rem)] overflow-y-auto">
             {/* Sticky Instructions */}
-            <div className="sticky top-16 z-30 -mx-6 -mt-6 px-6 pt-6 pb-4 bg-card border-b border-border shadow-sm">
+            <div className="sticky top-0 z-30 px-6 pt-6 pb-4 bg-card border-b border-border shadow-sm">
               <div className="space-y-1.5">
                 <Label htmlFor="instructions" className="text-sm font-medium text-foreground">
                   Instructions {isInstructionsRequired ? <span className="text-destructive">*</span> : <span className="text-muted-foreground text-xs">(optional)</span>}
@@ -285,16 +285,18 @@ const CreateAssessment = () => {
                 {errors.instructions && <p className="text-xs text-destructive">{errors.instructions}</p>}
               </div>
             </div>
-            <SectionPanel sections={sections} onChange={setSections} />
+            <div className="space-y-6 px-6 pb-6">
+              <SectionPanel sections={sections} onChange={setSections} />
 
-            {/* Back / Submit */}
-            <div className="flex justify-between pt-2">
-              <Button variant="outline" onClick={() => setActiveTab("type")}>
-                Back
-              </Button>
-              <Button onClick={handleCreateAssessment} className="px-8">
-                Create Assessment
-              </Button>
+              {/* Back / Submit */}
+              <div className="flex justify-between pt-2">
+                <Button variant="outline" onClick={() => setActiveTab("type")}>
+                  Back
+                </Button>
+                <Button onClick={handleCreateAssessment} className="px-8">
+                  Create Assessment
+                </Button>
+              </div>
             </div>
           </TabsContent>
         </Tabs>
