@@ -174,32 +174,40 @@ const QuestionEditorDialog = ({
       return (
         <div className="space-y-5">
           {/* Question text */}
-          <Textarea
-            placeholder="Type your true/false statement here..."
-            value={questionText}
-            onChange={(e) => setQuestionText(e.target.value)}
-            className="min-h-[100px] resize-y text-sm"
-          />
+          <div className="space-y-1.5">
+            <Label htmlFor="tf-statement" className="text-sm font-medium text-foreground">
+              Statement
+            </Label>
+            <Textarea
+              id="tf-statement"
+              placeholder="Type your true/false statement here..."
+              value={questionText}
+              onChange={(e) => setQuestionText(e.target.value)}
+              className="min-h-[100px] resize-y text-sm"
+            />
+          </div>
 
           {/* True/False selector */}
-          <div className="space-y-3">
-            <Label className="text-sm font-medium">Correct Answer</Label>
-            <div className="grid grid-cols-2 gap-3">
+          <fieldset className="space-y-3">
+            <legend className="text-sm font-medium text-foreground">Correct Answer</legend>
+            <div className="grid grid-cols-2 gap-3" role="radiogroup" aria-label="Correct answer">
               <button
                 type="button"
+                role="radio"
+                aria-checked={trueFalseAnswer === true}
                 onClick={() => setTrueFalseAnswer(true)}
                 className={cn(
-                  "relative flex items-center justify-center gap-2.5 rounded-xl border-2 py-4 text-sm font-semibold transition-all",
+                  "relative flex items-center justify-center gap-2.5 rounded-xl border-2 py-4 text-sm font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
                   trueFalseAnswer === true
-                    ? "border-emerald-500 bg-emerald-50 text-emerald-700 shadow-sm dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/60"
-                    : "border-border bg-background text-muted-foreground hover:border-emerald-300 hover:bg-emerald-50/50 dark:hover:bg-emerald-500/5"
+                    ? "border-emerald-600 bg-emerald-50 text-emerald-800 shadow-sm dark:bg-emerald-500/10 dark:text-emerald-300 dark:border-emerald-500/60"
+                    : "border-border bg-background text-foreground hover:border-emerald-400 hover:bg-emerald-50/50 dark:hover:bg-emerald-500/5"
                 )}
               >
-                <span className={cn(
+                <span aria-hidden="true" className={cn(
                   "flex items-center justify-center w-5 h-5 rounded-full border-2 transition-all",
                   trueFalseAnswer === true
-                    ? "border-emerald-500 bg-emerald-500"
-                    : "border-muted-foreground/30"
+                    ? "border-emerald-600 bg-emerald-600"
+                    : "border-foreground/30"
                 )}>
                   {trueFalseAnswer === true && (
                     <span className="w-2 h-2 rounded-full bg-white" />
@@ -209,19 +217,21 @@ const QuestionEditorDialog = ({
               </button>
               <button
                 type="button"
+                role="radio"
+                aria-checked={trueFalseAnswer === false}
                 onClick={() => setTrueFalseAnswer(false)}
                 className={cn(
-                  "relative flex items-center justify-center gap-2.5 rounded-xl border-2 py-4 text-sm font-semibold transition-all",
+                  "relative flex items-center justify-center gap-2.5 rounded-xl border-2 py-4 text-sm font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
                   trueFalseAnswer === false
-                    ? "border-red-500 bg-red-50 text-red-700 shadow-sm dark:bg-red-500/10 dark:text-red-400 dark:border-red-500/60"
-                    : "border-border bg-background text-muted-foreground hover:border-red-300 hover:bg-red-50/50 dark:hover:bg-red-500/5"
+                    ? "border-red-600 bg-red-50 text-red-800 shadow-sm dark:bg-red-500/10 dark:text-red-300 dark:border-red-500/60"
+                    : "border-border bg-background text-foreground hover:border-red-400 hover:bg-red-50/50 dark:hover:bg-red-500/5"
                 )}
               >
-                <span className={cn(
+                <span aria-hidden="true" className={cn(
                   "flex items-center justify-center w-5 h-5 rounded-full border-2 transition-all",
                   trueFalseAnswer === false
-                    ? "border-red-500 bg-red-500"
-                    : "border-muted-foreground/30"
+                    ? "border-red-600 bg-red-600"
+                    : "border-foreground/30"
                 )}>
                   {trueFalseAnswer === false && (
                     <span className="w-2 h-2 rounded-full bg-white" />
@@ -231,9 +241,9 @@ const QuestionEditorDialog = ({
               </button>
             </div>
             {trueFalseAnswer === null && (
-              <p className="text-xs text-muted-foreground">Select the correct answer above</p>
+              <p className="text-sm text-muted-foreground" role="status">Select the correct answer above</p>
             )}
-          </div>
+          </fieldset>
         </div>
       );
     }
