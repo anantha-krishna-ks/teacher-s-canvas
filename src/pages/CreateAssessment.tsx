@@ -113,9 +113,9 @@ const CreateAssessment = () => {
       </div>
 
       {/* Tabs */}
-      <div className="bg-card border border-border rounded-xl overflow-hidden">
+      <div className="bg-card border border-border rounded-xl overflow-visible">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="w-full justify-start rounded-none border-b border-border bg-muted/30 p-0 h-auto">
+          <TabsList className="w-full justify-start rounded-t-xl border-b border-border bg-muted/30 p-0 h-auto overflow-hidden">
             <TabsTrigger
               value="type"
               className="flex items-center gap-2 rounded-none border-b-2 border-transparent px-6 py-3 text-sm font-medium data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:bg-card data-[state=active]:shadow-none"
@@ -261,9 +261,9 @@ const CreateAssessment = () => {
           </TabsContent>
 
           {/* Sections Tab */}
-          <TabsContent value="sections" className="p-6 mt-0 space-y-6">
+          <TabsContent value="sections" className="mt-0 max-h-[calc(100vh-11rem)] overflow-y-auto">
             {/* Sticky Instructions */}
-            <div className="sticky top-0 z-20 -mx-6 -mt-6 px-6 pt-6 pb-4 bg-card border-b border-border">
+            <div className="sticky top-0 z-30 px-6 pt-6 pb-4 bg-card border-b border-border shadow-sm">
               <div className="space-y-1.5">
                 <Label htmlFor="instructions" className="text-sm font-medium text-foreground">
                   Instructions {isInstructionsRequired ? <span className="text-destructive">*</span> : <span className="text-muted-foreground text-xs">(optional)</span>}
@@ -285,16 +285,18 @@ const CreateAssessment = () => {
                 {errors.instructions && <p className="text-xs text-destructive">{errors.instructions}</p>}
               </div>
             </div>
-            <SectionPanel sections={sections} onChange={setSections} />
+            <div className="space-y-6 px-6 pb-6">
+              <SectionPanel sections={sections} onChange={setSections} />
 
-            {/* Back / Submit */}
-            <div className="flex justify-between pt-2">
-              <Button variant="outline" onClick={() => setActiveTab("type")}>
-                Back
-              </Button>
-              <Button onClick={handleCreateAssessment} className="px-8">
-                Create Assessment
-              </Button>
+              {/* Back / Submit */}
+              <div className="flex justify-between pt-2">
+                <Button variant="outline" onClick={() => setActiveTab("type")}>
+                  Back
+                </Button>
+                <Button onClick={handleCreateAssessment} className="px-8">
+                  Create Assessment
+                </Button>
+              </div>
             </div>
           </TabsContent>
         </Tabs>
