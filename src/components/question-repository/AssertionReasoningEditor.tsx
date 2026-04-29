@@ -73,7 +73,6 @@ const AssertionReasoningEditor = ({
         <div className="flex gap-2.5">
           <Info className="w-4 h-4 text-primary shrink-0 mt-0.5" aria-hidden="true" />
           <p className="text-sm text-foreground leading-relaxed">
-            <span className="font-semibold text-foreground">Default Instructions:</span>{" "}
             Two statements are given, one labelled as Assertion (A) and the other is labelled as
             Reason (R). Select the correct answer to these questions from the codes (A), (B),
             (C) and (D) as given below.
