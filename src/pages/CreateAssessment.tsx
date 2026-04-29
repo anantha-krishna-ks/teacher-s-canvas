@@ -252,7 +252,17 @@ const CreateAssessment = () => {
               </div>
             </div>
 
-            {/* Row 3: Instructions */}
+            {/* Next Button */}
+            <div className="flex justify-end pt-2">
+              <Button onClick={handleNext} className="px-8">
+                Next
+              </Button>
+            </div>
+          </TabsContent>
+
+          {/* Sections Tab */}
+          <TabsContent value="sections" className="p-6 mt-0 space-y-6">
+            {/* Instructions */}
             <div className="space-y-1.5">
               <Label htmlFor="instructions" className="text-sm font-medium text-foreground">
                 Instructions {isInstructionsRequired ? <span className="text-destructive">*</span> : <span className="text-muted-foreground text-xs">(optional)</span>}
@@ -274,16 +284,9 @@ const CreateAssessment = () => {
               {errors.instructions && <p className="text-xs text-destructive">{errors.instructions}</p>}
             </div>
 
-            {/* Next Button */}
-            <div className="flex justify-end pt-2">
-              <Button onClick={handleNext} className="px-8">
-                Next
-              </Button>
-            </div>
-          </TabsContent>
+            {/* Inset divider */}
+            <div className="border-t border-border -mx-6" />
 
-          {/* Sections Tab */}
-          <TabsContent value="sections" className="p-6 mt-0 space-y-6">
             <SectionPanel sections={sections} onChange={setSections} />
 
             {/* Back / Submit */}
