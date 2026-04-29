@@ -466,14 +466,20 @@ const QuestionEditorDialog = ({
 
           {/* Tab content */}
           {activeTab === "image" ? (
-            <ImageUploadEditor
-              initialImage={imageData}
-              onImageChange={handleImageChange}
-            />
+            <div role="tabpanel" id="tab-panel-image" aria-labelledby="tab-image">
+              <ImageUploadEditor
+                initialImage={imageData}
+                onImageChange={handleImageChange}
+              />
+            </div>
           ) : activeTab === "answer" ? (
             type === "matching" ? (
-              <div className="space-y-3">
+              <div role="tabpanel" id="tab-panel-matching-question" aria-labelledby="tab-matching-question" className="space-y-1.5">
+                <Label htmlFor="matching-question" className="text-sm font-medium text-foreground">
+                  Question
+                </Label>
                 <Textarea
+                  id="matching-question"
                   placeholder="Type your question or instructions here..."
                   value={questionText}
                   onChange={(e) => setQuestionText(e.target.value)}
@@ -481,9 +487,10 @@ const QuestionEditorDialog = ({
                 />
               </div>
             ) : (
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Answer</Label>
+              <div role="tabpanel" id="tab-panel-answer" aria-labelledby="tab-answer" className="space-y-2">
+                <Label htmlFor="answer-text" className="text-sm font-medium text-foreground">Answer</Label>
                 <Textarea
+                  id="answer-text"
                   placeholder="Type the answer here..."
                   value={answerText}
                   onChange={(e) => setAnswerText(e.target.value)}
@@ -492,7 +499,9 @@ const QuestionEditorDialog = ({
               </div>
             )
           ) : (
-            renderQuestionContent()
+            <div role="tabpanel" id="tab-panel-question" aria-labelledby="tab-question">
+              {renderQuestionContent()}
+            </div>
           )}
         </div>
 
