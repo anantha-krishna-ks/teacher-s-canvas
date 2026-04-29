@@ -195,6 +195,7 @@ const CreateNewItemForm = ({ onAddItem, activeFolderId, onSelectFolder }: { onAd
   const [includeWordBank, setIncludeWordBank] = useState(false);
   const [matchPairs, setMatchPairs] = useState<MatchPair[]>(createDefaultPairs());
   const [trueFalseAnswer, setTrueFalseAnswer] = useState<boolean | null>(null);
+  const [taxonomy, setTaxonomy] = useState<string>("");
 
   const selectedFolderName = useMemo(() => {
     const find = (folders: RepositoryFolder[]): string | null => {
