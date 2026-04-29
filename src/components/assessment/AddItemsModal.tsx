@@ -412,6 +412,22 @@ const CreateNewItemForm = ({ onAddItem, activeFolderId, onSelectFolder }: { onAd
               </SelectContent>
             </Select>
           </div>
+          <div className="space-y-2 w-56">
+            <Label className="text-sm font-medium">Taxonomy</Label>
+            <Select value={taxonomy} onValueChange={setTaxonomy}>
+              <SelectTrigger className="h-10 text-sm">
+                <SelectValue placeholder="Select taxonomy" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Remember">Remember</SelectItem>
+                <SelectItem value="Understand">Understand</SelectItem>
+                <SelectItem value="Apply">Apply</SelectItem>
+                <SelectItem value="Analyze">Analyze</SelectItem>
+                <SelectItem value="Evaluate">Evaluate</SelectItem>
+                <SelectItem value="Create">Create</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
           <div className="space-y-2 w-32">
             <Label className="text-sm font-medium">Marks</Label>
             <Input
