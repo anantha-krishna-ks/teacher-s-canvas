@@ -379,6 +379,7 @@ const QuestionEditorDialog = ({
           </div>
 
           {/* Tabs */}
+          {type !== "assertion-reasoning" && (
           <div
             role="tablist"
             aria-label="Question editor sections"
@@ -418,33 +419,31 @@ const QuestionEditorDialog = ({
                 Question
               </button>
             )}
-            {type !== "assertion-reasoning" && (
-              <button
-                type="button"
-                role="tab"
-                aria-selected={activeTab === "image"}
-                aria-controls="tab-panel-image"
-                id="tab-image"
-                className={cn(
-                  "px-3 py-2 text-sm font-medium transition-colors border-b-2 -mb-px flex items-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-t-sm",
-                  activeTab === "image"
-                    ? "border-primary text-primary"
-                    : "border-transparent text-foreground/70 hover:text-foreground"
-                )}
-                onClick={() => setActiveTab("image")}
-              >
-                <ImagePlus className="w-4 h-4" aria-hidden="true" />
-                Image
-                {hasImage && (
-                  <span
-                    className="w-2 h-2 rounded-full bg-primary"
-                    aria-label="Image attached"
-                    role="status"
-                  />
-                )}
-              </button>
-            )}
-            {type !== "fill-blank" && type !== "true-false" && type !== "matching" && type !== "assertion-reasoning" && (
+            <button
+              type="button"
+              role="tab"
+              aria-selected={activeTab === "image"}
+              aria-controls="tab-panel-image"
+              id="tab-image"
+              className={cn(
+                "px-3 py-2 text-sm font-medium transition-colors border-b-2 -mb-px flex items-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-t-sm",
+                activeTab === "image"
+                  ? "border-primary text-primary"
+                  : "border-transparent text-foreground/70 hover:text-foreground"
+              )}
+              onClick={() => setActiveTab("image")}
+            >
+              <ImagePlus className="w-4 h-4" aria-hidden="true" />
+              Image
+              {hasImage && (
+                <span
+                  className="w-2 h-2 rounded-full bg-primary"
+                  aria-label="Image attached"
+                  role="status"
+                />
+              )}
+            </button>
+            {type !== "fill-blank" && type !== "true-false" && type !== "matching" && (
               <button
                 type="button"
                 role="tab"
@@ -463,6 +462,7 @@ const QuestionEditorDialog = ({
               </button>
             )}
           </div>
+          )}
 
           {/* Tab content */}
           {activeTab === "image" ? (
