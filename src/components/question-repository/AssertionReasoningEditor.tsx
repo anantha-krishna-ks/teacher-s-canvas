@@ -125,7 +125,7 @@ const AssertionReasoningEditor = ({
                   type="button"
                   onClick={() => togglePair(pair.id)}
                   aria-expanded={isOpen}
-                  className="w-full flex items-center justify-between px-4 py-2 bg-muted/40 border-b border-border hover:bg-muted/60 transition-colors"
+                  className="w-full flex items-center justify-between px-4 py-2 bg-muted border-b border-border hover:bg-muted/80 transition-colors"
                 >
                   <div className="flex items-center gap-2">
                     <ChevronDown
