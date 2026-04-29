@@ -67,13 +67,13 @@ const AssertionReasoningEditor = ({
   };
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-5" role="region" aria-label="Assertion and Reasoning editor">
       {/* Default instruction banner */}
-      <div className="rounded-lg border border-primary/20 bg-primary/5 px-4 py-3">
+      <div className="rounded-lg border border-primary/20 bg-primary/5 px-4 py-3" role="note">
         <div className="flex gap-2.5">
-          <Info className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-          <p className="text-xs text-muted-foreground leading-relaxed">
-            <span className="font-medium text-foreground">Default Instructions:</span>{" "}
+          <Info className="w-4 h-4 text-primary shrink-0 mt-0.5" aria-hidden="true" />
+          <p className="text-sm text-foreground leading-relaxed">
+            <span className="font-semibold text-foreground">Default Instructions:</span>{" "}
             Two statements are given, one labelled as Assertion (A) and the other is labelled as
             Reason (R). Select the correct answer to these questions from the codes (A), (B),
             (C) and (D) as given below.
@@ -82,19 +82,22 @@ const AssertionReasoningEditor = ({
       </div>
 
       {/* Fixed answer options - compact row */}
-      <div className="grid grid-cols-2 gap-1.5">
+      <ul className="grid grid-cols-2 gap-2" aria-label="Fixed answer options">
         {FIXED_OPTIONS.map((opt) => (
-          <div
+          <li
             key={opt.label}
-            className="flex items-start gap-2 rounded-md border border-border bg-muted/30 px-2.5 py-2 text-[11px] text-muted-foreground leading-relaxed"
+            className="flex items-start gap-2 rounded-md border border-border bg-muted/40 px-3 py-2 text-sm text-foreground leading-relaxed"
           >
-            <span className="flex items-center justify-center w-4 h-4 rounded-full bg-muted-foreground/10 text-[9px] font-bold shrink-0 mt-0.5">
+            <span
+              aria-hidden="true"
+              className="flex items-center justify-center w-5 h-5 rounded-full bg-primary/10 text-primary text-xs font-bold shrink-0 mt-0.5"
+            >
               {opt.label}
             </span>
-            <span>{opt.text}</span>
-          </div>
+            <span><span className="sr-only">Option {opt.label}: </span>{opt.text}</span>
+          </li>
         ))}
-      </div>
+      </ul>
 
       {/* Question pairs */}
       <div className="space-y-3">
