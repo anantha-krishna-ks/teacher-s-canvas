@@ -397,7 +397,9 @@ const QuestionRepository = () => {
           <div className="p-5 border-b border-border">
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
               <div className="space-y-1.5">
-                <label className="text-sm font-medium text-foreground">Chapter</label>
+                <label className="text-sm font-medium text-foreground">
+                  Chapter <span className="text-destructive">*</span>
+                </label>
                 <Select value={chapter} onValueChange={setChapter}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select chapter" />
@@ -412,7 +414,9 @@ const QuestionRepository = () => {
                 </Select>
               </div>
               <div className="space-y-1.5">
-                <label className="text-sm font-medium text-foreground">Taxonomy</label>
+                <label className="text-sm font-medium text-foreground">
+                  Taxonomy <span className="text-destructive">*</span>
+                </label>
                 <Select value={taxonomy} onValueChange={setTaxonomy}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select taxonomy" />
@@ -427,7 +431,7 @@ const QuestionRepository = () => {
                 </Select>
               </div>
               <div className="flex items-end">
-                <AddItemsDropdown onAdd={handleAddItem} />
+                <AddItemsDropdown onAdd={handleAddItem} disabled={!chapter || !taxonomy} />
               </div>
             </div>
           </div>
