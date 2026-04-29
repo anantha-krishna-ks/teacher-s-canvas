@@ -486,6 +486,7 @@ const QuestionRepository = () => {
               ) : (
                 <QuestionListTable
                   questions={filteredQuestions}
+                  taxonomy={taxonomy}
                   onEdit={handleEditQuestion}
                   onDelete={handleDeleteQuestion}
                   onReorder={(reordered) => setQuestions(reordered)}

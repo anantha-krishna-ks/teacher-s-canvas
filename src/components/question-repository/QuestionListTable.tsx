@@ -15,6 +15,7 @@ const TYPE_LABELS: Record<string, string> = {
 
 interface QuestionListTableProps {
   questions: QuestionData[];
+  taxonomy?: string;
   onEdit: (question: QuestionData) => void;
   onDelete: (id: string) => void;
   onReorder: (questions: QuestionData[]) => void;
@@ -22,6 +23,7 @@ interface QuestionListTableProps {
 
 const QuestionListTable = ({
   questions,
+  taxonomy,
   onEdit,
   onDelete,
   onReorder,
@@ -68,11 +70,12 @@ const QuestionListTable = ({
   return (
     <div className="border border-border rounded-xl overflow-hidden">
       {/* Table header */}
-      <div className="grid grid-cols-[48px_1fr_80px_140px_100px] items-center bg-primary text-primary-foreground px-3 py-2.5 text-xs font-semibold uppercase tracking-wider">
+      <div className="grid grid-cols-[48px_1fr_80px_140px_120px_100px] items-center bg-primary text-primary-foreground px-3 py-2.5 text-xs font-semibold uppercase tracking-wider">
         <span className="text-center">Sl No.</span>
         <span>Question</span>
         <span className="text-center">Marks</span>
         <span className="text-center">Type</span>
+        <span className="text-center">Taxonomy</span>
         <span className="text-center">Action</span>
       </div>
 
@@ -85,7 +88,7 @@ const QuestionListTable = ({
           onDragOver={(e) => handleDragOver(e, i)}
           onDragEnd={handleDragEnd}
           className={cn(
-            "grid grid-cols-[48px_1fr_80px_140px_100px] items-center px-3 py-3 border-b border-border last:border-b-0 transition-colors group cursor-grab active:cursor-grabbing",
+            "grid grid-cols-[48px_1fr_80px_140px_120px_100px] items-center px-3 py-3 border-b border-border last:border-b-0 transition-colors group cursor-grab active:cursor-grabbing",
             dragIndex === i && "opacity-40",
             overIndex === i && dragIndex !== i && "border-t-2 border-t-primary"
           )}
@@ -111,6 +114,15 @@ const QuestionListTable = ({
           </span>
           <span className="text-xs text-muted-foreground text-center">
             {TYPE_LABELS[q.type] ?? q.type}
+          </span>
+          <span className="text-xs text-center">
+            {taxonomy ? (
+              <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">
+                {taxonomy}
+              </span>
+            ) : (
+              <span className="text-muted-foreground italic">—</span>
+            )}
           </span>
           <div className="flex items-center justify-center gap-1">
             <Button
