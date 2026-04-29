@@ -252,28 +252,6 @@ const CreateAssessment = () => {
               </div>
             </div>
 
-            {/* Row 3: Instructions */}
-            <div className="space-y-1.5">
-              <Label htmlFor="instructions" className="text-sm font-medium text-foreground">
-                Instructions {isInstructionsRequired ? <span className="text-destructive">*</span> : <span className="text-muted-foreground text-xs">(optional)</span>}
-              </Label>
-              <Textarea
-                id="instructions"
-                value={instructions}
-                onChange={(e) => setInstructions(e.target.value)}
-                placeholder="Enter any instructions for students..."
-                className={`bg-background min-h-[100px] resize-y ${errors.instructions ? "border-destructive ring-1 ring-destructive/30" : ""}`}
-                maxLength={2000}
-              />
-              <div className="flex items-start gap-2 rounded-lg bg-primary/5 border border-primary/15 px-3 py-2.5">
-                <Info className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-                <p className="text-xs text-muted-foreground leading-relaxed">
-                  These instructions will appear at the beginning of the question paper.
-                </p>
-              </div>
-              {errors.instructions && <p className="text-xs text-destructive">{errors.instructions}</p>}
-            </div>
-
             {/* Next Button */}
             <div className="flex justify-end pt-2">
               <Button onClick={handleNext} className="px-8">
