@@ -113,7 +113,7 @@ const CreateAssessment = () => {
       </div>
 
       {/* Tabs */}
-      <div className="bg-card border border-border rounded-xl overflow-hidden">
+      <div className="bg-card border border-border rounded-xl">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="w-full justify-start rounded-none border-b border-border bg-muted/30 p-0 h-auto">
             <TabsTrigger
