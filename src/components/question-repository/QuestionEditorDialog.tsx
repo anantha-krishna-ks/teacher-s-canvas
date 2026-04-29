@@ -341,8 +341,9 @@ const QuestionEditorDialog = ({
           {/* Marks & Type */}
           <div className="flex items-center gap-4">
             <div className="space-y-1.5 w-32">
-              <Label className="text-sm font-medium">Marks</Label>
+              <Label htmlFor="marks-input" className="text-sm font-medium text-foreground">Marks</Label>
               <Input
+                id="marks-input"
                 type="number"
                 min="0"
                 step="0.01"
@@ -363,18 +364,26 @@ const QuestionEditorDialog = ({
                 }}
                 className="h-9"
                 placeholder="0.00"
+                aria-label="Marks"
               />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-sm font-medium">Type</Label>
-              <div className="h-9 px-3 flex items-center rounded-md border border-input bg-muted/40 text-sm text-muted-foreground">
+              <span className="text-sm font-medium text-foreground block">Type</span>
+              <div
+                className="h-9 px-3 flex items-center rounded-md border border-input bg-muted/40 text-sm text-foreground"
+                aria-label="Question type"
+              >
                 {TYPE_LABELS[type]}
               </div>
             </div>
           </div>
 
           {/* Tabs */}
-          <div className="flex items-center gap-1 border-b border-border">
+          <div
+            role="tablist"
+            aria-label="Question editor sections"
+            className="flex items-center gap-1 border-b border-border"
+          >
             <button
               type="button"
               className={cn(
