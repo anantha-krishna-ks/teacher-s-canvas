@@ -232,47 +232,60 @@ const AssertionReasoningEditor = ({
                           className="min-h-[72px] resize-y text-sm border border-border bg-background focus-visible:ring-2"
                         />
                       </div>
-                      <div className="p-3 space-y-2">
-                        <div className="flex items-center justify-between gap-3">
-                          <span
-                            id={`answer-label-${pair.id}`}
-                            className="text-sm font-medium text-foreground"
-                          >
-                            Correct Answer
-                          </span>
-                          {!pair.answer && (
-                            <span className="text-xs text-muted-foreground">
-                              Select an option
-                            </span>
-                          )}
-                        </div>
-                        <div
-                          role="radiogroup"
-                          aria-labelledby={`answer-label-${pair.id}`}
-                          className="grid grid-cols-4 gap-2"
+                      <div className="p-3 space-y-1.5">
+                        <Label
+                          htmlFor={`answer-${pair.id}`}
+                          className="text-sm font-medium text-foreground"
                         >
-                          {FIXED_OPTIONS.map((opt) => {
-                            const selected = pair.answer === opt.label;
-                            return (
-                              <button
+                          Correct Answer
+                        </Label>
+                        <Select
+                          value={pair.answer ?? undefined}
+                          onValueChange={(val) =>
+                            onPairsChange(
+                              pairs.map((p) =>
+                                p.id === pair.id ? { ...p, answer: val } : p
+                              )
+                            )
+                          }
+                        >
+                          <SelectTrigger
+                            id={`answer-${pair.id}`}
+                            className="w-full h-auto min-h-9 text-left text-sm bg-background"
+                            aria-label="Select the correct answer option"
+                          >
+                            <SelectValue placeholder="Select the correct option...">
+                              {pair.answer && (
+                                <span className="flex items-start gap-2 py-0.5">
+                                  <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-primary/10 text-primary text-xs font-bold shrink-0 mt-0.5">
+                                    {pair.answer}
+                                  </span>
+                                  <span className="text-sm text-foreground leading-relaxed whitespace-normal">
+                                    {FIXED_OPTIONS.find((o) => o.label === pair.answer)?.text}
+                                  </span>
+                                </span>
+                              )}
+                            </SelectValue>
+                          </SelectTrigger>
+                          <SelectContent className="max-w-[calc(100vw-3rem)] sm:max-w-[640px]">
+                            {FIXED_OPTIONS.map((opt) => (
+                              <SelectItem
                                 key={opt.label}
-                                type="button"
-                                role="radio"
-                                aria-checked={selected}
-                                title={opt.text}
-                                onClick={() => handleAnswerChange(pair.id, opt.label)}
-                                className={cn(
-                                  "h-9 rounded-md border text-sm font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                                  selected
-                                    ? "border-primary bg-primary text-primary-foreground shadow-sm"
-                                    : "border-border bg-background text-foreground hover:border-primary/50 hover:bg-primary/5"
-                                )}
+                                value={opt.label}
+                                className="py-2"
                               >
-                                {opt.label}
-                              </button>
-                            );
-                          })}
-                        </div>
+                                <span className="flex items-start gap-2">
+                                  <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-primary/10 text-primary text-xs font-bold shrink-0 mt-0.5">
+                                    {opt.label}
+                                  </span>
+                                  <span className="text-sm text-foreground leading-relaxed whitespace-normal">
+                                    {opt.text}
+                                  </span>
+                                </span>
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                       </div>
                     </div>
                   </div>
