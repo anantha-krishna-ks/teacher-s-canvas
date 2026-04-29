@@ -151,6 +151,14 @@ const AssertionReasoningEditor = ({
                     <span className="text-sm font-semibold text-foreground">
                       Q{index + 1}
                     </span>
+                    {pair.answer && (
+                      <span
+                        className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary"
+                        aria-label={`Answer: Option ${pair.answer}`}
+                      >
+                        Ans: {pair.answer}
+                      </span>
+                    )}
                   </div>
                   {pairs.length > 1 && (
                     <span
