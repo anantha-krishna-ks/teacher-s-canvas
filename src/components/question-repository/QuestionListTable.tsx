@@ -23,6 +23,7 @@ interface QuestionListTableProps {
 
 const QuestionListTable = ({
   questions,
+  taxonomy,
   onEdit,
   onDelete,
   onReorder,
