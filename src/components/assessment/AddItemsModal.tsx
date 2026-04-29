@@ -195,6 +195,7 @@ const CreateNewItemForm = ({ onAddItem, activeFolderId, onSelectFolder }: { onAd
   const [includeWordBank, setIncludeWordBank] = useState(false);
   const [matchPairs, setMatchPairs] = useState<MatchPair[]>(createDefaultPairs());
   const [trueFalseAnswer, setTrueFalseAnswer] = useState<boolean | null>(null);
+  const [taxonomy, setTaxonomy] = useState<string>("");
 
   const selectedFolderName = useMemo(() => {
     const find = (folders: RepositoryFolder[]): string | null => {
@@ -408,6 +409,22 @@ const CreateNewItemForm = ({ onAddItem, activeFolderId, onSelectFolder }: { onAd
                 {ITEM_TYPES.map((t) => (
                   <SelectItem key={t} value={t}>{t}</SelectItem>
                 ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-2 w-56">
+            <Label className="text-sm font-medium">Taxonomy</Label>
+            <Select value={taxonomy} onValueChange={setTaxonomy}>
+              <SelectTrigger className="h-10 text-sm">
+                <SelectValue placeholder="Select taxonomy" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Remember">Remember</SelectItem>
+                <SelectItem value="Understand">Understand</SelectItem>
+                <SelectItem value="Apply">Apply</SelectItem>
+                <SelectItem value="Analyze">Analyze</SelectItem>
+                <SelectItem value="Evaluate">Evaluate</SelectItem>
+                <SelectItem value="Create">Create</SelectItem>
               </SelectContent>
             </Select>
           </div>
