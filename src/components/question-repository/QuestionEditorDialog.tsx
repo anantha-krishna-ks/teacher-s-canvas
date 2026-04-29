@@ -269,50 +269,59 @@ const QuestionEditorDialog = ({
     return (
       <div className="space-y-3">
         {/* Toolbar */}
-        <div className="flex items-center gap-0.5 flex-wrap">
+        <div className="flex items-center gap-0.5 flex-wrap" role="toolbar" aria-label="Text formatting">
           {TOOLBAR_BUTTONS.map(({ icon: Icon, label: btnLabel }) => (
             <Button
               key={btnLabel}
               type="button"
               variant="ghost"
               size="icon"
-              className="h-8 w-8 text-muted-foreground hover:text-foreground"
+              className="h-8 w-8 text-foreground/70 hover:text-foreground"
               aria-label={btnLabel}
+              title={btnLabel}
             >
-              <Icon className="w-4 h-4" />
+              <Icon className="w-4 h-4" aria-hidden="true" />
             </Button>
           ))}
-          <div className="w-px h-5 bg-border mx-1" />
+          <div className="w-px h-5 bg-border mx-1" role="separator" aria-orientation="vertical" />
           {ALIGN_BUTTONS.map(({ icon: Icon, label: btnLabel }) => (
             <Button
               key={btnLabel}
               type="button"
               variant="ghost"
               size="icon"
-              className="h-8 w-8 text-muted-foreground hover:text-foreground"
+              className="h-8 w-8 text-foreground/70 hover:text-foreground"
               aria-label={btnLabel}
+              title={btnLabel}
             >
-              <Icon className="w-4 h-4" />
+              <Icon className="w-4 h-4" aria-hidden="true" />
             </Button>
           ))}
-          <div className="w-px h-5 bg-border mx-1" />
+          <div className="w-px h-5 bg-border mx-1" role="separator" aria-orientation="vertical" />
           <Button
             type="button"
             variant="ghost"
             size="icon"
-            className="h-8 w-8 text-muted-foreground hover:text-foreground"
+            className="h-8 w-8 text-foreground/70 hover:text-foreground"
             aria-label="Clear formatting"
+            title="Clear formatting"
           >
-            <RemoveFormatting className="w-4 h-4" />
+            <RemoveFormatting className="w-4 h-4" aria-hidden="true" />
           </Button>
         </div>
 
-        <Textarea
-          placeholder="Type your question here..."
-          value={questionText}
-          onChange={(e) => setQuestionText(e.target.value)}
-          className="min-h-[120px] resize-y text-sm"
-        />
+        <div className="space-y-1.5">
+          <Label htmlFor="question-text" className="text-sm font-medium text-foreground">
+            Question
+          </Label>
+          <Textarea
+            id="question-text"
+            placeholder="Type your question here..."
+            value={questionText}
+            onChange={(e) => setQuestionText(e.target.value)}
+            className="min-h-[120px] resize-y text-sm"
+          />
+        </div>
 
         {type === "multiple-choice" && <MCQOptionsEditor />}
       </div>
