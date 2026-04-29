@@ -3,13 +3,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Info, Plus, Trash2, ChevronDown } from "lucide-react";
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Info, Plus, Trash2, ChevronDown, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const FIXED_OPTIONS = [
