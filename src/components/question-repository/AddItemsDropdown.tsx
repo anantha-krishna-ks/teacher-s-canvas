@@ -23,11 +23,11 @@ const ITEM_TYPES: { type: QuestionType; label: string }[] = [
   { type: "assertion-reasoning", label: "Assertion Reasoning" },
 ];
 
-const AddItemsDropdown = ({ onAdd, onCopyQuestion }: AddItemsDropdownProps) => {
+const AddItemsDropdown = ({ onAdd, onCopyQuestion, disabled = false }: AddItemsDropdownProps) => {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button className="gap-2">
+      <DropdownMenuTrigger asChild disabled={disabled}>
+        <Button className="gap-2" disabled={disabled} aria-disabled={disabled}>
           <Plus className="w-4 h-4" />
           Add Items
         </Button>
