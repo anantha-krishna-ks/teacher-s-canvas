@@ -504,8 +504,9 @@ const SectionPanel = ({ sections, onChange }: SectionPanelProps) => {
       {/* Active Section Content */}
       {activeSection && (
         <div className="space-y-3">
-          {/* Section Header with actions — sticky when scrolling */}
-          <div className="sticky top-0 z-20 -mx-6 -mt-3 px-7 py-2.5 bg-card border-y border-border/80 shadow-[inset_0_2px_3px_hsl(var(--border)/0.45),inset_0_-2px_3px_hsl(var(--background)/0.9)] flex items-center justify-between">
+          <div className="-mx-6 h-2 border-y border-border/80 bg-muted/30 shadow-[inset_0_2px_3px_hsl(var(--border)/0.45),inset_0_-2px_3px_hsl(var(--background)/0.9)]" />
+          {/* Section Header with actions */}
+          <div className="flex items-center justify-between px-1 py-2">
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-1.5">
                 <div className="w-1 h-5 rounded-full bg-primary" />
