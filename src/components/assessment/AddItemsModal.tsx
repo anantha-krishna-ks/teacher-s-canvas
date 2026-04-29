@@ -2,7 +2,7 @@ import { useState, useMemo, useCallback } from "react";
 import {
   Search, ChevronDown, ChevronRight, Folder, FolderOpen, Plus, FileText, PlusCircle,
   Bold, Italic, Underline, Subscript, Superscript, AlignLeft, AlignCenter, AlignRight,
-  AlignJustify, RemoveFormatting, ImagePlus,
+  AlignJustify, RemoveFormatting, ImagePlus, X,
 } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
