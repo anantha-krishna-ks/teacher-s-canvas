@@ -2,7 +2,7 @@ import { useState, useMemo, useCallback } from "react";
 import {
   Search, ChevronDown, ChevronRight, Folder, FolderOpen, Plus, FileText, PlusCircle,
   Bold, Italic, Underline, Subscript, Superscript, AlignLeft, AlignCenter, AlignRight,
-  AlignJustify, RemoveFormatting, ImagePlus,
+  AlignJustify, RemoveFormatting, ImagePlus, X,
 } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -653,6 +653,14 @@ const AddItemsModal = ({ open, onOpenChange, sectionLabel, onAddItems }: AddItem
             <Badge variant="outline" className="text-xs font-medium h-7 px-3">
               Section {sectionLabel}
             </Badge>
+            <button
+              type="button"
+              onClick={handleClose}
+              aria-label="Close"
+              className="w-8 h-8 inline-flex items-center justify-center rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+            >
+              <X className="w-4 h-4" />
+            </button>
           </div>
         </div>
 
