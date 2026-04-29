@@ -45,6 +45,14 @@ const AssertionReasoningEditor = ({
   pairs,
   onPairsChange,
 }: AssertionReasoningEditorProps) => {
+  const [openPairs, setOpenPairs] = useState<Record<string, boolean>>(() =>
+    Object.fromEntries(pairs.map((p) => [p.id, true]))
+  );
+
+  const togglePair = (id: string) => {
+    setOpenPairs((prev) => ({ ...prev, [id]: !(prev[id] ?? true) }));
+  };
+
   const handlePairChange = (id: string, field: "assertion" | "reason", value: string) => {
     onPairsChange(pairs.map((p) => (p.id === id ? { ...p, [field]: value } : p)));
   };
