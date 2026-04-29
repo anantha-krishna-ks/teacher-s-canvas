@@ -88,7 +88,7 @@ const QuestionListTable = ({
           onDragOver={(e) => handleDragOver(e, i)}
           onDragEnd={handleDragEnd}
           className={cn(
-            "grid grid-cols-[48px_1fr_80px_140px_100px] items-center px-3 py-3 border-b border-border last:border-b-0 transition-colors group cursor-grab active:cursor-grabbing",
+            "grid grid-cols-[48px_1fr_80px_140px_120px_100px] items-center px-3 py-3 border-b border-border last:border-b-0 transition-colors group cursor-grab active:cursor-grabbing",
             dragIndex === i && "opacity-40",
             overIndex === i && dragIndex !== i && "border-t-2 border-t-primary"
           )}
