@@ -309,7 +309,7 @@ const QuestionRepository = () => {
       </div>
 
       {/* Main layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-6">
         {/* Left Panel - Folder Structure */}
         <div className="bg-card border border-border rounded-xl overflow-visible flex flex-col">
           {/* Grade selector */}
