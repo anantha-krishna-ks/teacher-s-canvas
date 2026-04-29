@@ -1,7 +1,8 @@
+import { useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Info, Plus, Trash2 } from "lucide-react";
+import { Info, Plus, Trash2, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const FIXED_OPTIONS = [
