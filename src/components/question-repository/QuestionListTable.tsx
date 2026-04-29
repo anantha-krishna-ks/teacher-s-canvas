@@ -15,6 +15,7 @@ const TYPE_LABELS: Record<string, string> = {
 
 interface QuestionListTableProps {
   questions: QuestionData[];
+  taxonomy?: string;
   onEdit: (question: QuestionData) => void;
   onDelete: (id: string) => void;
   onReorder: (questions: QuestionData[]) => void;
